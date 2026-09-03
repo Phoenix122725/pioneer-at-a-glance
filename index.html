@@ -4,448 +4,422 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#315746">
-<meta name="description" content="Private offline-friendly Regular Pioneer ministry hours and assignment tracker.">
+<meta name="description" content="Pioneer at a Glance — ministry hours, assignments, calendar, and service-year planning.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
 <title>Pioneer at a Glance</title>
 <style>
 :root{
-  --bg:#f7f5ef;--panel:#fffdf9;--card:#ffffff;--ink:#26362f;--muted:#748078;
-  --line:#d9dfda;--green:#315746;--green2:#527863;--sage:#dfe9e1;
-  --sage2:#eef4ef;--gold:#b99552;--rose:#ead8d2;--blue:#dfe8ed;--danger:#a44b4b;
-  --shadow:0 8px 24px rgba(40,65,53,.07);
+  --bg:#f6f4ee;--panel:#fffdf9;--card:#fff;--ink:#26362f;--muted:#748078;
+  --line:#d9dfda;--green:#315746;--green2:#527863;--sage:#dfe9e1;--sage2:#eef4ef;
+  --gold:#b99552;--gold2:#f8f0df;--rose:#f3e7e2;--danger:#a54a4a;--shadow:0 8px 26px rgba(37,64,51,.07)
 }
 *{box-sizing:border-box}
 html{background:var(--bg)}
-body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
-main{max-width:980px;margin:auto;padding:18px 14px 46px}
-header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin:2px 0 14px}
-h1{margin:0;font-family:Georgia,serif;font-size:1.8rem;letter-spacing:-.02em}
-.subtitle{color:var(--muted);font-size:.92rem;margin-top:3px}
-.install{display:none;border:0;background:var(--green);color:white;border-radius:12px;padding:11px 14px;font-weight:800;min-height:44px}
+.app{max-width:760px;margin:auto;padding:14px 12px 104px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand img{width:52px;height:52px;border-radius:14px;object-fit:cover;border:1px solid var(--line)}
+.brand h1{margin:0;font-family:Georgia,serif;font-size:1.48rem;line-height:1.05}
+.brand .sub{font-size:.76rem;color:var(--muted);margin-top:3px}
+.iconbtn{width:44px;height:44px;border:1px solid var(--line);background:var(--card);border-radius:13px;color:var(--ink)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px;box-shadow:var(--shadow)}
 .soft{background:var(--sage2)}
-.grid{display:grid;gap:10px}
-.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
-.stat .label{font-size:.76rem;color:var(--muted);font-weight:700;margin-bottom:3px}
-.stat .value{font-size:1.55rem;font-weight:850;letter-spacing:-.025em}
-.controls{display:grid;grid-template-columns:1fr 140px 140px;gap:10px}
-label{display:block;font-size:.8rem;font-weight:750;color:var(--muted)}
-input,select,textarea{width:100%;margin-top:5px;border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);padding:10px 11px;min-height:44px;font-size:16px}
-textarea{resize:vertical;min-height:80px}
-.progress-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-bottom:6px}
-.bar{height:13px;border-radius:999px;background:#e6ebe7;overflow:hidden}
-.fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));width:0;transition:width .22s ease}
-.weekfill{background:linear-gradient(90deg,var(--gold),#d4b976)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.section-title{margin:0 0 10px;font-size:1rem;font-weight:850}
-.form-grid{display:grid;grid-template-columns:1fr 95px 95px 1fr;gap:9px}
-.form-grid .span2{grid-column:span 2}
-.form-grid .full{grid-column:1/-1}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
-.btn{border:1px solid var(--line);background:white;color:var(--ink);border-radius:10px;padding:9px 12px;min-height:42px;font-weight:780}
+.hero{background:linear-gradient(145deg,#fbfaf6,#eef4ef);border:1px solid #d8e2da}
+.hero-line{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.eyebrow{font-size:.72rem;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+.big{font-size:2.15rem;line-height:1;font-weight:900;letter-spacing:-.04em;margin-top:4px}
+.goal-copy{font-size:.8rem;color:var(--muted);margin-top:5px}
+.progress{height:13px;background:#e2e8e3;border-radius:999px;overflow:hidden;margin-top:12px}
+.progress>div{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));width:0;transition:width .2s}
+.mini-progress{height:9px;background:#e6ebe7;border-radius:999px;overflow:hidden;margin-top:7px}
+.mini-progress>div{height:100%;background:var(--gold);width:0}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:9px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px}
+.stat .label{font-size:.7rem;color:var(--muted);font-weight:750}
+.stat .value{font-size:1.3rem;font-weight:900;margin-top:2px}
+.stat .hint{font-size:.68rem;color:var(--muted);margin-top:2px}
+.section{margin-top:12px}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 2px 8px}
+.section-title h2{margin:0;font-size:1rem}
+.linkbtn{border:0;background:transparent;color:var(--green);font-weight:800;padding:6px}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:10px 12px;min-height:44px;font-weight:800}
 .btn.primary{background:var(--green);color:white;border-color:var(--green)}
-.btn.gold{background:#fbf4e5;border-color:#dfca9e;color:#6d5527}
+.btn.gold{background:var(--gold2);border-color:#dfc995;color:#6a5325}
 .btn.danger{color:var(--danger)}
-.btn.small{padding:6px 9px;min-height:34px;font-size:.84rem}
-.notice{min-height:18px;font-size:.82rem;color:var(--muted);margin-top:7px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.tab{border:1px solid var(--line);background:white;padding:9px 12px;border-radius:999px;font-weight:780}
-.tab.active{background:var(--sage);color:var(--green);border-color:#bdd0c2}
-.view{display:none}.view.active{display:block}
-.tablewrap{overflow:auto}
-table{width:100%;border-collapse:collapse;min-width:690px}
-th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-th{font-size:.75rem;color:var(--muted);font-weight:850}
-td{font-size:.89rem}
-.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
-.dow{text-align:center;font-size:.68rem;color:var(--muted);font-weight:850;padding:3px 0}
-.day{min-height:88px;border:1px solid var(--line);border-radius:11px;background:white;padding:6px;min-width:0}
+.btn.block{width:100%}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.full{grid-column:1/-1}
+label{display:block;font-size:.76rem;color:var(--muted);font-weight:750}
+input,select,textarea{width:100%;margin-top:5px;padding:10px 11px;min-height:44px;border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);font-size:16px}
+textarea{min-height:78px;resize:vertical}
+.notice{font-size:.78rem;color:var(--muted);margin-top:7px;min-height:18px}
+.entry-card,.assign-card{border:1px solid var(--line);border-radius:14px;padding:11px;background:white;margin-bottom:8px}
+.entry-head,.assign-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.entry-time{font-size:1.2rem;font-weight:900}
+.entry-date,.meta{font-size:.74rem;color:var(--muted)}
+.tag{display:inline-block;border-radius:999px;padding:3px 7px;background:var(--sage);color:var(--green);font-size:.68rem;font-weight:800;margin-top:5px}
+.card-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.small{min-height:36px;padding:6px 9px;font-size:.8rem}
+.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.dow{text-align:center;font-size:.65rem;color:var(--muted);font-weight:850;padding:3px}
+.day{min-height:76px;background:white;border:1px solid var(--line);border-radius:10px;padding:5px;overflow:hidden}
 .day.empty{border-color:transparent;background:transparent}
 .day.today{outline:2px solid var(--gold);outline-offset:-2px}
-.daynum{font-size:.78rem;font-weight:850}
-.hours-pill{display:inline-block;margin-top:4px;background:var(--sage);color:var(--green);border-radius:999px;padding:2px 5px;font-size:.63rem;font-weight:800}
-.assignment{margin-top:4px;background:#f7edd9;border-left:3px solid var(--gold);padding:3px 4px;border-radius:5px;font-size:.61rem;line-height:1.15;overflow:hidden}
-.history-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.daynum{font-size:.72rem;font-weight:850}
+.dayhours{display:inline-block;background:var(--sage);color:var(--green);font-size:.58rem;font-weight:850;border-radius:999px;padding:2px 4px;margin-top:3px}
+.dayassign{font-size:.53rem;line-height:1.15;background:var(--gold2);border-left:2px solid var(--gold);border-radius:4px;padding:3px;margin-top:3px}
+.history{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 .month-card{border:1px solid var(--line);border-radius:13px;padding:10px;background:white}
-.month-card .m{font-size:.8rem;color:var(--muted);font-weight:750}.month-card .h{font-size:1.25rem;font-weight:850;margin-top:2px}
-.chip{display:inline-block;border-radius:999px;padding:3px 7px;font-size:.7rem;font-weight:800;background:var(--sage);color:var(--green)}
-.upcoming{display:grid;gap:8px}
-.assignment-card{border:1px solid #e3d5b6;background:#fffaf0;border-radius:12px;padding:10px;display:flex;justify-content:space-between;gap:12px}
-.assignment-card strong{display:block}.assignment-card .meta{font-size:.78rem;color:var(--muted);margin-top:2px}
-.kpi-note{font-size:.76rem;color:var(--muted);margin-top:4px}
-.edit-banner{display:none;background:#fff7df;border:1px solid #ead6a3;border-radius:11px;padding:9px;color:#654f20;margin-bottom:9px}
-.footer{font-size:.76rem;color:var(--muted);margin-top:12px}
-
-th.actions-col, td.actions-col{
-  position:sticky;
-  left:0;
-  background:var(--card);
-  z-index:3;
-  min-width:118px;
+.month-card .month{font-size:.73rem;color:var(--muted);font-weight:800}
+.month-card .hours{font-size:1.25rem;font-weight:900;margin-top:2px}
+.setting-row{display:grid;grid-template-columns:1fr 120px;gap:10px;align-items:end;margin-bottom:10px}
+.bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(760px,100%);padding:8px 8px calc(8px + env(safe-area-inset-bottom));background:rgba(250,248,243,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:30}
+.navinner{display:grid;grid-template-columns:repeat(5,1fr);gap:3px}
+.navbtn{border:0;background:transparent;border-radius:11px;min-height:58px;color:var(--muted);font-size:.66rem;font-weight:800;padding:6px 2px}
+.navbtn span{display:block;font-size:1.15rem;line-height:1.1;margin-bottom:3px}
+.navbtn.active{background:var(--sage);color:var(--green)}
+.screen{display:none}.screen.active{display:block}
+.modal{display:none;position:fixed;inset:0;background:rgba(24,36,30,.46);z-index:60;padding:18px;align-items:center;justify-content:center}
+.modal.show{display:flex}
+.modalbox{max-width:520px;width:100%;max-height:88%;overflow:auto;background:var(--panel);border-radius:20px;padding:18px;border:1px solid var(--line);box-shadow:0 20px 50px rgba(0,0,0,.18)}
+.modalbox h2{font-family:Georgia,serif;margin:0 0 8px}
+.onboarding-list{padding-left:18px;color:var(--muted);font-size:.9rem;line-height:1.45}
+.disclaimer{font-size:.76rem;color:var(--muted);line-height:1.45;background:var(--sage2);border-radius:12px;padding:10px}
+.install{display:none}
+@media(min-width:620px){
+  .stats{grid-template-columns:repeat(4,1fr)}
+  .history{grid-template-columns:repeat(3,1fr)}
+  .day{min-height:92px}
 }
-th.actions-col{z-index:4}
-td.actions-col{box-shadow:6px 0 10px rgba(40,65,53,.04)}
-
-@media(max-width:760px){
-  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .controls{grid-template-columns:1fr 1fr}.controls label:first-child{grid-column:1/-1}
-  .two{grid-template-columns:1fr}
-  .form-grid{grid-template-columns:1fr 1fr}.form-grid .span2,.form-grid .full{grid-column:1/-1}
-  .history-grid{grid-template-columns:repeat(2,1fr)}
-  .day{min-height:76px;padding:4px}.assignment{font-size:.56rem}
+@media(max-width:380px){
+  .app{padding-left:9px;padding-right:9px}.brand h1{font-size:1.3rem}.brand img{width:46px;height:46px}
+  .day{min-height:68px;padding:4px}.dayassign{display:none}
 }
-@media(max-width:430px){
-  main{padding:12px 10px 34px}.card{padding:12px;border-radius:14px}
-  h1{font-size:1.55rem}.stat .value{font-size:1.35rem}
-  .calendar{gap:3px}.day{min-height:68px;border-radius:8px}.hours-pill{font-size:.56rem;padding:2px 4px}
-  .history-grid{grid-template-columns:1fr 1fr}
-}
-@media(prefers-reduced-motion:reduce){.fill{transition:none}}
+@media(prefers-reduced-motion:reduce){.progress>div{transition:none}}
 </style>
 </head>
 <body>
-<main>
-<header>
-  <div>
-    <h1>Pioneer at a Glance</h1>
-    <div class="subtitle">Regular Pioneer hours • service year • assignments • notes</div>
-  </div>
-  <button id="installBtn" class="install" type="button">Install app</button>
-</header>
-
-<section class="card controls">
-  <label>Viewing month
-    <input id="monthPick" type="month" value="2026-09">
-  </label>
-  <label>Monthly goal
-    <input id="monthlyGoal" type="number" min="1" max="200" step=".5" value="50">
-  </label>
-  <label>Weekly goal
-    <input id="weeklyGoal" type="number" min="1" max="60" step=".5" value="12.5">
-  </label>
-</section>
-
-<section class="grid stats" style="margin-top:10px">
-  <div class="card stat"><div class="label">Month logged</div><div id="monthLogged" class="value">0:00</div><div id="monthRemainingDays" class="kpi-note"></div></div>
-  <div class="card stat"><div class="label">Month remaining</div><div id="monthRemaining" class="value">50:00</div><div id="dailyNeed" class="kpi-note"></div></div>
-  <div class="card stat"><div class="label">This week</div><div id="weekLogged" class="value">0:00</div><div id="weeklyNeed" class="kpi-note"></div></div>
-  <div class="card stat"><div class="label">Service-year total</div><div id="serviceYearTotal" class="value">0:00</div><div id="serviceYearLabel" class="kpi-note"></div></div>
-</section>
-
-<section class="two" style="margin-top:10px">
-  <div class="card">
-    <div class="progress-meta"><span id="monthProgressText">0% of monthly goal</span><span id="monthDaysServed">0 service days</span></div>
-    <div class="bar"><div id="monthFill" class="fill"></div></div>
-  </div>
-  <div class="card">
-    <div class="progress-meta"><span id="weekProgressText">0% of weekly goal</span><span id="weekRange"></span></div>
-    <div class="bar"><div id="weekFill" class="fill weekfill"></div></div>
-  </div>
-</section>
-
-<section class="card" style="margin-top:12px">
-  <h2 class="section-title">Add ministry time</h2>
-  <div id="entryEditBanner" class="edit-banner">Editing an existing entry.</div>
-  <form id="entryForm">
-    <div class="form-grid">
-      <label>Date<input id="entryDate" type="date" value="2026-09-02" required></label>
-      <label>Hours<input id="entryHours" type="number" min="0" max="24" value="0"></label>
-      <label>Minutes<input id="entryMinutes" type="number" min="0" max="59" value="0"></label>
-      <label>Type
-        <select id="entryType">
-          <option>Field ministry</option>
-          <option>Public witnessing</option>
-          <option>Bible study</option>
-          <option>Return visit</option>
-          <option>Letter writing</option>
-          <option>Phone witnessing</option>
-          <option>Other</option>
-        </select>
-      </label>
-      <label class="span2">With / study / territory<input id="entryDetail" type="text" placeholder="Optional"></label>
-      <label class="span2">Ministry experience<input id="entryExperience" type="text" placeholder="Optional"></label>
-      <label class="full">Notes<textarea id="entryNotes" placeholder="Bible study notes, return visits, experiences, reminders…"></textarea></label>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <img src="icon-192.png" alt="">
+      <div><h1>Pioneer at a Glance</h1><div class="sub" data-i18n="tagline">Ministry planning, all in one place</div></div>
     </div>
-    <div class="actions">
-      <button id="entrySaveBtn" class="btn primary" type="submit">Add entry</button>
-      <button class="btn quick" data-min="15" type="button">+15 min</button>
-      <button class="btn quick" data-min="30" type="button">+30 min</button>
-      <button class="btn quick" data-min="60" type="button">+1 hour</button>
-      <button id="entryCancelEdit" class="btn" type="button" style="display:none">Cancel edit</button>
+    <button id="installBtn" class="iconbtn install" type="button" aria-label="Install app">⇩</button>
+  </div>
+
+  <!-- HOME -->
+  <section id="homeScreen" class="screen active">
+    <div class="card hero">
+      <div class="hero-line">
+        <div>
+          <div class="eyebrow" data-i18n="thisMonth">This month</div>
+          <div id="homeMonthTotal" class="big">0:00</div>
+          <div id="homeMonthGoalText" class="goal-copy">of 50 hours</div>
+        </div>
+        <div style="text-align:right">
+          <div class="eyebrow" data-i18n="remaining">Remaining</div>
+          <div id="homeRemaining" style="font-size:1.35rem;font-weight:900;margin-top:4px">50:00</div>
+          <div id="homeDailyNeed" class="goal-copy"></div>
+        </div>
+      </div>
+      <div class="progress"><div id="homeMonthFill"></div></div>
     </div>
-    <div id="entryNotice" class="notice" aria-live="polite"></div>
-  </form>
-</section>
 
-<section class="card" style="margin-top:12px">
-  <h2 class="section-title">Schedule public witnessing / assignments</h2>
-  <div id="assignmentEditBanner" class="edit-banner">Editing a scheduled assignment.</div>
-  <form id="assignmentForm">
-    <div class="form-grid">
-      <label>Date<input id="assignmentDate" type="date" value="2026-09-02" required></label>
-      <label>Start<input id="assignmentStart" type="time" value="09:00"></label>
-      <label>End<input id="assignmentEnd" type="time" value="11:00"></label>
-      <label>Assignment
-        <select id="assignmentType">
-          <option>Public witnessing</option>
-          <option>Literature cart</option>
-          <option>Territory</option>
-          <option>Bible study</option>
-          <option>Return visits</option>
-          <option>Other</option>
-        </select>
-      </label>
-      <label class="span2">Location / arrangement<input id="assignmentLocation" type="text" placeholder="Example: cart, plaza, territory, meeting point"></label>
-      <label class="span2">Partner / group<input id="assignmentPartner" type="text" placeholder="Optional"></label>
-      <label class="full">Notes<textarea id="assignmentNotes" placeholder="Anything you want to remember before the assignment"></textarea></label>
+    <div class="stats">
+      <div class="stat"><div class="label" data-i18n="thisWeek">This week</div><div id="homeWeek" class="value">0:00</div><div id="homeWeekHint" class="hint"></div></div>
+      <div class="stat"><div class="label" data-i18n="serviceYear">Service year</div><div id="homeYear" class="value">0:00</div><div id="homeYearHint" class="hint"></div></div>
+      <div class="stat"><div class="label" data-i18n="serviceDays">Service days</div><div id="homeDays" class="value">0</div><div class="hint" data-i18n="thisMonthLower">this month</div></div>
+      <div class="stat"><div class="label" data-i18n="avgDay">Avg / service day</div><div id="homeAvg" class="value">0:00</div><div class="hint" data-i18n="thisMonthLower">this month</div></div>
     </div>
-    <div class="actions">
-      <button id="assignmentSaveBtn" class="btn gold" type="submit">Schedule assignment</button>
-      <button id="assignmentCancelEdit" class="btn" type="button" style="display:none">Cancel edit</button>
+
+    <div class="section">
+      <div class="section-title"><h2 data-i18n="quickAdd">Quick add</h2></div>
+      <div class="quick-grid">
+        <button class="btn quick-home" data-min="30" type="button">+30m</button>
+        <button class="btn quick-home" data-min="60" type="button">+1h</button>
+        <button class="btn primary" id="openAddBtn" type="button" data-i18n="addHours">Add hours</button>
+      </div>
     </div>
-    <div id="assignmentNotice" class="notice" aria-live="polite"></div>
-  </form>
-</section>
 
-<section class="card" style="margin-top:12px">
-  <div class="tabs">
-    <button class="tab active" data-view="calendarView" type="button">Calendar</button>
-    <button class="tab" data-view="logView" type="button">Hours log</button>
-    <button class="tab" data-view="historyView" type="button">Monthly history</button>
-    <button class="tab" data-view="assignmentsView" type="button">Assignments</button>
-    <button class="tab" data-view="backupView" type="button">Backup</button>
-  </div>
-
-  <div id="calendarView" class="view active">
-    <div id="calendar" class="calendar"></div>
-  </div>
-
-  <div id="logView" class="view">
-    <div id="logSummary" class="notice"></div>
-    <div class="tablewrap">
-      <table>
-        <thead><tr><th class="actions-col">Actions</th><th>Date</th><th>Time</th><th>Type</th><th>Detail</th><th>Notes / experience</th></tr></thead>
-        <tbody id="logBody"></tbody>
-      </table>
+    <div class="section">
+      <div class="section-title"><h2 data-i18n="nextAssignment">Next assignment</h2><button class="linkbtn" data-go="assignmentsScreen" data-i18n="viewAll">View all</button></div>
+      <div id="nextAssignmentCard" class="card soft"><div class="notice" data-i18n="noUpcoming">No upcoming assignments.</div></div>
     </div>
-  </div>
 
-  <div id="historyView" class="view">
-    <div id="historyGrid" class="history-grid"></div>
-  </div>
+    <div class="section">
+      <div class="section-title"><h2 data-i18n="recentActivity">Recent activity</h2><button class="linkbtn" data-go="logScreen" data-i18n="viewAll">View all</button></div>
+      <div id="recentEntries"></div>
+    </div>
+  </section>
 
-  <div id="assignmentsView" class="view">
-    <div class="section-title">Upcoming assignments</div>
-    <div id="upcomingAssignments" class="upcoming"></div>
-  </div>
+  <!-- CALENDAR -->
+  <section id="calendarScreen" class="screen">
+    <div class="card">
+      <div class="setting-row">
+        <label data-i18n="month">Month<input id="calendarMonth" type="month"></label>
+        <button id="calendarTodayBtn" class="btn" type="button" data-i18n="today">Today</button>
+      </div>
+      <div id="calendar" class="calendar"></div>
+    </div>
+  </section>
 
-  <div id="backupView" class="view">
-    <p class="notice">Back up both your ministry hours and scheduled assignments. Import replaces the data currently stored in this app.</p>
-    <div class="actions">
-      <button id="exportBtn" class="btn primary" type="button">Export CSV backup</button>
-      <label class="btn" style="display:inline-flex;align-items:center">Import CSV
+  <!-- LOG -->
+  <section id="logScreen" class="screen">
+    <div class="section-title"><h2 data-i18n="hoursLog">Hours log</h2><button id="logAddBtn" class="btn primary small" type="button" data-i18n="add">Add</button></div>
+    <div id="logMonthControls" class="card" style="margin-bottom:10px">
+      <label data-i18n="month">Month<input id="logMonth" type="month"></label>
+      <div id="logSummary" class="notice"></div>
+    </div>
+    <div id="logCards"></div>
+  </section>
+
+  <!-- ASSIGNMENTS -->
+  <section id="assignmentsScreen" class="screen">
+    <div class="section-title"><h2 data-i18n="assignments">Assignments</h2><button id="assignmentAddBtn" class="btn gold small" type="button" data-i18n="schedule">Schedule</button></div>
+    <div id="assignmentCards"></div>
+  </section>
+
+  <!-- MORE -->
+  <section id="moreScreen" class="screen">
+    <div class="card">
+      <div class="section-title"><h2 data-i18n="serviceYearHistory">Service-year history</h2></div>
+      <div id="historyGrid" class="history"></div>
+    </div>
+
+    <div class="card section">
+      <div class="section-title"><h2 data-i18n="goalsSettings">Goals & settings</h2></div>
+      <div class="setting-row"><label data-i18n="monthlyGoal">Monthly goal</label><input id="monthlyGoal" type="number" min="1" max="200" step=".5" value="50"></div>
+      <div class="setting-row"><label data-i18n="weeklyGoal">Weekly goal</label><input id="weeklyGoal" type="number" min="1" max="60" step=".5" value="12.5"></div>
+      <div class="setting-row"><label data-i18n="serviceYearGoal">Service-year goal</label><input id="serviceYearGoal" type="number" min="1" max="2000" step="1" value="600"></div>
+      <div class="setting-row"><label data-i18n="language">Language</label><select id="language"><option value="en">English</option><option value="es">Español</option></select></div>
+      <button id="saveSettings" class="btn primary block" type="button" data-i18n="saveSettings">Save settings</button>
+      <div id="settingsNotice" class="notice"></div>
+    </div>
+
+    <div class="card section">
+      <div class="section-title"><h2 data-i18n="backupRestore">Backup & restore</h2></div>
+      <button id="exportBtn" class="btn primary block" type="button" data-i18n="exportCsv">Export CSV backup</button>
+      <label class="btn block" style="display:flex;align-items:center;justify-content:center;margin-top:8px" data-i18n="importCsv">Import CSV
         <input id="importFile" type="file" accept=".csv,text/csv" style="display:none">
       </label>
-      <button id="clearMonthBtn" class="btn danger" type="button">Clear current month</button>
+      <div id="backupNotice" class="notice"></div>
     </div>
-  </div>
-</section>
 
-<div class="footer">Your entries and assignments are stored locally on this device. Export a CSV backup periodically. • App version 4</div>
-</main>
+    <div class="card section">
+      <div class="section-title"><h2 data-i18n="about">About</h2></div>
+      <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
+      <div class="notice">Commercial Beta 1 • Local-first privacy</div>
+    </div>
+  </section>
+</div>
+
+<nav class="bottomnav">
+  <div class="navinner">
+    <button class="navbtn active" data-screen="homeScreen" type="button"><span>⌂</span><b data-i18n="home">Home</b></button>
+    <button class="navbtn" data-screen="calendarScreen" type="button"><span>▦</span><b data-i18n="calendar">Calendar</b></button>
+    <button class="navbtn" data-screen="logScreen" type="button"><span>◷</span><b data-i18n="log">Log</b></button>
+    <button class="navbtn" data-screen="assignmentsScreen" type="button"><span>◇</span><b data-i18n="assignments">Assignments</b></button>
+    <button class="navbtn" data-screen="moreScreen" type="button"><span>•••</span><b data-i18n="more">More</b></button>
+  </div>
+</nav>
+
+<!-- ADD/EDIT HOURS MODAL -->
+<div id="entryModal" class="modal" role="dialog" aria-modal="true">
+  <div class="modalbox">
+    <h2 id="entryModalTitle" data-i18n="addMinistryTime">Add ministry time</h2>
+    <form id="entryForm">
+      <div class="form-grid">
+        <label data-i18n="date">Date<input id="entryDate" type="date" required></label>
+        <label data-i18n="type">Type<select id="entryType">
+          <option>Field ministry</option><option>Public witnessing</option><option>Bible study</option><option>Return visit</option><option>Letter writing</option><option>Phone witnessing</option><option>Other</option>
+        </select></label>
+        <label data-i18n="hours">Hours<input id="entryHours" type="number" min="0" max="24" value="0"></label>
+        <label data-i18n="minutes">Minutes<input id="entryMinutes" type="number" min="0" max="59" value="0"></label>
+        <label class="full" data-i18n="detail">With / study / territory<input id="entryDetail" type="text"></label>
+        <label class="full" data-i18n="experience">Ministry experience<input id="entryExperience" type="text"></label>
+        <label class="full" data-i18n="notes">Notes<textarea id="entryNotes"></textarea></label>
+      </div>
+      <div class="card-actions">
+        <button id="entrySave" class="btn primary" type="submit" data-i18n="save">Save</button>
+        <button id="entryCancel" class="btn" type="button" data-i18n="cancel">Cancel</button>
+      </div>
+      <div id="entryNotice" class="notice"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ASSIGNMENT MODAL -->
+<div id="assignmentModal" class="modal" role="dialog" aria-modal="true">
+  <div class="modalbox">
+    <h2 id="assignmentModalTitle" data-i18n="scheduleAssignment">Schedule assignment</h2>
+    <form id="assignmentForm">
+      <div class="form-grid">
+        <label data-i18n="date">Date<input id="assignmentDate" type="date" required></label>
+        <label data-i18n="assignment">Assignment<select id="assignmentType"><option>Public witnessing</option><option>Literature cart</option><option>Territory</option><option>Bible study</option><option>Return visits</option><option>Other</option></select></label>
+        <label data-i18n="start">Start<input id="assignmentStart" type="time" value="09:00"></label>
+        <label data-i18n="end">End<input id="assignmentEnd" type="time" value="11:00"></label>
+        <label class="full" data-i18n="location">Location / arrangement<input id="assignmentLocation" type="text"></label>
+        <label class="full" data-i18n="partner">Partner / group<input id="assignmentPartner" type="text"></label>
+        <label class="full" data-i18n="notes">Notes<textarea id="assignmentNotes"></textarea></label>
+      </div>
+      <div class="card-actions">
+        <button class="btn gold" type="submit" data-i18n="save">Save</button>
+        <button id="assignmentCancel" class="btn" type="button" data-i18n="cancel">Cancel</button>
+      </div>
+      <div id="assignmentNotice" class="notice"></div>
+    </form>
+  </div>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="modal">
+  <div class="modalbox">
+    <h2 data-i18n="welcome">Welcome to Pioneer at a Glance</h2>
+    <p class="subtitle" data-i18n="welcomeText">A simple place to plan your ministry and see your progress without digging through notes or spreadsheets.</p>
+    <ul class="onboarding-list">
+      <li data-i18n="ob1">Track daily hours and your 50-hour monthly goal.</li>
+      <li data-i18n="ob2">See weekly and September–August service-year progress.</li>
+      <li data-i18n="ob3">Schedule public witnessing and other assignments.</li>
+      <li data-i18n="ob4">Keep notes for studies, return visits, and experiences.</li>
+      <li data-i18n="ob5">Your data stays on your device unless you export a backup.</li>
+    </ul>
+    <button id="onboardingDone" class="btn primary block" type="button" data-i18n="getStarted">Get started</button>
+  </div>
+</div>
 
 <script>
-(() => {
-  const ENTRY_KEY='pioneer.entries.v2', ASSIGN_KEY='pioneer.assignments.v2', SETTINGS_KEY='pioneer.settings.v2';
-  const now=new Date(); const TODAY=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
-  const $=s=>document.querySelector(s);
-  const monthPick=$('#monthPick'), monthlyGoal=$('#monthlyGoal'), weeklyGoal=$('#weeklyGoal');
-  let entries=read(ENTRY_KEY,[]), assignments=read(ASSIGN_KEY,[]), settings=read(SETTINGS_KEY,{monthlyGoal:50,weeklyGoal:12.5});
-  let editingEntryId=null, editingAssignmentId=null, deferredPrompt=null;
-  monthlyGoal.value=settings.monthlyGoal||50; weeklyGoal.value=settings.weeklyGoal||12.5;
+(()=>{
+const TODAY=(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`})();
+const KE={entries:'pag.entries.v1',assign:'pag.assign.v1',settings:'pag.settings.v1',onboard:'pag.onboard.v1'};
+const LEGACY={entries:'pioneer.entries.v2',assign:'pioneer.assignments.v2',settings:'pioneer.settings.v2'};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch{return f}};
+let entries=read(KE.entries,null), assignments=read(KE.assign,null), settings=read(KE.settings,null);
+if(entries===null){entries=read(LEGACY.entries,[]);localStorage.setItem(KE.entries,JSON.stringify(entries))}
+if(assignments===null){assignments=read(LEGACY.assign,[]);localStorage.setItem(KE.assign,JSON.stringify(assignments))}
+if(settings===null){const old=read(LEGACY.settings,{});settings={monthlyGoal:old.monthlyGoal||50,weeklyGoal:old.weeklyGoal||12.5,serviceYearGoal:600,language:'en'};localStorage.setItem(KE.settings,JSON.stringify(settings))}
+let editEntryId=null, editAssignmentId=null, deferredPrompt=null;
 
-  function read(k,fallback){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(fallback))}catch{return fallback}}
-  function persist(){
-    localStorage.setItem(ENTRY_KEY,JSON.stringify(entries));
-    localStorage.setItem(ASSIGN_KEY,JSON.stringify(assignments));
-    localStorage.setItem(SETTINGS_KEY,JSON.stringify({monthlyGoal:+monthlyGoal.value||50,weeklyGoal:+weeklyGoal.value||12.5}));
-  }
-  const fmt=m=>`${Math.floor(Math.max(0,m)/60)}:${String(Math.max(0,m)%60).padStart(2,'0')}`;
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  function monthEntries(){return entries.filter(e=>e.date.slice(0,7)===monthPick.value).sort((a,b)=>a.date.localeCompare(b.date))}
-  function monthAssignments(){return assignments.filter(a=>a.date.slice(0,7)===monthPick.value).sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start))}
-  function dateUTC(s){const [y,m,d]=s.split('-').map(Number);return new Date(Date.UTC(y,m-1,d))}
-  function iso(d){return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`}
-  function weekBounds(dateStr){
-    const d=dateUTC(dateStr), dow=d.getUTCDay(), delta=(dow+6)%7;
-    const start=new Date(d); start.setUTCDate(d.getUTCDate()-delta);
-    const end=new Date(start); end.setUTCDate(start.getUTCDate()+6);
-    return {start:iso(start),end:iso(end)}
-  }
-  function serviceYearBounds(){
-    const [y,m]=monthPick.value.split('-').map(Number), sy0=m>=9?y:y-1;
-    return {start:`${sy0}-09-01`,end:`${sy0+1}-08-31`,label:`${sy0}–${sy0+1}`};
-  }
-  function monthName(ym){
-    const [y,m]=ym.split('-').map(Number);
-    return new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,1)));
-  }
+const T={
+en:{
+tagline:'Ministry planning, all in one place',thisMonth:'This month',remaining:'Remaining',thisWeek:'This week',serviceYear:'Service year',
+serviceDays:'Service days',avgDay:'Avg / service day',thisMonthLower:'this month',quickAdd:'Quick add',addHours:'Add hours',
+nextAssignment:'Next assignment',viewAll:'View all',noUpcoming:'No upcoming assignments.',recentActivity:'Recent activity',month:'Month',
+today:'Today',hoursLog:'Hours log',add:'Add',assignments:'Assignments',schedule:'Schedule',serviceYearHistory:'Service-year history',
+goalsSettings:'Goals & settings',monthlyGoal:'Monthly goal',weeklyGoal:'Weekly goal',serviceYearGoal:'Service-year goal',language:'Language',
+saveSettings:'Save settings',backupRestore:'Backup & restore',exportCsv:'Export CSV backup',importCsv:'Import CSV',about:'About',
+disclaimer:'Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.',
+home:'Home',calendar:'Calendar',log:'Log',more:'More',addMinistryTime:'Add ministry time',date:'Date',type:'Type',hours:'Hours',
+minutes:'Minutes',detail:'With / study / territory',experience:'Ministry experience',notes:'Notes',save:'Save',cancel:'Cancel',
+scheduleAssignment:'Schedule assignment',assignment:'Assignment',start:'Start',end:'End',location:'Location / arrangement',
+partner:'Partner / group',welcome:'Welcome to Pioneer at a Glance',welcomeText:'A simple place to plan your ministry and see your progress without digging through notes or spreadsheets.',
+ob1:'Track daily hours and your 50-hour monthly goal.',ob2:'See weekly and September–August service-year progress.',ob3:'Schedule public witnessing and other assignments.',
+ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started'
+},
+es:{
+tagline:'Planifica tu ministerio en un solo lugar',thisMonth:'Este mes',remaining:'Restante',thisWeek:'Esta semana',serviceYear:'Año de servicio',
+serviceDays:'Días de servicio',avgDay:'Promedio / día',thisMonthLower:'este mes',quickAdd:'Añadir rápido',addHours:'Añadir horas',
+nextAssignment:'Próxima asignación',viewAll:'Ver todo',noUpcoming:'No hay asignaciones próximas.',recentActivity:'Actividad reciente',month:'Mes',
+today:'Hoy',hoursLog:'Registro de horas',add:'Añadir',assignments:'Asignaciones',schedule:'Programar',serviceYearHistory:'Historial del año de servicio',
+goalsSettings:'Metas y ajustes',monthlyGoal:'Meta mensual',weeklyGoal:'Meta semanal',serviceYearGoal:'Meta del año de servicio',language:'Idioma',
+saveSettings:'Guardar ajustes',backupRestore:'Copia de seguridad',exportCsv:'Exportar copia CSV',importCsv:'Importar CSV',about:'Acerca de',
+disclaimer:'Pioneer at a Glance es una herramienta independiente para organizar el ministerio. No está afiliada ni respaldada por los Testigos de Jehová ni por Watch Tower Bible and Tract Society.',
+home:'Inicio',calendar:'Calendario',log:'Registro',more:'Más',addMinistryTime:'Añadir tiempo de ministerio',date:'Fecha',type:'Tipo',hours:'Horas',
+minutes:'Minutos',detail:'Con / estudio / territorio',experience:'Experiencia en el ministerio',notes:'Notas',save:'Guardar',cancel:'Cancelar',
+scheduleAssignment:'Programar asignación',assignment:'Asignación',start:'Inicio',end:'Fin',location:'Lugar / arreglo',
+partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeText:'Un lugar sencillo para organizar tu ministerio y ver tu progreso sin buscar entre notas u hojas de cálculo.',
+ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
+ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar'
+}};
+function applyLanguage(){const lang=settings.language||'en';document.documentElement.lang=lang;$$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(T[lang][key]){if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];else if(el.tagName==='LABEL'&&el.querySelector('input,select')){const ctl=el.querySelector('input,select');el.childNodes[0].nodeValue=T[lang][key];}else el.textContent=T[lang][key]}})}
+function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings))}
+const fmt=m=>`${Math.floor(Math.max(0,Math.round(m))/60)}:${String(Math.max(0,Math.round(m))%60).padStart(2,'0')}`;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function utc(s){const [y,m,d]=s.split('-').map(Number);return new Date(Date.UTC(y,m-1,d))}
+function iso(d){return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`}
+function weekBounds(s){const d=utc(s),delta=(d.getUTCDay()+6)%7,start=new Date(d);start.setUTCDate(d.getUTCDate()-delta);const end=new Date(start);end.setUTCDate(start.getUTCDate()+6);return {start:iso(start),end:iso(end)}}
+function syBounds(ref=TODAY){const [y,m]=ref.split('-').map(Number),sy=m>=9?y:y-1;return {start:`${sy}-09-01`,end:`${sy+1}-08-31`,label:`${sy}–${sy+1}`}}
+function monthLabel(ym){const [y,m]=ym.split('-').map(Number);return new Intl.DateTimeFormat(settings.language==='es'?'es-US':'en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,1)))}
+function go(screen){$$('.screen').forEach(x=>x.classList.toggle('active',x.id===screen));$$('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.screen===screen));window.scrollTo({top:0,behavior:'smooth'});if(screen==='calendarScreen')renderCalendar();if(screen==='logScreen')renderLog();if(screen==='assignmentsScreen')renderAssignments();if(screen==='moreScreen')renderMore()}
+$$('.navbtn').forEach(b=>b.addEventListener('click',()=>go(b.dataset.screen)));$$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
 
-  function renderCalendar(list, alist){
-    const [y,m]=monthPick.value.split('-').map(Number), first=new Date(Date.UTC(y,m-1,1)).getUTCDay(), dim=new Date(Date.UTC(y,m,0)).getUTCDate();
-    const byDay={}, aByDay={};
-    list.forEach(e=>{const d=+e.date.slice(8);byDay[d]=(byDay[d]||0)+e.minutes});
-    alist.forEach(a=>{const d=+a.date.slice(8);(aByDay[d]||(aByDay[d]=[])).push(a)});
-    let html=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="dow">${x}</div>`).join('');
-    for(let i=0;i<first;i++)html+='<div class="day empty"></div>';
-    for(let d=1;d<=dim;d++){
-      const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      html+=`<div class="day ${byDay[d]?'has':''} ${ds===TODAY?'today':''}">
-        <div class="daynum">${d}</div>
-        ${byDay[d]?`<span class="hours-pill">${fmt(byDay[d])}</span>`:''}
-        ${(aByDay[d]||[]).slice(0,2).map(a=>`<div class="assignment">${esc(a.start)} ${esc(a.type)}</div>`).join('')}
-        ${(aByDay[d]||[]).length>2?`<div class="assignment">+${aByDay[d].length-2} more</div>`:''}
-      </div>`;
-    }
-    $('#calendar').innerHTML=html;
-  }
+function stats(){
+  const ym=TODAY.slice(0,7), monthList=entries.filter(e=>e.date.slice(0,7)===ym), monthM=monthList.reduce((s,e)=>s+e.minutes,0), mg=(settings.monthlyGoal||50)*60;
+  const dim=new Date(+ym.slice(0,4),+ym.slice(5,7),0).getDate(), day=+TODAY.slice(8), remDays=Math.max(1,dim-day+1), need=Math.max(0,mg-monthM);
+  $('#homeMonthTotal').textContent=fmt(monthM);$('#homeRemaining').textContent=fmt(need);$('#homeMonthGoalText').textContent=`of ${settings.monthlyGoal} hours`;
+  $('#homeDailyNeed').textContent=need?`${fmt(Math.ceil(need/remDays))}/day needed`:'Goal reached ✓';$('#homeMonthFill').style.width=Math.min(100,monthM/mg*100)+'%';
+  const wb=weekBounds(TODAY), wm=entries.filter(e=>e.date>=wb.start&&e.date<=wb.end).reduce((s,e)=>s+e.minutes,0),wg=(settings.weeklyGoal||12.5)*60;
+  $('#homeWeek').textContent=fmt(wm);$('#homeWeekHint').textContent=wm>=wg?'Goal reached ✓':`${fmt(wg-wm)} left`;
+  const sy=syBounds(), ymn=entries.filter(e=>e.date>=sy.start&&e.date<=sy.end).reduce((s,e)=>s+e.minutes,0),syg=(settings.serviceYearGoal||600)*60;
+  $('#homeYear').textContent=fmt(ymn);$('#homeYearHint').textContent=`${Math.round(Math.min(100,ymn/syg*100))}% of ${settings.serviceYearGoal}h`;
+  const ds=new Set(monthList.map(e=>e.date)).size;$('#homeDays').textContent=ds;$('#homeAvg').textContent=ds?fmt(Math.round(monthM/ds)):'0:00';
+}
+function entryCard(e){
+ return `<div class="entry-card"><div class="entry-head"><div><div class="entry-time">${fmt(e.minutes)}</div><div class="entry-date">${esc(e.date)}</div><span class="tag">${esc(e.type||'Field ministry')}</span></div></div>
+ ${e.detail?`<div class="meta" style="margin-top:7px">${esc(e.detail)}</div>`:''}${e.experience?`<div class="meta" style="margin-top:4px">${esc(e.experience)}</div>`:''}${e.notes?`<div class="meta" style="margin-top:4px">${esc(e.notes)}</div>`:''}
+ <div class="card-actions"><button class="btn small edit-entry" data-id="${e.id}" type="button">Edit</button><button class="btn small danger delete-entry" data-id="${e.id}" type="button">Delete</button></div></div>`;
+}
+function renderHome(){
+ stats();
+ const upcoming=assignments.filter(a=>a.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date)||String(a.start).localeCompare(String(b.start)));
+ $('#nextAssignmentCard').innerHTML=upcoming.length?`<div class="assign-head"><div><b>${esc(upcoming[0].type)}</b><div class="meta">${esc(upcoming[0].date)} • ${esc(upcoming[0].start||'')}–${esc(upcoming[0].end||'')}</div></div></div>${upcoming[0].location?`<div class="meta" style="margin-top:6px">${esc(upcoming[0].location)}</div>`:''}`:`<div class="notice">${T[settings.language].noUpcoming}</div>`;
+ const recent=[...entries].sort((a,b)=>b.date.localeCompare(a.date)||(b.created||0)-(a.created||0)).slice(0,3);$('#recentEntries').innerHTML=recent.length?recent.map(entryCard).join(''):`<div class="card"><div class="notice">No ministry entries yet.</div></div>`;
+}
+function renderLog(){
+ const ym=$('#logMonth').value||TODAY.slice(0,7);$('#logMonth').value=ym;const list=entries.filter(e=>e.date.slice(0,7)===ym).sort((a,b)=>b.date.localeCompare(a.date)),m=list.reduce((s,e)=>s+e.minutes,0);
+ $('#logSummary').textContent=`${list.length} entries • ${fmt(m)} total`;$('#logCards').innerHTML=list.length?list.map(entryCard).join(''):`<div class="card"><div class="notice">No entries this month.</div></div>`;
+}
+function renderCalendar(){
+ const ym=$('#calendarMonth').value||TODAY.slice(0,7);$('#calendarMonth').value=ym;const [y,m]=ym.split('-').map(Number),first=new Date(Date.UTC(y,m-1,1)).getUTCDay(),dim=new Date(Date.UTC(y,m,0)).getUTCDate(),by={},ab={};
+ entries.filter(e=>e.date.slice(0,7)===ym).forEach(e=>{const d=+e.date.slice(8);by[d]=(by[d]||0)+e.minutes});
+ assignments.filter(a=>a.date.slice(0,7)===ym).forEach(a=>{const d=+a.date.slice(8);(ab[d]||(ab[d]=[])).push(a)});
+ const names=settings.language==='es'?['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];let h=names.map(n=>`<div class="dow">${n}</div>`).join('');
+ for(let i=0;i<first;i++)h+='<div class="day empty"></div>';for(let d=1;d<=dim;d++){const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;h+=`<div class="day ${ds===TODAY?'today':''}"><div class="daynum">${d}</div>${by[d]?`<span class="dayhours">${fmt(by[d])}</span>`:''}${(ab[d]||[]).slice(0,2).map(a=>`<div class="dayassign">${esc(a.start||'')} ${esc(a.type)}</div>`).join('')}</div>`}$('#calendar').innerHTML=h;
+}
+function assignmentCard(a){
+ return `<div class="assign-card"><div class="assign-head"><div><b>${esc(a.type)}</b><div class="meta">${esc(a.date)} • ${esc(a.start||'')}–${esc(a.end||'')}</div>${a.location?`<div class="meta">${esc(a.location)}</div>`:''}${a.partner?`<div class="meta">${esc(a.partner)}</div>`:''}</div></div>${a.notes?`<div class="meta" style="margin-top:6px">${esc(a.notes)}</div>`:''}<div class="card-actions"><button class="btn small edit-assignment" data-id="${a.id}" type="button">Edit</button><button class="btn small danger delete-assignment" data-id="${a.id}" type="button">Delete</button></div></div>`;
+}
+function renderAssignments(){const list=[...assignments].sort((a,b)=>a.date.localeCompare(b.date)||String(a.start).localeCompare(String(b.start)));$('#assignmentCards').innerHTML=list.length?list.map(assignmentCard).join(''):`<div class="card"><div class="notice">${T[settings.language].noUpcoming}</div></div>`}
+function renderMore(){
+ $('#monthlyGoal').value=settings.monthlyGoal;$('#weeklyGoal').value=settings.weeklyGoal;$('#serviceYearGoal').value=settings.serviceYearGoal;$('#language').value=settings.language;
+ const sy=syBounds();let h='';for(let i=0;i<12;i++){const d=new Date(Date.UTC(+sy.start.slice(0,4),8+i,1)),ym=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`,m=entries.filter(e=>e.date.slice(0,7)===ym).reduce((s,e)=>s+e.minutes,0);h+=`<div class="month-card"><div class="month">${monthLabel(ym)}</div><div class="hours">${fmt(m)}</div></div>`}$('#historyGrid').innerHTML=h;
+}
+function renderAll(){applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderMore();persist()}
 
-  function renderHistory(){
-    const sy=serviceYearBounds(), months=[];
-    let [syY]=sy.start.split('-').map(Number);
-    for(let i=0;i<12;i++){
-      const d=new Date(Date.UTC(syY,8+i,1)), ym=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`;
-      const mins=entries.filter(e=>e.date.slice(0,7)===ym).reduce((s,e)=>s+e.minutes,0);
-      months.push({ym,mins});
-    }
-    $('#historyGrid').innerHTML=months.map(x=>`<div class="month-card"><div class="m">${monthName(x.ym)}</div><div class="h">${fmt(x.mins)}</div>${x.mins?'<span class="chip">logged</span>':''}</div>`).join('');
-  }
+function openEntry(id=null,quick=0){
+ editEntryId=id;const e=id?entries.find(x=>String(x.id)===String(id)):null;$('#entryDate').value=e?.date||TODAY;let mins=e?.minutes||quick;$('#entryHours').value=Math.floor(mins/60);$('#entryMinutes').value=mins%60;$('#entryType').value=e?.type||'Field ministry';$('#entryDetail').value=e?.detail||'';$('#entryExperience').value=e?.experience||'';$('#entryNotes').value=e?.notes||'';$('#entryModal').classList.add('show')
+}
+function closeEntry(){$('#entryModal').classList.remove('show');editEntryId=null;$('#entryNotice').textContent=''}
+$('#openAddBtn').onclick=()=>openEntry();$('#logAddBtn').onclick=()=>openEntry();$$('.quick-home').forEach(b=>b.onclick=()=>openEntry(null,+b.dataset.min));$('#entryCancel').onclick=closeEntry;
+$('#entryForm').onsubmit=e=>{e.preventDefault();const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);if(mins<1){$('#entryNotice').textContent='Enter at least 1 minute.';return}const data={date:$('#entryDate').value,minutes:mins,type:$('#entryType').value,detail:$('#entryDetail').value.trim(),experience:$('#entryExperience').value.trim(),notes:$('#entryNotes').value.trim()};if(editEntryId){const i=entries.findIndex(x=>String(x.id)===String(editEntryId));if(i>=0)entries[i]={...entries[i],...data}}else entries.push({id:Date.now()+Math.random(),created:Date.now(),...data});closeEntry();renderAll()};
+document.addEventListener('click',e=>{const ed=e.target.closest('.edit-entry'),del=e.target.closest('.delete-entry');if(ed){openEntry(ed.dataset.id);return}if(del&&confirm('Delete this ministry entry?')){entries=entries.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
 
-  function renderUpcoming(){
-    const list=assignments.filter(a=>a.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
-    $('#upcomingAssignments').innerHTML=list.length?list.slice(0,30).map(a=>`<div class="assignment-card">
-      <div><strong>${esc(a.type)}</strong><div class="meta">${esc(a.date)} • ${esc(a.start)}–${esc(a.end)}${a.location?' • '+esc(a.location):''}${a.partner?' • '+esc(a.partner):''}</div>${a.notes?`<div class="meta">${esc(a.notes)}</div>`:''}</div>
-      <div><button class="btn small edit-assignment" data-id="${a.id}" type="button">Edit</button> <button class="btn small danger delete-assignment" data-id="${a.id}" type="button">Delete</button></div>
-    </div>`).join(''):'<div class="notice">No upcoming assignments scheduled.</div>';
-  }
+function openAssignment(id=null){
+ editAssignmentId=id;const a=id?assignments.find(x=>String(x.id)===String(id)):null;$('#assignmentDate').value=a?.date||TODAY;$('#assignmentType').value=a?.type||'Public witnessing';$('#assignmentStart').value=a?.start||'09:00';$('#assignmentEnd').value=a?.end||'11:00';$('#assignmentLocation').value=a?.location||'';$('#assignmentPartner').value=a?.partner||'';$('#assignmentNotes').value=a?.notes||'';$('#assignmentModal').classList.add('show')
+}
+function closeAssignment(){$('#assignmentModal').classList.remove('show');editAssignmentId=null}
+$('#assignmentAddBtn').onclick=()=>openAssignment();$('#assignmentCancel').onclick=closeAssignment;
+$('#assignmentForm').onsubmit=e=>{e.preventDefault();const data={date:$('#assignmentDate').value,type:$('#assignmentType').value,start:$('#assignmentStart').value,end:$('#assignmentEnd').value,location:$('#assignmentLocation').value.trim(),partner:$('#assignmentPartner').value.trim(),notes:$('#assignmentNotes').value.trim()};if(editAssignmentId){const i=assignments.findIndex(x=>String(x.id)===String(editAssignmentId));if(i>=0)assignments[i]={...assignments[i],...data}}else assignments.push({id:Date.now()+Math.random(),created:Date.now(),...data});closeAssignment();renderAll()};
+document.addEventListener('click',e=>{const ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');if(ed){openAssignment(ed.dataset.id);return}if(del&&confirm('Delete this assignment?')){assignments=assignments.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
 
-  function render(){
-    const list=monthEntries(), alist=monthAssignments(), monthMins=list.reduce((s,e)=>s+e.minutes,0), mg=Math.max(1,+monthlyGoal.value||50)*60;
-    const daysServed=new Set(list.map(e=>e.date)).size, [yy,mm]=monthPick.value.split('-').map(Number), dim=new Date(Date.UTC(yy,mm,0)).getUTCDate();
-    const current=monthPick.value===TODAY.slice(0,7), elapsed=current?+TODAY.slice(8):dim, remainingDays=Math.max(1,dim-elapsed+1), need=Math.max(0,mg-monthMins);
-    $('#monthLogged').textContent=fmt(monthMins); $('#monthRemaining').textContent=fmt(need);
-    $('#monthRemainingDays').textContent=`${remainingDays} day${remainingDays===1?'':'s'} remaining`;
-    $('#dailyNeed').textContent=need?`${fmt(Math.ceil(need/remainingDays))}/day needed`:'Monthly goal reached ✓';
-    const mp=Math.min(100,Math.round(monthMins/mg*100)); $('#monthFill').style.width=mp+'%'; $('#monthProgressText').textContent=`${mp}% of ${monthlyGoal.value}-hour monthly goal`; $('#monthDaysServed').textContent=`${daysServed} service day${daysServed===1?'':'s'}`;
+$('#logMonth').value=TODAY.slice(0,7);$('#calendarMonth').value=TODAY.slice(0,7);$('#logMonth').onchange=renderLog;$('#calendarMonth').onchange=renderCalendar;$('#calendarTodayBtn').onclick=()=>{$('#calendarMonth').value=TODAY.slice(0,7);renderCalendar()};
+$('#saveSettings').onclick=()=>{settings={...settings,monthlyGoal:+$('#monthlyGoal').value||50,weeklyGoal:+$('#weeklyGoal').value||12.5,serviceYearGoal:+$('#serviceYearGoal').value||600,language:$('#language').value};persist();renderAll();$('#settingsNotice').textContent=settings.language==='es'?'Ajustes guardados.':'Settings saved.'};
 
-    const wb=weekBounds(TODAY), weekMins=entries.filter(e=>e.date>=wb.start&&e.date<=wb.end).reduce((s,e)=>s+e.minutes,0), wg=Math.max(1,+weeklyGoal.value||12.5)*60, wneed=Math.max(0,wg-weekMins);
-    $('#weekLogged').textContent=fmt(weekMins); $('#weeklyNeed').textContent=wneed?`${fmt(wneed)} left this week`:'Weekly goal reached ✓';
-    const wp=Math.min(100,Math.round(weekMins/wg*100)); $('#weekFill').style.width=wp+'%'; $('#weekProgressText').textContent=`${wp}% of ${weeklyGoal.value}-hour weekly goal`; $('#weekRange').textContent=`${wb.start.slice(5)}–${wb.end.slice(5)}`;
+function csvEsc(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+$('#exportBtn').onclick=()=>{const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end']];entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','']));assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'']));const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\n'),blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='pioneer-at-a-glance-backup.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+$('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}const pe=[],pa=[];for(const l of lines.slice(1)){const v=parse(l);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'})}if(confirm(`Import ${pe.length} hour entries and ${pa.length} assignments?`)){entries=pe;assignments=pa;renderAll();$('#backupNotice').textContent='Backup imported.'}e.target.value=''};
 
-    const sy=serviceYearBounds(), syMins=entries.filter(e=>e.date>=sy.start&&e.date<=sy.end).reduce((s,e)=>s+e.minutes,0);
-    $('#serviceYearTotal').textContent=fmt(syMins); $('#serviceYearLabel').textContent=`${sy.label} service year`;
-
-    $('#logSummary').textContent=list.length?`${list.length} ${list.length===1?'entry':'entries'} • ${fmt(monthMins)} total`:'No entries yet.';
-    $('#logBody').innerHTML=list.length?list.map(e=>`<tr>
-      <td class="actions-col"><button class="btn small edit-entry" data-id="${e.id}" type="button">Edit</button> <button class="btn small danger delete-entry" data-id="${e.id}" type="button">Delete</button></td>
-      <td>${esc(e.date)}</td><td>${fmt(e.minutes)}</td><td>${esc(e.type)}</td><td>${esc(e.detail||'')}</td>
-      <td>${esc([e.experience,e.notes].filter(Boolean).join(' • '))}</td>
-    </tr>`).join(''):'<tr><td colspan="6" class="notice">Add your first entry above.</td></tr>';
-
-    renderCalendar(list,alist); renderHistory(); renderUpcoming(); persist();
-  }
-
-  function resetEntry(){
-    editingEntryId=null; $('#entrySaveBtn').textContent='Add entry'; $('#entryCancelEdit').style.display='none'; $('#entryEditBanner').style.display='none';
-    $('#entryHours').value=0; $('#entryMinutes').value=0; $('#entryType').value='Field ministry'; $('#entryDetail').value=''; $('#entryExperience').value=''; $('#entryNotes').value='';
-  }
-  $('#entryForm').addEventListener('submit',e=>{
-    e.preventDefault(); const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);
-    if(!$('#entryDate').value||mins<1){$('#entryNotice').textContent='Choose a date and enter at least 1 minute.';return}
-    const data={date:$('#entryDate').value,minutes:mins,type:$('#entryType').value,detail:$('#entryDetail').value.trim(),experience:$('#entryExperience').value.trim(),notes:$('#entryNotes').value.trim()};
-    if(editingEntryId){const i=entries.findIndex(x=>String(x.id)===String(editingEntryId));if(i>=0)entries[i]={...entries[i],...data};$('#entryNotice').textContent='Entry updated.'}
-    else{entries.push({id:Date.now()+Math.random(),created:Date.now(),...data});$('#entryNotice').textContent='Entry added.'}
-    monthPick.value=data.date.slice(0,7); resetEntry(); render();
-  });
-  document.querySelectorAll('.quick').forEach(b=>b.addEventListener('click',()=>{let v=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0)+(+b.dataset.min);$('#entryHours').value=Math.floor(v/60);$('#entryMinutes').value=v%60}));
-  $('#entryCancelEdit').addEventListener('click',resetEntry);
-
-  $('#logBody').addEventListener('click',e=>{
-    const btn=e.target.closest('button');
-    if(!btn)return;
-    const id=btn.dataset.id;
-    if(btn.classList.contains('delete-entry')){
-      if(confirm('Delete this ministry entry?')){
-        entries=entries.filter(x=>String(x.id)!==String(id));
-        render();
-        $('#entryNotice').textContent='Entry deleted.';
-      }
-      return;
-    }
-    if(btn.classList.contains('edit-entry')){
-      const x=entries.find(x=>String(x.id)===String(id));
-      if(!x)return;
-      editingEntryId=x.id;
-      $('#entryDate').value=x.date;
-      $('#entryHours').value=Math.floor(x.minutes/60);
-      $('#entryMinutes').value=x.minutes%60;
-      $('#entryType').value=x.type;
-      $('#entryDetail').value=x.detail||'';
-      $('#entryExperience').value=x.experience||'';
-      $('#entryNotes').value=x.notes||'';
-      $('#entrySaveBtn').textContent='Save changes';
-      $('#entryCancelEdit').style.display='inline-block';
-      $('#entryEditBanner').style.display='block';
-      $('#entryNotice').textContent='Editing entry — make your changes, then tap Save changes.';
-      document.querySelector('#entryForm').scrollIntoView({behavior:'smooth',block:'start'});
-    }
-  });
-
-  function resetAssignment(){
-    editingAssignmentId=null;$('#assignmentSaveBtn').textContent='Schedule assignment';$('#assignmentCancelEdit').style.display='none';$('#assignmentEditBanner').style.display='none';
-    $('#assignmentType').value='Public witnessing';$('#assignmentLocation').value='';$('#assignmentPartner').value='';$('#assignmentNotes').value='';
-  }
-  $('#assignmentForm').addEventListener('submit',e=>{
-    e.preventDefault(); if(!$('#assignmentDate').value){$('#assignmentNotice').textContent='Choose a date.';return}
-    const data={date:$('#assignmentDate').value,start:$('#assignmentStart').value||'09:00',end:$('#assignmentEnd').value||'11:00',type:$('#assignmentType').value,location:$('#assignmentLocation').value.trim(),partner:$('#assignmentPartner').value.trim(),notes:$('#assignmentNotes').value.trim()};
-    if(editingAssignmentId){const i=assignments.findIndex(x=>String(x.id)===String(editingAssignmentId));if(i>=0)assignments[i]={...assignments[i],...data};$('#assignmentNotice').textContent='Assignment updated.'}
-    else{assignments.push({id:Date.now()+Math.random(),created:Date.now(),...data});$('#assignmentNotice').textContent='Assignment scheduled.'}
-    monthPick.value=data.date.slice(0,7);resetAssignment();render();
-  });
-  $('#assignmentCancelEdit').addEventListener('click',resetAssignment);
-  $('#upcomingAssignments').addEventListener('click',e=>{
-    const edit=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');
-    if(del){if(confirm('Delete this scheduled assignment?')){assignments=assignments.filter(x=>String(x.id)!==del.dataset.id);render()}return}
-    if(edit){const a=assignments.find(x=>String(x.id)===edit.dataset.id);if(!a)return;editingAssignmentId=a.id;$('#assignmentDate').value=a.date;$('#assignmentStart').value=a.start;$('#assignmentEnd').value=a.end;$('#assignmentType').value=a.type;$('#assignmentLocation').value=a.location||'';$('#assignmentPartner').value=a.partner||'';$('#assignmentNotes').value=a.notes||'';$('#assignmentSaveBtn').textContent='Save assignment';$('#assignmentCancelEdit').style.display='inline-block';$('#assignmentEditBanner').style.display='block';window.scrollTo({top:document.body.scrollHeight*.35,behavior:'smooth'})}
-  });
-
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('#'+t.dataset.view).classList.add('active')}));
-  monthPick.addEventListener('change',render); monthlyGoal.addEventListener('input',render); weeklyGoal.addEventListener('input',render);
-
-  function csvEsc(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
-  $('#exportBtn').addEventListener('click',()=>{
-    const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end']];
-    entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','']));
-    assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'']));
-    const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\n'),blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='pioneer-hours-and-assignments.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-  });
-  $('#importFile').addEventListener('change',async e=>{
-    const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);if(lines.length<2)return;
-    function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}
-    const pe=[],pa=[];for(const line of lines.slice(1)){const v=parse(line);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'})}
-    if(confirm(`Import ${pe.length} hour entries and ${pa.length} assignments, replacing current data?`)){entries=pe;assignments=pa;render()}
-    e.target.value='';
-  });
-  $('#clearMonthBtn').addEventListener('click',()=>{const m=monthPick.value;if(confirm(`Delete all ministry entries and assignments for ${m}?`)){entries=entries.filter(e=>e.date.slice(0,7)!==m);assignments=assignments.filter(a=>a.date.slice(0,7)!==m);render()}});
-
-  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});
-  $('#installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'});
-  if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
-  render();
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+if(localStorage.getItem(KE.onboard)!=='done')$('#onboarding').classList.add('show');$('#onboardingDone').onclick=()=>{localStorage.setItem(KE.onboard,'done');$('#onboarding').classList.remove('show')};
+renderAll();
 })();
 </script>
 </body>

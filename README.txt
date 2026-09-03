@@ -1,30 +1,28 @@
-PIONEER AT A GLANCE — VERSION 2
+PIONEER AT A GLANCE — COMMERCIAL BETA 1
 
-INCLUDED
-• Daily hour and minute entry
-• Editable 50-hour monthly goal
-• Editable weekly goal (default 12.5 hours)
-• Monthly progress bar
-• Weekly progress bar
-• Hours remaining
-• Average hours needed per remaining day
-• September–August service-year total
-• Monthly history for the service year
-• Notes for Bible studies, return visits, ministry experiences, territory, partners, etc.
-• Edit and delete ministry entries
-• Offline/local storage
-• CSV export/import backup
-• Calendar showing service days and daily hour totals
-• Pre-scheduled public witnessing and other ministry assignments
-• Assignment time, location, partner/group, and notes
-• Edit/delete assignments
-• Upcoming assignments list
-• Installable PWA design
+WHAT CHANGED FROM THE PERSONAL PROTOTYPE
+• Mobile-first bottom navigation
+• Home dashboard
+• Card-style hour log with visible Edit/Delete controls
+• Calendar with hours and scheduled assignments
+• Public witnessing / ministry assignment scheduling
+• Monthly, weekly, and service-year goals
+• September–August service-year history
+• English / Spanish interface setting
+• Notes for studies, return visits, territory, partners, and ministry experiences
+• CSV backup / restore
+• Offline PWA storage
+• First-run onboarding
+• Independent-app disclaimer
+• Migrates existing v2 local data when opened in the same browser/site
 
-INSTALLING
-To install this as a phone app, this folder must be served over HTTPS (or localhost).
-Open the hosted HTTPS URL in Chrome on Android and choose Install app / Add to Home screen.
-
-DATA
-All information stays on the device/browser unless you export the CSV.
-Export backups periodically.
+IMPORTANT
+This is a commercial BETA, not yet an App Store / Google Play production build.
+The next production phase should include:
+1. Hosted privacy policy and support page
+2. Cloud account/sync or stronger backup
+3. Native iOS/Android packaging
+4. Store screenshots/listing copy
+5. Payment/licensing strategy
+6. TestFlight / Google Play testing
+7. Legal/brand review before public sale

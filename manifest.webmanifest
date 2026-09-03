@@ -2,10 +2,11 @@
   "name": "Pioneer at a Glance",
   "short_name": "Pioneer",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#f7f5ef",
+  "background_color": "#f6f4ee",
   "theme_color": "#315746",
-  "description": "Regular Pioneer ministry hours, goals, notes, calendar, assignments, and service-year tracker.",
+  "description": "Ministry hours, assignments, calendar, notes, and service-year planning in one place.",
   "icons": [
     {
       "src": "icon-192.png",
