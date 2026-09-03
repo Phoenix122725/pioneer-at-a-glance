@@ -316,17 +316,31 @@ textarea{min-height:78px;resize:vertical}
 
     <div class="card section">
       <div class="section-title"><h2 data-i18n="backupRestore">Backup & restore</h2></div>
-      <button id="exportBtn" class="btn primary block" type="button" data-i18n="exportCsv">Export CSV backup</button>
+
+      <button id="backupJsonBtn" class="btn primary block" type="button" data-i18n="backupApp">Back Up My App</button>
+      <div class="notice" data-i18n="backupAppHelp">Best for protecting everything: hours, assignments, notes, goals, and settings.</div>
+
+      <button id="exportCsvBtn" class="btn block" type="button" style="margin-top:8px" data-i18n="exportSpreadsheet">Export Spreadsheet</button>
+      <div class="notice" data-i18n="spreadsheetHelp">Creates a CSV file for Google Sheets or Microsoft Excel.</div>
+
+      <button id="exportPdfBtn" class="btn block" type="button" style="margin-top:8px" data-i18n="createPdf">Create PDF Report</button>
+      <div class="notice" data-i18n="pdfHelp">Creates a printable report for the month currently selected in your Hours Log.</div>
+
+      <label class="btn block" style="display:flex;align-items:center;justify-content:center;margin-top:12px" data-i18n="restoreBackup">Restore App Backup
+        <input id="restoreJsonFile" type="file" accept=".json,application/json" style="display:none">
+      </label>
+
       <label class="btn block" style="display:flex;align-items:center;justify-content:center;margin-top:8px" data-i18n="importCsv">Import CSV
         <input id="importFile" type="file" accept=".csv,text/csv" style="display:none">
       </label>
-      <div id="backupNotice" class="notice"></div>
+
+      <div id="backupNotice" class="notice" aria-live="polite"></div>
     </div>
 
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.5 • Local-first privacy</div>
+      <div class="notice">Commercial Beta 2.6 • Local-first privacy</div>
     </div>
   </section>
 </div>
@@ -470,7 +484,7 @@ minutes:'Minutes',detail:'With / study / territory',experience:'Ministry experie
 scheduleAssignment:'Schedule assignment',assignment:'Assignment',start:'Start',end:'End',location:'Location / arrangement',
 partner:'Partner / group',welcome:'Welcome to Pioneer at a Glance',welcomeText:'A simple place to plan your ministry and see your progress without digging through notes or spreadsheets.',
 ob1:'Track daily hours and your 50-hour monthly goal.',ob2:'See weekly and September–August service-year progress.',ob3:'Schedule public witnessing and other assignments.',
-ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly'
+ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly',backupApp:'Back Up My App',backupAppHelp:'Best for protecting everything: hours, assignments, notes, goals, and settings.',exportSpreadsheet:'Export Spreadsheet',spreadsheetHelp:'Creates a CSV file for Google Sheets or Microsoft Excel.',createPdf:'Create PDF Report',pdfHelp:'Creates a printable report for the month currently selected in your Hours Log.',restoreBackup:'Restore App Backup'
 },
 es:{
 tagline:'Planifica tu ministerio en un solo lugar',thisMonth:'Este mes',remaining:'Restante',thisWeek:'Esta semana',serviceYear:'Año de servicio',
@@ -485,7 +499,7 @@ minutes:'Minutos',detail:'Con / estudio / territorio',experience:'Experiencia en
 scheduleAssignment:'Programar asignación',assignment:'Asignación',start:'Inicio',end:'Fin',location:'Lugar / arreglo',
 partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeText:'Un lugar sencillo para organizar tu ministerio y ver tu progreso sin buscar entre notas u hojas de cálculo.',
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
-ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal'
+ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',spreadsheetHelp:'Crea un archivo CSV para Google Sheets o Microsoft Excel.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app'
 }};
 function applyLanguage(){const lang=settings.language||'en';document.documentElement.lang=lang;$$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(T[lang][key]){if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];else if(el.tagName==='LABEL'&&el.querySelector('input,select,textarea')){const ctl=el.querySelector('input,select,textarea');el.childNodes[0].nodeValue=T[lang][key];}else el.textContent=T[lang][key]}})}
 function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings))}
@@ -767,7 +781,207 @@ $('#logMonth').value=TODAY.slice(0,7);$('#calendarMonth').value=TODAY.slice(0,7)
 $('#saveSettings').onclick=()=>{settings={...settings,monthlyGoal:+$('#monthlyGoal').value||50,weeklyGoal:+$('#weeklyGoal').value||12.5,serviceYearGoal:+$('#serviceYearGoal').value||600,language:$('#language').value,assignmentReminderHours:+$('#assignmentReminderHours').value||0};persist();renderAll();$('#settingsNotice').textContent=settings.language==='es'?'Ajustes guardados.':'Settings saved.'};
 
 function csvEsc(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
-$('#exportBtn').onclick=()=>{const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end']];entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','']));assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'']));const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\n'),blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='pioneer-at-a-glance-backup.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+
+async function shareOrDownload(filename,mime,content){
+ const blob=content instanceof Blob?content:new Blob([content],{type:mime});
+ const file=new File([blob],filename,{type:mime,lastModified:Date.now()});
+
+ try{
+   if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
+     await navigator.share({files:[file],title:filename});
+     $('#backupNotice').textContent=settings.language==='es'?'Archivo listo para guardar o compartir.':'File ready to save or share.';
+     return true;
+   }
+ }catch(err){
+   if(err && err.name==='AbortError'){
+     $('#backupNotice').textContent=settings.language==='es'?'Se canceló el menú de compartir.':'Share menu canceled.';
+     return false;
+   }
+ }
+
+ try{
+   const url=URL.createObjectURL(blob);
+   const a=document.createElement('a');
+   a.href=url;
+   a.download=filename;
+   a.style.display='none';
+   document.body.appendChild(a);
+   a.click();
+   a.remove();
+   setTimeout(()=>URL.revokeObjectURL(url),2500);
+   $('#backupNotice').textContent=settings.language==='es'?'Archivo guardado en Descargas.':'File saved to Downloads.';
+   return true;
+ }catch(err){
+   $('#backupNotice').textContent=settings.language==='es'?'No se pudo guardar el archivo. Inténtalo otra vez.':'Could not save the file. Please try again.';
+   return false;
+ }
+}
+
+function appBackupObject(){
+ return {
+   app:'Pioneer at a Glance',
+   backupVersion:1,
+   exportedAt:new Date().toISOString(),
+   settings,
+   entries,
+   assignments
+ };
+}
+
+$('#backupJsonBtn').onclick=async()=>{
+ const stamp=TODAY.replaceAll('-','');
+ const json=JSON.stringify(appBackupObject(),null,2);
+ await shareOrDownload(`pioneer-at-a-glance-backup-${stamp}.json`,'application/json',json);
+};
+
+$('#exportCsvBtn').onclick=async()=>{
+ const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end']];
+ entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','']));
+ assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'']));
+ const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\n');
+ await shareOrDownload(`pioneer-at-a-glance-spreadsheet-${TODAY}.csv`,'text/csv',csv);
+};
+
+function pdfLatin(s){
+ const map={'€':128,'‚':130,'ƒ':131,'„':132,'…':133,'†':134,'‡':135,'ˆ':136,'‰':137,'Š':138,'‹':139,'Œ':140,'Ž':142,'‘':145,'’':146,'“':147,'”':148,'•':149,'–':150,'—':151,'˜':152,'™':153,'š':154,'›':155,'œ':156,'ž':158,'Ÿ':159};
+ let out=[];
+ for(const ch of String(s??'')){
+   const cp=ch.codePointAt(0);
+   if(map[ch]!==undefined)out.push(map[ch]);
+   else if(cp<=255)out.push(cp);
+   else out.push(63);
+ }
+ return out;
+}
+function pdfEscBytes(bytes){
+ const out=[];
+ for(const b of bytes){
+   if(b===40||b===41||b===92){out.push(92,b)}
+   else if(b===10){out.push(92,110)}
+   else if(b===13){out.push(92,114)}
+   else out.push(b);
+ }
+ return out;
+}
+function strBytes(s){return [...String(s)].map(c=>c.charCodeAt(0)&255)}
+function concatBytes(parts){
+ const len=parts.reduce((n,p)=>n+p.length,0),out=new Uint8Array(len);let off=0;
+ parts.forEach(p=>{out.set(p,off);off+=p.length});return out;
+}
+function makeSimplePdf(lines,title){
+ const W=612,H=792,left=48,top=54,bottom=48,lineH=14;
+ const maxLines=Math.floor((H-top-bottom)/lineH);
+ const pages=[];
+ for(let i=0;i<lines.length;i+=maxLines)pages.push(lines.slice(i,i+maxLines));
+ if(!pages.length)pages.push(['']);
+
+ const objs=[null];
+ const fontObj=1; objs[fontObj]=strBytes('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>');
+ const fontBoldObj=2; objs[fontBoldObj]=strBytes('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>');
+
+ const pageObjIds=[],contentObjIds=[];
+ let next=3;
+ for(let p=0;p<pages.length;p++){pageObjIds.push(next++);contentObjIds.push(next++)}
+ const pagesObj=next++, catalogObj=next++;
+
+ for(let p=0;p<pages.length;p++){
+   let cmds=[];
+   cmds.push(strBytes('BT\n/F2 15 Tf\n'));
+   cmds.push(strBytes(`${left} ${H-top} Td\n`));
+   cmds.push(Uint8Array.from([40,...pdfEscBytes(pdfLatin(title)),41]));
+   cmds.push(strBytes(' Tj\n/F1 9 Tf\n0 -20 Td\n'));
+   pages[p].forEach((line,idx)=>{
+     if(idx>0)cmds.push(strBytes(`0 -${lineH} Td\n`));
+     cmds.push(Uint8Array.from([40,...pdfEscBytes(pdfLatin(line)),41]));
+     cmds.push(strBytes(' Tj\n'));
+   });
+   cmds.push(strBytes('ET'));
+   const stream=concatBytes(cmds);
+   objs[contentObjIds[p]]=concatBytes([strBytes(`<< /Length ${stream.length} >>\nstream\n`),stream,strBytes('\nendstream')]);
+   objs[pageObjIds[p]]=strBytes(`<< /Type /Page /Parent ${pagesObj} 0 R /MediaBox [0 0 ${W} ${H}] /Resources << /Font << /F1 ${fontObj} 0 R /F2 ${fontBoldObj} 0 R >> >> /Contents ${contentObjIds[p]} 0 R >>`);
+ }
+ objs[pagesObj]=strBytes(`<< /Type /Pages /Count ${pages.length} /Kids [${pageObjIds.map(id=>`${id} 0 R`).join(' ')}] >>`);
+ objs[catalogObj]=strBytes(`<< /Type /Catalog /Pages ${pagesObj} 0 R >>`);
+
+ let parts=[strBytes('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n')],offsets=[0],pos=parts[0].length;
+ for(let i=1;i<objs.length;i++){
+   offsets[i]=pos;
+   const head=strBytes(`${i} 0 obj\n`),tail=strBytes('\nendobj\n');
+   parts.push(head,objs[i],tail);
+   pos+=head.length+objs[i].length+tail.length;
+ }
+ const xrefPos=pos;
+ let xref=`xref\n0 ${objs.length}\n0000000000 65535 f \n`;
+ for(let i=1;i<objs.length;i++)xref+=`${String(offsets[i]).padStart(10,'0')} 00000 n \n`;
+ const trailer=`trailer\n<< /Size ${objs.length} /Root ${catalogObj} 0 R >>\nstartxref\n${xrefPos}\n%%EOF`;
+ parts.push(strBytes(xref),strBytes(trailer));
+ return new Blob([concatBytes(parts)],{type:'application/pdf'});
+}
+
+function currentPdfReport(){
+ const ym=$('#logMonth').value||TODAY.slice(0,7);
+ const list=entries.filter(e=>e.date.slice(0,7)===ym).sort((a,b)=>a.date.localeCompare(b.date));
+ const alist=assignments.filter(a=>a.date.slice(0,7)===ym).sort((a,b)=>a.date.localeCompare(b.date)||String(a.start).localeCompare(String(b.start)));
+ const mins=list.reduce((s,e)=>s+e.minutes,0);
+ const sy=syBounds(ym+'-01');
+ const syMins=entries.filter(e=>e.date>=sy.start&&e.date<=sy.end).reduce((s,e)=>s+e.minutes,0);
+ const lines=[
+   `Month: ${monthLabel(ym)}`,
+   `Monthly goal: ${settings.monthlyGoal} hours`,
+   `Hours logged: ${fmt(mins)}`,
+   `Remaining: ${fmt(Math.max(0,settings.monthlyGoal*60-mins))}`,
+   `Service year ${sy.label}: ${fmt(syMins)}`,
+   '',
+   'DAILY MINISTRY ENTRIES'
+ ];
+ if(list.length){
+   list.forEach(e=>{
+     lines.push(`${e.date}  ${fmt(e.minutes)}  ${e.type||''}`);
+     if(e.detail)lines.push(`  Detail: ${e.detail}`);
+     if(e.experience)lines.push(`  Experience: ${e.experience}`);
+     if(e.notes)lines.push(`  Notes: ${e.notes}`);
+   });
+ }else lines.push('No ministry entries for this month.');
+
+ lines.push('','SCHEDULED ASSIGNMENTS');
+ if(alist.length){
+   alist.forEach(a=>{
+     lines.push(`${a.date}  ${a.start||''}-${a.end||''}  ${a.type||''}`);
+     if(a.location)lines.push(`  Location: ${a.location}`);
+     if(a.partner)lines.push(`  Partner/group: ${a.partner}`);
+     if(a.notes)lines.push(`  Notes: ${a.notes}`);
+   });
+ }else lines.push('No assignments for this month.');
+ return {ym,blob:makeSimplePdf(lines,'Pioneer at a Glance - Monthly Report')};
+}
+
+$('#exportPdfBtn').onclick=async()=>{
+ const report=currentPdfReport();
+ await shareOrDownload(`pioneer-at-a-glance-report-${report.ym}.pdf`,'application/pdf',report.blob);
+};
+
+$('#restoreJsonFile').onchange=async e=>{
+ const f=e.target.files?.[0];if(!f)return;
+ try{
+   const data=JSON.parse(await f.text());
+   if(data.app!=='Pioneer at a Glance'||!Array.isArray(data.entries)||!Array.isArray(data.assignments)||!data.settings){
+     throw new Error('invalid');
+   }
+   if(confirm(settings.language==='es'?'¿Restaurar esta copia y reemplazar los datos actuales?':'Restore this backup and replace current app data?')){
+     entries=data.entries;
+     assignments=data.assignments;
+     settings=data.settings;
+     if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
+     persist();
+     renderAll();
+     $('#backupNotice').textContent=settings.language==='es'?'Copia restaurada.':'Backup restored.';
+   }
+ }catch(err){
+   $('#backupNotice').textContent=settings.language==='es'?'Ese archivo no parece ser una copia válida de Pioneer at a Glance.':'That file does not appear to be a valid Pioneer at a Glance backup.';
+ }
+ e.target.value='';
+};
+
 $('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}const pe=[],pa=[];for(const l of lines.slice(1)){const v=parse(l);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'})}if(confirm(`Import ${pe.length} hour entries and ${pa.length} assignments?`)){entries=pe;assignments=pa;renderAll();$('#backupNotice').textContent='Backup imported.'}e.target.value=''};
 
 
