@@ -320,8 +320,8 @@ textarea{min-height:78px;resize:vertical}
       <button id="backupJsonBtn" class="btn primary block" type="button" data-i18n="backupApp">Back Up My App</button>
       <div class="notice" data-i18n="backupAppHelp">Best for protecting everything: hours, assignments, notes, goals, and settings.</div>
 
-      <button id="exportCsvBtn" class="btn block" type="button" style="margin-top:8px" data-i18n="exportSpreadsheet">Export Spreadsheet</button>
-      <div class="notice" data-i18n="spreadsheetHelp">Creates a CSV file for Google Sheets or Microsoft Excel.</div>
+      <button id="exportCsvBtn" class="btn block" type="button" style="margin-top:8px" data-i18n="openSpreadsheet">Open / Share Spreadsheet</button>
+      <div class="notice" id="spreadsheetPlatformHelp" data-i18n="spreadsheetHelp">Opens your phone’s share menu so you can choose Google Sheets, Excel, Numbers, Drive, Files, or another compatible app.</div>
 
       <button id="exportPdfBtn" class="btn block" type="button" style="margin-top:8px" data-i18n="createPdf">Create PDF Report</button>
       <div class="notice" data-i18n="pdfHelp">Creates a printable report for the month currently selected in your Hours Log.</div>
@@ -340,7 +340,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.6 • Local-first privacy</div>
+      <div class="notice">Commercial Beta 2.7 • Cross-platform export</div>
     </div>
   </section>
 </div>
@@ -484,7 +484,7 @@ minutes:'Minutes',detail:'With / study / territory',experience:'Ministry experie
 scheduleAssignment:'Schedule assignment',assignment:'Assignment',start:'Start',end:'End',location:'Location / arrangement',
 partner:'Partner / group',welcome:'Welcome to Pioneer at a Glance',welcomeText:'A simple place to plan your ministry and see your progress without digging through notes or spreadsheets.',
 ob1:'Track daily hours and your 50-hour monthly goal.',ob2:'See weekly and September–August service-year progress.',ob3:'Schedule public witnessing and other assignments.',
-ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly',backupApp:'Back Up My App',backupAppHelp:'Best for protecting everything: hours, assignments, notes, goals, and settings.',exportSpreadsheet:'Export Spreadsheet',spreadsheetHelp:'Creates a CSV file for Google Sheets or Microsoft Excel.',createPdf:'Create PDF Report',pdfHelp:'Creates a printable report for the month currently selected in your Hours Log.',restoreBackup:'Restore App Backup'
+ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly',backupApp:'Back Up My App',backupAppHelp:'Best for protecting everything: hours, assignments, notes, goals, and settings.',exportSpreadsheet:'Export Spreadsheet',openSpreadsheet:'Open / Share Spreadsheet',spreadsheetHelp:'Opens your phone’s share menu so you can choose Google Sheets, Excel, Numbers, Drive, Files, or another compatible app.',createPdf:'Create PDF Report',pdfHelp:'Creates a printable report for the month currently selected in your Hours Log.',restoreBackup:'Restore App Backup'
 },
 es:{
 tagline:'Planifica tu ministerio en un solo lugar',thisMonth:'Este mes',remaining:'Restante',thisWeek:'Esta semana',serviceYear:'Año de servicio',
@@ -499,7 +499,7 @@ minutes:'Minutos',detail:'Con / estudio / territorio',experience:'Experiencia en
 scheduleAssignment:'Programar asignación',assignment:'Asignación',start:'Inicio',end:'Fin',location:'Lugar / arreglo',
 partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeText:'Un lugar sencillo para organizar tu ministerio y ver tu progreso sin buscar entre notas u hojas de cálculo.',
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
-ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',spreadsheetHelp:'Crea un archivo CSV para Google Sheets o Microsoft Excel.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app'
+ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',openSpreadsheet:'Abrir / compartir hoja de cálculo',spreadsheetHelp:'Abre el menú de compartir del teléfono para elegir Google Sheets, Excel, Numbers, Drive, Archivos u otra app compatible.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app'
 }};
 function applyLanguage(){const lang=settings.language||'en';document.documentElement.lang=lang;$$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(T[lang][key]){if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];else if(el.tagName==='LABEL'&&el.querySelector('input,select,textarea')){const ctl=el.querySelector('input,select,textarea');el.childNodes[0].nodeValue=T[lang][key];}else el.textContent=T[lang][key]}})}
 function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings))}
@@ -650,7 +650,7 @@ function renderAssignmentReminder(upcoming){
  box.dataset.assignmentId=next.id;
 }
 
-function renderAll(){applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderMore();persist()}
+function renderAll(){applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderMore();setSpreadsheetPlatformHelp();persist()}
 
 function openEntry(id=null,quick=0,presetDate=null){
  editEntryId=id;
@@ -789,7 +789,7 @@ async function shareOrDownload(filename,mime,content){
  try{
    if(navigator.share && navigator.canShare && navigator.canShare({files:[file]})){
      await navigator.share({files:[file],title:filename});
-     $('#backupNotice').textContent=settings.language==='es'?'Archivo listo para guardar o compartir.':'File ready to save or share.';
+     $('#backupNotice').textContent=settings.language==='es'?'Elige la app donde quieres abrir, guardar o compartir el archivo.':'Choose the app where you want to open, save, or share the file.';
      return true;
    }
  }catch(err){
@@ -814,6 +814,24 @@ async function shareOrDownload(filename,mime,content){
  }catch(err){
    $('#backupNotice').textContent=settings.language==='es'?'No se pudo guardar el archivo. Inténtalo otra vez.':'Could not save the file. Please try again.';
    return false;
+ }
+}
+
+
+function setSpreadsheetPlatformHelp(){
+ const el=$('#spreadsheetPlatformHelp'); if(!el)return;
+ const ua=navigator.userAgent||'';
+ const isiOS=/iPhone|iPad|iPod/i.test(ua) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
+ const isAndroid=/Android/i.test(ua);
+
+ if(settings.language==='es'){
+   if(isiOS) el.textContent='Toca para abrir el menú de iPhone. Puedes elegir Numbers, Excel, Google Sheets, Guardar en Archivos, Drive u otra app compatible.';
+   else if(isAndroid) el.textContent='Toca para abrir el menú de Android. Puedes elegir Google Sheets, Excel, Drive, Mis archivos u otra app compatible.';
+   else el.textContent='Toca para abrir el menú de compartir y elegir una app compatible con hojas de cálculo.';
+ }else{
+   if(isiOS) el.textContent='Tap to open the iPhone share sheet. Choose Numbers, Excel, Google Sheets, Save to Files, Drive, or another compatible app.';
+   else if(isAndroid) el.textContent='Tap to open the Android share sheet. Choose Google Sheets, Excel, Drive, My Files, or another compatible app.';
+   else el.textContent='Tap to open the share menu and choose a compatible spreadsheet app.';
  }
 }
 
