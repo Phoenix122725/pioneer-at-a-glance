@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#315746">
+<meta name="description" content="Private offline-friendly Regular Pioneer ministry hours and assignment tracker.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Pioneer Hours</title>
+<style>
+:root{
+  --bg:#f7f5ef;--panel:#fffdf9;--card:#ffffff;--ink:#26362f;--muted:#748078;
+  --line:#d9dfda;--green:#315746;--green2:#527863;--sage:#dfe9e1;
+  --sage2:#eef4ef;--gold:#b99552;--rose:#ead8d2;--blue:#dfe8ed;--danger:#a44b4b;
+  --shadow:0 8px 24px rgba(40,65,53,.07);
+}
+*{box-sizing:border-box}
+html{background:var(--bg)}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+main{max-width:980px;margin:auto;padding:18px 14px 46px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin:2px 0 14px}
+h1{margin:0;font-family:Georgia,serif;font-size:1.8rem;letter-spacing:-.02em}
+.subtitle{color:var(--muted);font-size:.92rem;margin-top:3px}
+.install{display:none;border:0;background:var(--green);color:white;border-radius:12px;padding:11px 14px;font-weight:800;min-height:44px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:17px;padding:14px;box-shadow:var(--shadow)}
+.soft{background:var(--sage2)}
+.grid{display:grid;gap:10px}
+.stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+.stat .label{font-size:.76rem;color:var(--muted);font-weight:700;margin-bottom:3px}
+.stat .value{font-size:1.55rem;font-weight:850;letter-spacing:-.025em}
+.controls{display:grid;grid-template-columns:1fr 140px 140px;gap:10px}
+label{display:block;font-size:.8rem;font-weight:750;color:var(--muted)}
+input,select,textarea{width:100%;margin-top:5px;border:1px solid var(--line);border-radius:11px;background:white;color:var(--ink);padding:10px 11px;min-height:44px;font-size:16px}
+textarea{resize:vertical;min-height:80px}
+.progress-meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);margin-bottom:6px}
+.bar{height:13px;border-radius:999px;background:#e6ebe7;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green2));width:0;transition:width .22s ease}
+.weekfill{background:linear-gradient(90deg,var(--gold),#d4b976)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.section-title{margin:0 0 10px;font-size:1rem;font-weight:850}
+.form-grid{display:grid;grid-template-columns:1fr 95px 95px 1fr;gap:9px}
+.form-grid .span2{grid-column:span 2}
+.form-grid .full{grid-column:1/-1}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{border:1px solid var(--line);background:white;color:var(--ink);border-radius:10px;padding:9px 12px;min-height:42px;font-weight:780}
+.btn.primary{background:var(--green);color:white;border-color:var(--green)}
+.btn.gold{background:#fbf4e5;border-color:#dfca9e;color:#6d5527}
+.btn.danger{color:var(--danger)}
+.btn.small{padding:6px 9px;min-height:34px;font-size:.84rem}
+.notice{min-height:18px;font-size:.82rem;color:var(--muted);margin-top:7px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.tab{border:1px solid var(--line);background:white;padding:9px 12px;border-radius:999px;font-weight:780}
+.tab.active{background:var(--sage);color:var(--green);border-color:#bdd0c2}
+.view{display:none}.view.active{display:block}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:690px}
+th,td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.75rem;color:var(--muted);font-weight:850}
+td{font-size:.89rem}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.dow{text-align:center;font-size:.68rem;color:var(--muted);font-weight:850;padding:3px 0}
+.day{min-height:88px;border:1px solid var(--line);border-radius:11px;background:white;padding:6px;min-width:0}
+.day.empty{border-color:transparent;background:transparent}
+.day.today{outline:2px solid var(--gold);outline-offset:-2px}
+.daynum{font-size:.78rem;font-weight:850}
+.hours-pill{display:inline-block;margin-top:4px;background:var(--sage);color:var(--green);border-radius:999px;padding:2px 5px;font-size:.63rem;font-weight:800}
+.assignment{margin-top:4px;background:#f7edd9;border-left:3px solid var(--gold);padding:3px 4px;border-radius:5px;font-size:.61rem;line-height:1.15;overflow:hidden}
+.history-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.month-card{border:1px solid var(--line);border-radius:13px;padding:10px;background:white}
+.month-card .m{font-size:.8rem;color:var(--muted);font-weight:750}.month-card .h{font-size:1.25rem;font-weight:850;margin-top:2px}
+.chip{display:inline-block;border-radius:999px;padding:3px 7px;font-size:.7rem;font-weight:800;background:var(--sage);color:var(--green)}
+.upcoming{display:grid;gap:8px}
+.assignment-card{border:1px solid #e3d5b6;background:#fffaf0;border-radius:12px;padding:10px;display:flex;justify-content:space-between;gap:12px}
+.assignment-card strong{display:block}.assignment-card .meta{font-size:.78rem;color:var(--muted);margin-top:2px}
+.kpi-note{font-size:.76rem;color:var(--muted);margin-top:4px}
+.edit-banner{display:none;background:#fff7df;border:1px solid #ead6a3;border-radius:11px;padding:9px;color:#654f20;margin-bottom:9px}
+.footer{font-size:.76rem;color:var(--muted);margin-top:12px}
+@media(max-width:760px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .controls{grid-template-columns:1fr 1fr}.controls label:first-child{grid-column:1/-1}
+  .two{grid-template-columns:1fr}
+  .form-grid{grid-template-columns:1fr 1fr}.form-grid .span2,.form-grid .full{grid-column:1/-1}
+  .history-grid{grid-template-columns:repeat(2,1fr)}
+  .day{min-height:76px;padding:4px}.assignment{font-size:.56rem}
+}
+@media(max-width:430px){
+  main{padding:12px 10px 34px}.card{padding:12px;border-radius:14px}
+  h1{font-size:1.55rem}.stat .value{font-size:1.35rem}
+  .calendar{gap:3px}.day{min-height:68px;border-radius:8px}.hours-pill{font-size:.56rem;padding:2px 4px}
+  .history-grid{grid-template-columns:1fr 1fr}
+}
+@media(prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <div>
+    <h1>Pioneer Hours</h1>
+    <div class="subtitle">Regular Pioneer hours • service year • assignments • notes</div>
+  </div>
+  <button id="installBtn" class="install" type="button">Install app</button>
+</header>
+
+<section class="card controls">
+  <label>Viewing month
+    <input id="monthPick" type="month" value="2026-09">
+  </label>
+  <label>Monthly goal
+    <input id="monthlyGoal" type="number" min="1" max="200" step=".5" value="50">
+  </label>
+  <label>Weekly goal
+    <input id="weeklyGoal" type="number" min="1" max="60" step=".5" value="12.5">
+  </label>
+</section>
+
+<section class="grid stats" style="margin-top:10px">
+  <div class="card stat"><div class="label">Month logged</div><div id="monthLogged" class="value">0:00</div><div id="monthRemainingDays" class="kpi-note"></div></div>
+  <div class="card stat"><div class="label">Month remaining</div><div id="monthRemaining" class="value">50:00</div><div id="dailyNeed" class="kpi-note"></div></div>
+  <div class="card stat"><div class="label">This week</div><div id="weekLogged" class="value">0:00</div><div id="weeklyNeed" class="kpi-note"></div></div>
+  <div class="card stat"><div class="label">Service-year total</div><div id="serviceYearTotal" class="value">0:00</div><div id="serviceYearLabel" class="kpi-note"></div></div>
+</section>
+
+<section class="two" style="margin-top:10px">
+  <div class="card">
+    <div class="progress-meta"><span id="monthProgressText">0% of monthly goal</span><span id="monthDaysServed">0 service days</span></div>
+    <div class="bar"><div id="monthFill" class="fill"></div></div>
+  </div>
+  <div class="card">
+    <div class="progress-meta"><span id="weekProgressText">0% of weekly goal</span><span id="weekRange"></span></div>
+    <div class="bar"><div id="weekFill" class="fill weekfill"></div></div>
+  </div>
+</section>
+
+<section class="card" style="margin-top:12px">
+  <h2 class="section-title">Add ministry time</h2>
+  <div id="entryEditBanner" class="edit-banner">Editing an existing entry.</div>
+  <form id="entryForm">
+    <div class="form-grid">
+      <label>Date<input id="entryDate" type="date" value="2026-09-02" required></label>
+      <label>Hours<input id="entryHours" type="number" min="0" max="24" value="0"></label>
+      <label>Minutes<input id="entryMinutes" type="number" min="0" max="59" value="0"></label>
+      <label>Type
+        <select id="entryType">
+          <option>Field ministry</option>
+          <option>Public witnessing</option>
+          <option>Bible study</option>
+          <option>Return visit</option>
+          <option>Letter writing</option>
+          <option>Phone witnessing</option>
+          <option>Other</option>
+        </select>
+      </label>
+      <label class="span2">With / study / territory<input id="entryDetail" type="text" placeholder="Optional"></label>
+      <label class="span2">Ministry experience<input id="entryExperience" type="text" placeholder="Optional"></label>
+      <label class="full">Notes<textarea id="entryNotes" placeholder="Bible study notes, return visits, experiences, reminders…"></textarea></label>
+    </div>
+    <div class="actions">
+      <button id="entrySaveBtn" class="btn primary" type="submit">Add entry</button>
+      <button class="btn quick" data-min="15" type="button">+15 min</button>
+      <button class="btn quick" data-min="30" type="button">+30 min</button>
+      <button class="btn quick" data-min="60" type="button">+1 hour</button>
+      <button id="entryCancelEdit" class="btn" type="button" style="display:none">Cancel edit</button>
+    </div>
+    <div id="entryNotice" class="notice" aria-live="polite"></div>
+  </form>
+</section>
+
+<section class="card" style="margin-top:12px">
+  <h2 class="section-title">Schedule public witnessing / assignments</h2>
+  <div id="assignmentEditBanner" class="edit-banner">Editing a scheduled assignment.</div>
+  <form id="assignmentForm">
+    <div class="form-grid">
+      <label>Date<input id="assignmentDate" type="date" value="2026-09-02" required></label>
+      <label>Start<input id="assignmentStart" type="time" value="09:00"></label>
+      <label>End<input id="assignmentEnd" type="time" value="11:00"></label>
+      <label>Assignment
+        <select id="assignmentType">
+          <option>Public witnessing</option>
+          <option>Literature cart</option>
+          <option>Territory</option>
+          <option>Bible study</option>
+          <option>Return visits</option>
+          <option>Other</option>
+        </select>
+      </label>
+      <label class="span2">Location / arrangement<input id="assignmentLocation" type="text" placeholder="Example: cart, plaza, territory, meeting point"></label>
+      <label class="span2">Partner / group<input id="assignmentPartner" type="text" placeholder="Optional"></label>
+      <label class="full">Notes<textarea id="assignmentNotes" placeholder="Anything you want to remember before the assignment"></textarea></label>
+    </div>
+    <div class="actions">
+      <button id="assignmentSaveBtn" class="btn gold" type="submit">Schedule assignment</button>
+      <button id="assignmentCancelEdit" class="btn" type="button" style="display:none">Cancel edit</button>
+    </div>
+    <div id="assignmentNotice" class="notice" aria-live="polite"></div>
+  </form>
+</section>
+
+<section class="card" style="margin-top:12px">
+  <div class="tabs">
+    <button class="tab active" data-view="calendarView" type="button">Calendar</button>
+    <button class="tab" data-view="logView" type="button">Hours log</button>
+    <button class="tab" data-view="historyView" type="button">Monthly history</button>
+    <button class="tab" data-view="assignmentsView" type="button">Assignments</button>
+    <button class="tab" data-view="backupView" type="button">Backup</button>
+  </div>
+
+  <div id="calendarView" class="view active">
+    <div id="calendar" class="calendar"></div>
+  </div>
+
+  <div id="logView" class="view">
+    <div id="logSummary" class="notice"></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Detail</th><th>Notes / experience</th><th></th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="historyView" class="view">
+    <div id="historyGrid" class="history-grid"></div>
+  </div>
+
+  <div id="assignmentsView" class="view">
+    <div class="section-title">Upcoming assignments</div>
+    <div id="upcomingAssignments" class="upcoming"></div>
+  </div>
+
+  <div id="backupView" class="view">
+    <p class="notice">Back up both your ministry hours and scheduled assignments. Import replaces the data currently stored in this app.</p>
+    <div class="actions">
+      <button id="exportBtn" class="btn primary" type="button">Export CSV backup</button>
+      <label class="btn" style="display:inline-flex;align-items:center">Import CSV
+        <input id="importFile" type="file" accept=".csv,text/csv" style="display:none">
+      </label>
+      <button id="clearMonthBtn" class="btn danger" type="button">Clear current month</button>
+    </div>
+  </div>
+</section>
+
+<div class="footer">Your entries and assignments are stored locally on this device. Export a CSV backup periodically.</div>
+</main>
+
+<script>
+(() => {
+  const ENTRY_KEY='pioneer.entries.v2', ASSIGN_KEY='pioneer.assignments.v2', SETTINGS_KEY='pioneer.settings.v2';
+  const TODAY='2026-09-02';
+  const $=s=>document.querySelector(s);
+  const monthPick=$('#monthPick'), monthlyGoal=$('#monthlyGoal'), weeklyGoal=$('#weeklyGoal');
+  let entries=read(ENTRY_KEY,[]), assignments=read(ASSIGN_KEY,[]), settings=read(SETTINGS_KEY,{monthlyGoal:50,weeklyGoal:12.5});
+  let editingEntryId=null, editingAssignmentId=null, deferredPrompt=null;
+  monthlyGoal.value=settings.monthlyGoal||50; weeklyGoal.value=settings.weeklyGoal||12.5;
+
+  function read(k,fallback){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(fallback))}catch{return fallback}}
+  function persist(){
+    localStorage.setItem(ENTRY_KEY,JSON.stringify(entries));
+    localStorage.setItem(ASSIGN_KEY,JSON.stringify(assignments));
+    localStorage.setItem(SETTINGS_KEY,JSON.stringify({monthlyGoal:+monthlyGoal.value||50,weeklyGoal:+weeklyGoal.value||12.5}));
+  }
+  const fmt=m=>`${Math.floor(Math.max(0,m)/60)}:${String(Math.max(0,m)%60).padStart(2,'0')}`;
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function monthEntries(){return entries.filter(e=>e.date.slice(0,7)===monthPick.value).sort((a,b)=>a.date.localeCompare(b.date))}
+  function monthAssignments(){return assignments.filter(a=>a.date.slice(0,7)===monthPick.value).sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start))}
+  function dateUTC(s){const [y,m,d]=s.split('-').map(Number);return new Date(Date.UTC(y,m-1,d))}
+  function iso(d){return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`}
+  function weekBounds(dateStr){
+    const d=dateUTC(dateStr), dow=d.getUTCDay(), delta=(dow+6)%7;
+    const start=new Date(d); start.setUTCDate(d.getUTCDate()-delta);
+    const end=new Date(start); end.setUTCDate(start.getUTCDate()+6);
+    return {start:iso(start),end:iso(end)}
+  }
+  function serviceYearBounds(){
+    const [y,m]=monthPick.value.split('-').map(Number), sy0=m>=9?y:y-1;
+    return {start:`${sy0}-09-01`,end:`${sy0+1}-08-31`,label:`${sy0}–${sy0+1}`};
+  }
+  function monthName(ym){
+    const [y,m]=ym.split('-').map(Number);
+    return new Intl.DateTimeFormat('en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,1)));
+  }
+
+  function renderCalendar(list, alist){
+    const [y,m]=monthPick.value.split('-').map(Number), first=new Date(Date.UTC(y,m-1,1)).getUTCDay(), dim=new Date(Date.UTC(y,m,0)).getUTCDate();
+    const byDay={}, aByDay={};
+    list.forEach(e=>{const d=+e.date.slice(8);byDay[d]=(byDay[d]||0)+e.minutes});
+    alist.forEach(a=>{const d=+a.date.slice(8);(aByDay[d]||(aByDay[d]=[])).push(a)});
+    let html=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div class="dow">${x}</div>`).join('');
+    for(let i=0;i<first;i++)html+='<div class="day empty"></div>';
+    for(let d=1;d<=dim;d++){
+      const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      html+=`<div class="day ${byDay[d]?'has':''} ${ds===TODAY?'today':''}">
+        <div class="daynum">${d}</div>
+        ${byDay[d]?`<span class="hours-pill">${fmt(byDay[d])}</span>`:''}
+        ${(aByDay[d]||[]).slice(0,2).map(a=>`<div class="assignment">${esc(a.start)} ${esc(a.type)}</div>`).join('')}
+        ${(aByDay[d]||[]).length>2?`<div class="assignment">+${aByDay[d].length-2} more</div>`:''}
+      </div>`;
+    }
+    $('#calendar').innerHTML=html;
+  }
+
+  function renderHistory(){
+    const sy=serviceYearBounds(), months=[];
+    let [syY]=sy.start.split('-').map(Number);
+    for(let i=0;i<12;i++){
+      const d=new Date(Date.UTC(syY,8+i,1)), ym=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`;
+      const mins=entries.filter(e=>e.date.slice(0,7)===ym).reduce((s,e)=>s+e.minutes,0);
+      months.push({ym,mins});
+    }
+    $('#historyGrid').innerHTML=months.map(x=>`<div class="month-card"><div class="m">${monthName(x.ym)}</div><div class="h">${fmt(x.mins)}</div>${x.mins?'<span class="chip">logged</span>':''}</div>`).join('');
+  }
+
+  function renderUpcoming(){
+    const list=assignments.filter(a=>a.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date)||a.start.localeCompare(b.start));
+    $('#upcomingAssignments').innerHTML=list.length?list.slice(0,30).map(a=>`<div class="assignment-card">
+      <div><strong>${esc(a.type)}</strong><div class="meta">${esc(a.date)} • ${esc(a.start)}–${esc(a.end)}${a.location?' • '+esc(a.location):''}${a.partner?' • '+esc(a.partner):''}</div>${a.notes?`<div class="meta">${esc(a.notes)}</div>`:''}</div>
+      <div><button class="btn small edit-assignment" data-id="${a.id}" type="button">Edit</button> <button class="btn small danger delete-assignment" data-id="${a.id}" type="button">Delete</button></div>
+    </div>`).join(''):'<div class="notice">No upcoming assignments scheduled.</div>';
+  }
+
+  function render(){
+    const list=monthEntries(), alist=monthAssignments(), monthMins=list.reduce((s,e)=>s+e.minutes,0), mg=Math.max(1,+monthlyGoal.value||50)*60;
+    const daysServed=new Set(list.map(e=>e.date)).size, [yy,mm]=monthPick.value.split('-').map(Number), dim=new Date(Date.UTC(yy,mm,0)).getUTCDate();
+    const current=monthPick.value===TODAY.slice(0,7), elapsed=current?+TODAY.slice(8):dim, remainingDays=Math.max(1,dim-elapsed+1), need=Math.max(0,mg-monthMins);
+    $('#monthLogged').textContent=fmt(monthMins); $('#monthRemaining').textContent=fmt(need);
+    $('#monthRemainingDays').textContent=`${remainingDays} day${remainingDays===1?'':'s'} remaining`;
+    $('#dailyNeed').textContent=need?`${fmt(Math.ceil(need/remainingDays))}/day needed`:'Monthly goal reached ✓';
+    const mp=Math.min(100,Math.round(monthMins/mg*100)); $('#monthFill').style.width=mp+'%'; $('#monthProgressText').textContent=`${mp}% of ${monthlyGoal.value}-hour monthly goal`; $('#monthDaysServed').textContent=`${daysServed} service day${daysServed===1?'':'s'}`;
+
+    const wb=weekBounds(TODAY), weekMins=entries.filter(e=>e.date>=wb.start&&e.date<=wb.end).reduce((s,e)=>s+e.minutes,0), wg=Math.max(1,+weeklyGoal.value||12.5)*60, wneed=Math.max(0,wg-weekMins);
+    $('#weekLogged').textContent=fmt(weekMins); $('#weeklyNeed').textContent=wneed?`${fmt(wneed)} left this week`:'Weekly goal reached ✓';
+    const wp=Math.min(100,Math.round(weekMins/wg*100)); $('#weekFill').style.width=wp+'%'; $('#weekProgressText').textContent=`${wp}% of ${weeklyGoal.value}-hour weekly goal`; $('#weekRange').textContent=`${wb.start.slice(5)}–${wb.end.slice(5)}`;
+
+    const sy=serviceYearBounds(), syMins=entries.filter(e=>e.date>=sy.start&&e.date<=sy.end).reduce((s,e)=>s+e.minutes,0);
+    $('#serviceYearTotal').textContent=fmt(syMins); $('#serviceYearLabel').textContent=`${sy.label} service year`;
+
+    $('#logSummary').textContent=list.length?`${list.length} ${list.length===1?'entry':'entries'} • ${fmt(monthMins)} total`:'No entries yet.';
+    $('#logBody').innerHTML=list.length?list.map(e=>`<tr>
+      <td>${esc(e.date)}</td><td>${fmt(e.minutes)}</td><td>${esc(e.type)}</td><td>${esc(e.detail||'')}</td>
+      <td>${esc([e.experience,e.notes].filter(Boolean).join(' • '))}</td>
+      <td><button class="btn small edit-entry" data-id="${e.id}" type="button">Edit</button> <button class="btn small danger delete-entry" data-id="${e.id}" type="button">Delete</button></td>
+    </tr>`).join(''):'<tr><td colspan="6" class="notice">Add your first entry above.</td></tr>';
+
+    renderCalendar(list,alist); renderHistory(); renderUpcoming(); persist();
+  }
+
+  function resetEntry(){
+    editingEntryId=null; $('#entrySaveBtn').textContent='Add entry'; $('#entryCancelEdit').style.display='none'; $('#entryEditBanner').style.display='none';
+    $('#entryHours').value=0; $('#entryMinutes').value=0; $('#entryType').value='Field ministry'; $('#entryDetail').value=''; $('#entryExperience').value=''; $('#entryNotes').value='';
+  }
+  $('#entryForm').addEventListener('submit',e=>{
+    e.preventDefault(); const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);
+    if(!$('#entryDate').value||mins<1){$('#entryNotice').textContent='Choose a date and enter at least 1 minute.';return}
+    const data={date:$('#entryDate').value,minutes:mins,type:$('#entryType').value,detail:$('#entryDetail').value.trim(),experience:$('#entryExperience').value.trim(),notes:$('#entryNotes').value.trim()};
+    if(editingEntryId){const i=entries.findIndex(x=>String(x.id)===String(editingEntryId));if(i>=0)entries[i]={...entries[i],...data};$('#entryNotice').textContent='Entry updated.'}
+    else{entries.push({id:Date.now()+Math.random(),created:Date.now(),...data});$('#entryNotice').textContent='Entry added.'}
+    monthPick.value=data.date.slice(0,7); resetEntry(); render();
+  });
+  document.querySelectorAll('.quick').forEach(b=>b.addEventListener('click',()=>{let v=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0)+(+b.dataset.min);$('#entryHours').value=Math.floor(v/60);$('#entryMinutes').value=v%60}));
+  $('#entryCancelEdit').addEventListener('click',resetEntry);
+
+  $('#logBody').addEventListener('click',e=>{
+    const edit=e.target.closest('.edit-entry'), del=e.target.closest('.delete-entry');
+    if(del){if(confirm('Delete this ministry entry?')){entries=entries.filter(x=>String(x.id)!==del.dataset.id);render()}return}
+    if(edit){const x=entries.find(x=>String(x.id)===edit.dataset.id);if(!x)return;editingEntryId=x.id;$('#entryDate').value=x.date;$('#entryHours').value=Math.floor(x.minutes/60);$('#entryMinutes').value=x.minutes%60;$('#entryType').value=x.type;$('#entryDetail').value=x.detail||'';$('#entryExperience').value=x.experience||'';$('#entryNotes').value=x.notes||'';$('#entrySaveBtn').textContent='Save changes';$('#entryCancelEdit').style.display='inline-block';$('#entryEditBanner').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
+  });
+
+  function resetAssignment(){
+    editingAssignmentId=null;$('#assignmentSaveBtn').textContent='Schedule assignment';$('#assignmentCancelEdit').style.display='none';$('#assignmentEditBanner').style.display='none';
+    $('#assignmentType').value='Public witnessing';$('#assignmentLocation').value='';$('#assignmentPartner').value='';$('#assignmentNotes').value='';
+  }
+  $('#assignmentForm').addEventListener('submit',e=>{
+    e.preventDefault(); if(!$('#assignmentDate').value){$('#assignmentNotice').textContent='Choose a date.';return}
+    const data={date:$('#assignmentDate').value,start:$('#assignmentStart').value||'09:00',end:$('#assignmentEnd').value||'11:00',type:$('#assignmentType').value,location:$('#assignmentLocation').value.trim(),partner:$('#assignmentPartner').value.trim(),notes:$('#assignmentNotes').value.trim()};
+    if(editingAssignmentId){const i=assignments.findIndex(x=>String(x.id)===String(editingAssignmentId));if(i>=0)assignments[i]={...assignments[i],...data};$('#assignmentNotice').textContent='Assignment updated.'}
+    else{assignments.push({id:Date.now()+Math.random(),created:Date.now(),...data});$('#assignmentNotice').textContent='Assignment scheduled.'}
+    monthPick.value=data.date.slice(0,7);resetAssignment();render();
+  });
+  $('#assignmentCancelEdit').addEventListener('click',resetAssignment);
+  $('#upcomingAssignments').addEventListener('click',e=>{
+    const edit=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');
+    if(del){if(confirm('Delete this scheduled assignment?')){assignments=assignments.filter(x=>String(x.id)!==del.dataset.id);render()}return}
+    if(edit){const a=assignments.find(x=>String(x.id)===edit.dataset.id);if(!a)return;editingAssignmentId=a.id;$('#assignmentDate').value=a.date;$('#assignmentStart').value=a.start;$('#assignmentEnd').value=a.end;$('#assignmentType').value=a.type;$('#assignmentLocation').value=a.location||'';$('#assignmentPartner').value=a.partner||'';$('#assignmentNotes').value=a.notes||'';$('#assignmentSaveBtn').textContent='Save assignment';$('#assignmentCancelEdit').style.display='inline-block';$('#assignmentEditBanner').style.display='block';window.scrollTo({top:document.body.scrollHeight*.35,behavior:'smooth'})}
+  });
+
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('#'+t.dataset.view).classList.add('active')}));
+  monthPick.addEventListener('change',render); monthlyGoal.addEventListener('input',render); weeklyGoal.addEventListener('input',render);
+
+  function csvEsc(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+  $('#exportBtn').addEventListener('click',()=>{
+    const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end']];
+    entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','']));
+    assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'']));
+    const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\n'),blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='pioneer-hours-and-assignments.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  });
+  $('#importFile').addEventListener('change',async e=>{
+    const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);if(lines.length<2)return;
+    function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}
+    const pe=[],pa=[];for(const line of lines.slice(1)){const v=parse(line);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'})}
+    if(confirm(`Import ${pe.length} hour entries and ${pa.length} assignments, replacing current data?`)){entries=pe;assignments=pa;render()}
+    e.target.value='';
+  });
+  $('#clearMonthBtn').addEventListener('click',()=>{const m=monthPick.value;if(confirm(`Delete all ministry entries and assignments for ${m}?`)){entries=entries.filter(e=>e.date.slice(0,7)!==m);assignments=assignments.filter(a=>a.date.slice(0,7)!==m);render()}});
+
+  window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});
+  $('#installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'});
+  if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
+  render();
+})();
+</script>
+</body>
+</html>
