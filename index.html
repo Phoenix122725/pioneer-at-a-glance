@@ -340,7 +340,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.7 • Cross-platform export</div>
+      <div class="notice">Commercial Beta 2.8 • Calendar edit fix</div>
     </div>
   </section>
 </div>
@@ -468,7 +468,7 @@ if(entries===null){entries=read(LEGACY.entries,[]);localStorage.setItem(KE.entri
 if(assignments===null){assignments=read(LEGACY.assign,[]);localStorage.setItem(KE.assign,JSON.stringify(assignments))}
 if(settings===null){const old=read(LEGACY.settings,{});settings={monthlyGoal:old.monthlyGoal||50,weeklyGoal:old.weeklyGoal||12.5,serviceYearGoal:600,language:'en',assignmentReminderHours:24};localStorage.setItem(KE.settings,JSON.stringify(settings))}
 if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
-let editEntryId=null, editAssignmentId=null, selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, deferredPrompt=null;
+let editEntryId=null, editAssignmentId=null, selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, entryReturnDate=null, deferredPrompt=null;
 
 const T={
 en:{
@@ -665,10 +665,68 @@ function openEntry(id=null,quick=0,presetDate=null){
  if($('#entryNotes')) $('#entryNotes').value=e?.notes||'';
  $('#entryModal').classList.add('show');
 }
-function closeEntry(){$('#entryModal').classList.remove('show');editEntryId=null;$('#entryNotice').textContent=''}
-$('#openAddBtn').onclick=()=>openEntry();$('#logAddBtn').onclick=()=>openEntry();$$('.quick-home').forEach(b=>b.onclick=()=>openEntry(null,+b.dataset.min));$('#entryCancel').onclick=closeEntry;
-$('#entryForm').onsubmit=e=>{e.preventDefault();const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);if(mins<1){$('#entryNotice').textContent='Enter at least 1 minute.';return}const data={date:$('#entryDate').value,minutes:mins,type:$('#entryType').value,detail:$('#entryDetail')?.value.trim()||'',experience:$('#entryExperience')?.value.trim()||'',notes:$('#entryNotes')?.value.trim()||''};if(editEntryId){const i=entries.findIndex(x=>String(x.id)===String(editEntryId));if(i>=0)entries[i]={...entries[i],...data}}else entries.push({id:Date.now()+Math.random(),created:Date.now(),...data});closeEntry();renderAll()};
-document.addEventListener('click',e=>{const ed=e.target.closest('.edit-entry'),del=e.target.closest('.delete-entry');if(ed){openEntry(ed.dataset.id);return}if(del&&confirm('Delete this ministry entry?')){entries=entries.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
+function closeEntry(){
+ $('#entryModal').classList.remove('show');
+ editEntryId=null;
+ $('#entryNotice').textContent='';
+}
+function returnToAgenda(dateStr){
+ if(!dateStr)return;
+ $('#calendarMonth').value=dateStr.slice(0,7);
+ go('calendarScreen');
+ renderCalendar();
+ setTimeout(()=>openAgenda(dateStr),60);
+}
+$('#openAddBtn').onclick=()=>{entryReturnDate=null;openEntry()};
+$('#logAddBtn').onclick=()=>{entryReturnDate=null;openEntry()};
+$$('.quick-home').forEach(b=>b.onclick=()=>{entryReturnDate=null;openEntry(null,+b.dataset.min)});
+$('#entryCancel').onclick=()=>{
+ const returnDate=entryReturnDate;
+ entryReturnDate=null;
+ closeEntry();
+ if(returnDate)returnToAgenda(returnDate);
+};
+$('#entryForm').onsubmit=e=>{
+ e.preventDefault();
+ const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);
+ if(mins<1){$('#entryNotice').textContent=settings.language==='es'?'Ingresa al menos 1 minuto.':'Enter at least 1 minute.';return}
+ const data={
+   date:$('#entryDate').value,
+   minutes:mins,
+   type:$('#entryType').value,
+   detail:$('#entryDetail')?.value.trim()||'',
+   experience:$('#entryExperience')?.value.trim()||'',
+   notes:$('#entryNotes')?.value.trim()||''
+ };
+ if(editEntryId){
+   const i=entries.findIndex(x=>String(x.id)===String(editEntryId));
+   if(i>=0)entries[i]={...entries[i],...data};
+ }else{
+   entries.push({id:Date.now()+Math.random(),created:Date.now(),...data});
+ }
+ const returnDate=entryReturnDate;
+ entryReturnDate=null;
+ closeEntry();
+ renderAll();
+ if(returnDate)returnToAgenda(data.date||returnDate);
+};
+document.addEventListener('click',e=>{
+ const ed=e.target.closest('.edit-entry'),del=e.target.closest('.delete-entry');
+ if(ed){
+   const fromAgenda=!!ed.closest('#agendaModal');
+   entryReturnDate=fromAgenda?selectedAgendaDate:null;
+   if(fromAgenda)closeAgenda();
+   openEntry(ed.dataset.id);
+   return;
+ }
+ if(del&&confirm(settings.language==='es'?'¿Eliminar este registro de ministerio?':'Delete this ministry entry?')){
+   const fromAgenda=!!del.closest('#agendaModal');
+   const returnDate=fromAgenda?selectedAgendaDate:null;
+   entries=entries.filter(x=>String(x.id)!==String(del.dataset.id));
+   renderAll();
+   if(returnDate)returnToAgenda(returnDate);
+ }
+});
 
 
 function showInlineAssignmentForm(id=null,presetDate=null,returnDate=null){
@@ -751,8 +809,20 @@ $('#assignmentForm').onsubmit=e=>{
 };
 document.addEventListener('click',e=>{
  const ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');
- if(ed){showInlineAssignmentForm(ed.dataset.id);return}
- if(del&&confirm('Delete this assignment?')){assignments=assignments.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}
+ if(ed){
+   const fromAgenda=!!ed.closest('#agendaModal');
+   const returnDate=fromAgenda?selectedAgendaDate:null;
+   if(fromAgenda)closeAgenda();
+   showInlineAssignmentForm(ed.dataset.id,null,returnDate);
+   return;
+ }
+ if(del&&confirm(settings.language==='es'?'¿Eliminar esta asignación?':'Delete this assignment?')){
+   const fromAgenda=!!del.closest('#agendaModal');
+   const returnDate=fromAgenda?selectedAgendaDate:null;
+   assignments=assignments.filter(x=>String(x.id)!==String(del.dataset.id));
+   renderAll();
+   if(returnDate)returnToAgenda(returnDate);
+ }
 });
 
 $('#homeEditGoals').onclick=()=>{
@@ -1045,7 +1115,12 @@ $('#inlineAssignmentForm').onsubmit=e=>{
 
 $('#calendar').addEventListener('click',e=>{const day=e.target.closest('[data-agenda-date]');if(day)openAgenda(day.dataset.agendaDate)});
 $('#agendaClose').onclick=closeAgenda;
-$('#agendaAddHours').onclick=()=>{closeAgenda();openEntry(null,0,selectedAgendaDate)};
+$('#agendaAddHours').onclick=()=>{
+ const dateToUse=selectedAgendaDate;
+ entryReturnDate=dateToUse;
+ closeAgenda();
+ openEntry(null,0,dateToUse);
+};
 $('#agendaAddAssignment').onclick=e=>{
  e.preventDefault();
  e.stopPropagation();
