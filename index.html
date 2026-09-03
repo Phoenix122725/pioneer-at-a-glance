@@ -110,6 +110,21 @@ textarea{min-height:78px;resize:vertical}
 .detail-row{display:grid;grid-template-columns:110px 1fr;gap:8px;font-size:.86rem}
 .detail-row .k{color:var(--muted);font-weight:750}
 
+
+.goal-compact{padding:10px 12px}
+.goal-summary{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.goal-values{display:flex;gap:10px;flex-wrap:wrap;min-width:0}
+.goal-chip{font-size:.76rem;font-weight:850;color:var(--ink);white-space:nowrap}
+.goal-chip span{color:var(--muted);font-weight:750}
+.goal-edit-form{display:none;margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+.goal-edit-form.show{display:block}
+.goal-edit-actions{display:flex;gap:7px;margin-top:8px}
+.goal-status{font-size:.72rem;color:var(--muted);margin-top:5px;min-height:0}
+.activity-icons{display:flex;gap:3px;flex-wrap:wrap;margin-top:4px}
+.activity-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:6px;background:var(--gold2);border:1px solid #ead8af;color:#6c5526}
+.activity-icon svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.activity-icon.other{font-size:.72rem;font-weight:900}
+
 @media(min-width:620px){
   .stats{grid-template-columns:repeat(4,1fr)}
   .history{grid-template-columns:repeat(3,1fr)}
@@ -150,18 +165,29 @@ textarea{min-height:78px;resize:vertical}
       <div class="progress"><div id="homeMonthFill"></div></div>
     </div>
 
-    <div class="card section">
-      <div class="section-title"><h2 data-i18n="quickGoals">Quick goals</h2></div>
-      <div class="form-grid">
-        <label data-i18n="monthlyGoal">Monthly goal
-          <input id="homeMonthlyGoal" type="number" min="1" max="200" step=".5" value="50">
-        </label>
-        <label data-i18n="weeklyGoal">Weekly goal
-          <input id="homeWeeklyGoal" type="number" min="1" max="60" step=".5" value="12.5">
-        </label>
+    <div class="card section goal-compact">
+      <div class="goal-summary">
+        <div class="goal-values">
+          <div class="goal-chip"><span data-i18n="monthlyGoalShort">Monthly</span> <b id="homeMonthlyGoalSummary">50h</b></div>
+          <div class="goal-chip"><span data-i18n="weeklyGoalShort">Weekly</span> <b id="homeWeeklyGoalSummary">12.5h</b></div>
+        </div>
+        <button id="homeEditGoals" class="btn small" type="button" data-i18n="edit">Edit</button>
       </div>
-      <button id="homeSaveGoals" class="btn primary block" type="button" style="margin-top:9px" data-i18n="saveGoals">Save goals</button>
-      <div id="homeGoalsNotice" class="notice"></div>
+      <div id="homeGoalEditForm" class="goal-edit-form">
+        <div class="form-grid">
+          <label data-i18n="monthlyGoal">Monthly goal
+            <input id="homeMonthlyGoal" type="number" min="1" max="200" step=".5" value="50">
+          </label>
+          <label data-i18n="weeklyGoal">Weekly goal
+            <input id="homeWeeklyGoal" type="number" min="1" max="60" step=".5" value="12.5">
+          </label>
+        </div>
+        <div class="goal-edit-actions">
+          <button id="homeSaveGoals" class="btn primary" type="button" data-i18n="save">Save</button>
+          <button id="homeCancelGoals" class="btn" type="button" data-i18n="cancel">Cancel</button>
+        </div>
+      </div>
+      <div id="homeGoalsNotice" class="goal-status"></div>
     </div>
 
     <div class="stats">
@@ -261,7 +287,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.1 • Local-first privacy</div>
+      <div class="notice">Commercial Beta 2.2 • Local-first privacy</div>
     </div>
   </section>
 </div>
@@ -405,7 +431,7 @@ minutes:'Minutes',detail:'With / study / territory',experience:'Ministry experie
 scheduleAssignment:'Schedule assignment',assignment:'Assignment',start:'Start',end:'End',location:'Location / arrangement',
 partner:'Partner / group',welcome:'Welcome to Pioneer at a Glance',welcomeText:'A simple place to plan your ministry and see your progress without digging through notes or spreadsheets.',
 ob1:'Track daily hours and your 50-hour monthly goal.',ob2:'See weekly and September–August service-year progress.',ob3:'Schedule public witnessing and other assignments.',
-ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals'
+ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly'
 },
 es:{
 tagline:'Planifica tu ministerio en un solo lugar',thisMonth:'Este mes',remaining:'Restante',thisWeek:'Esta semana',serviceYear:'Año de servicio',
@@ -420,7 +446,7 @@ minutes:'Minutos',detail:'Con / estudio / territorio',experience:'Experiencia en
 scheduleAssignment:'Programar asignación',assignment:'Asignación',start:'Inicio',end:'Fin',location:'Lugar / arreglo',
 partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeText:'Un lugar sencillo para organizar tu ministerio y ver tu progreso sin buscar entre notas u hojas de cálculo.',
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
-ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas'
+ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal'
 }};
 function applyLanguage(){const lang=settings.language||'en';document.documentElement.lang=lang;$$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(T[lang][key]){if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];else if(el.tagName==='LABEL'&&el.querySelector('input,select')){const ctl=el.querySelector('input,select');el.childNodes[0].nodeValue=T[lang][key];}else el.textContent=T[lang][key]}})}
 function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings))}
@@ -453,6 +479,8 @@ function entryCard(e){
 function renderHome(){
  $('#homeMonthlyGoal').value=settings.monthlyGoal;
  $('#homeWeeklyGoal').value=settings.weeklyGoal;
+ $('#homeMonthlyGoalSummary').textContent=`${settings.monthlyGoal}h`;
+ $('#homeWeeklyGoalSummary').textContent=`${settings.weeklyGoal}h`;
  stats();
  const upcoming=assignments.filter(a=>a.date>=TODAY).sort((a,b)=>a.date.localeCompare(b.date)||String(a.start).localeCompare(String(b.start)));
  if(upcoming.length){
@@ -472,6 +500,28 @@ function renderLog(){
  const ym=$('#logMonth').value||TODAY.slice(0,7);$('#logMonth').value=ym;const list=entries.filter(e=>e.date.slice(0,7)===ym).sort((a,b)=>b.date.localeCompare(a.date)),m=list.reduce((s,e)=>s+e.minutes,0);
  $('#logSummary').textContent=`${list.length} entries • ${fmt(m)} total`;$('#logCards').innerHTML=list.length?list.map(entryCard).join(''):`<div class="card"><div class="notice">No entries this month.</div></div>`;
 }
+
+function activityIcon(type){
+ const t=String(type||'').toLowerCase();
+ const wrap=(svg,cls='')=>`<span class="activity-icon ${cls}" title="${esc(type)}">${svg}</span>`;
+ if(t.includes('public witnessing')||t.includes('literature cart')||t.includes('testificación pública')||t.includes('carrito')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h11v10H5z"/><path d="M8 3h8v3"/><path d="M16 10h3v6h-3"/><circle cx="8" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/><path d="M5 16h14"/></svg>`);
+ }
+ if(t.includes('letter')||t.includes('carta')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>`);
+ }
+ if(t.includes('territory')||t.includes('door')||t.includes('puerta')||t.includes('casa')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>`);
+ }
+ if(t.includes('bible study')||t.includes('estudio bíblico')||t.includes('estudio biblico')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A3.5 3.5 0 0 1 7.5 2H11v18H7.5A3.5 3.5 0 0 0 4 23z"/><path d="M20 5.5A3.5 3.5 0 0 0 16.5 2H13v18h3.5A3.5 3.5 0 0 1 20 23z"/></svg>`);
+ }
+ if(t.includes('return visit')||t.includes('revisita')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 7H4v-4"/><path d="M4 7c2-3 5-4.5 8-4.5 5 0 9 4 9 9s-4 9-9 9a9 9 0 0 1-7-3.4"/><path d="M9 11h6"/><path d="M12 8v6"/></svg>`);
+ }
+ return `<span class="activity-icon other" title="${esc(type)}">•</span>`;
+}
+
 function renderCalendar(){
  const ym=$('#calendarMonth').value||TODAY.slice(0,7);$('#calendarMonth').value=ym;const [y,m]=ym.split('-').map(Number),first=new Date(Date.UTC(y,m-1,1)).getUTCDay(),dim=new Date(Date.UTC(y,m,0)).getUTCDate(),by={},ab={};
  entries.filter(e=>e.date.slice(0,7)===ym).forEach(e=>{const d=+e.date.slice(8);by[d]=(by[d]||0)+e.minutes});
@@ -483,7 +533,7 @@ function renderCalendar(){
    h+=`<button class="day ${ds===TODAY?'today':''}" data-agenda-date="${ds}" type="button" aria-label="${ds}">
      <div class="daynum">${d}</div>
      ${by[d]?`<span class="dayhours">${fmt(by[d])}</span>`:''}
-     ${ac?`<span class="daybadge"><span class="daydot"></span>${ac}</span>`:''}
+     ${ac?`<div class="activity-icons">${(ab[d]||[]).slice(0,3).map(a=>activityIcon(a.type)).join('')}${ac>3?`<span class="activity-icon other">+${ac-3}</span>`:''}</div>`:''}
    </button>`;
  }
  $('#calendar').innerHTML=h;
@@ -565,11 +615,26 @@ $('#assignmentAddBtn').onclick=()=>openAssignment();$('#assignmentCancel').oncli
 $('#assignmentForm').onsubmit=e=>{e.preventDefault();const data={date:$('#assignmentDate').value,type:$('#assignmentType').value,start:$('#assignmentStart').value,end:$('#assignmentEnd').value,location:$('#assignmentLocation').value.trim(),partner:$('#assignmentPartner').value.trim(),notes:$('#assignmentNotes').value.trim()};if(editAssignmentId){const i=assignments.findIndex(x=>String(x.id)===String(editAssignmentId));if(i>=0)assignments[i]={...assignments[i],...data}}else assignments.push({id:Date.now()+Math.random(),created:Date.now(),...data});closeAssignment();renderAll()};
 document.addEventListener('click',e=>{const ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');if(ed){openAssignment(ed.dataset.id);return}if(del&&confirm('Delete this assignment?')){assignments=assignments.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
 
+$('#homeEditGoals').onclick=()=>{
+ $('#homeGoalEditForm').classList.add('show');
+ $('#homeEditGoals').style.display='none';
+ $('#homeGoalsNotice').textContent='';
+};
+$('#homeCancelGoals').onclick=()=>{
+ $('#homeMonthlyGoal').value=settings.monthlyGoal;
+ $('#homeWeeklyGoal').value=settings.weeklyGoal;
+ $('#homeGoalEditForm').classList.remove('show');
+ $('#homeEditGoals').style.display='';
+ $('#homeGoalsNotice').textContent='';
+};
 $('#homeSaveGoals').onclick=()=>{
  settings={...settings,monthlyGoal:+$('#homeMonthlyGoal').value||50,weeklyGoal:+$('#homeWeeklyGoal').value||12.5};
  persist();
  renderAll();
+ $('#homeGoalEditForm').classList.remove('show');
+ $('#homeEditGoals').style.display='';
  $('#homeGoalsNotice').textContent=settings.language==='es'?'Metas guardadas.':'Goals saved.';
+ setTimeout(()=>{$('#homeGoalsNotice').textContent=''},1800);
 };
 
 $('#logMonth').value=TODAY.slice(0,7);$('#calendarMonth').value=TODAY.slice(0,7);$('#logMonth').onchange=renderLog;$('#calendarMonth').onchange=renderCalendar;$('#calendarTodayBtn').onclick=()=>{$('#calendarMonth').value=TODAY.slice(0,7);renderCalendar()};
