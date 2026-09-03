@@ -79,6 +79,17 @@ td{font-size:.89rem}
 .kpi-note{font-size:.76rem;color:var(--muted);margin-top:4px}
 .edit-banner{display:none;background:#fff7df;border:1px solid #ead6a3;border-radius:11px;padding:9px;color:#654f20;margin-bottom:9px}
 .footer{font-size:.76rem;color:var(--muted);margin-top:12px}
+
+th.actions-col, td.actions-col{
+  position:sticky;
+  left:0;
+  background:var(--card);
+  z-index:3;
+  min-width:118px;
+}
+th.actions-col{z-index:4}
+td.actions-col{box-shadow:6px 0 10px rgba(40,65,53,.04)}
+
 @media(max-width:760px){
   .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
   .controls{grid-template-columns:1fr 1fr}.controls label:first-child{grid-column:1/-1}
@@ -217,7 +228,7 @@ td{font-size:.89rem}
     <div id="logSummary" class="notice"></div>
     <div class="tablewrap">
       <table>
-        <thead><tr><th>Date</th><th>Time</th><th>Type</th><th>Detail</th><th>Notes / experience</th><th></th></tr></thead>
+        <thead><tr><th class="actions-col">Actions</th><th>Date</th><th>Time</th><th>Type</th><th>Detail</th><th>Notes / experience</th></tr></thead>
         <tbody id="logBody"></tbody>
       </table>
     </div>
@@ -244,7 +255,7 @@ td{font-size:.89rem}
   </div>
 </section>
 
-<div class="footer">Your entries and assignments are stored locally on this device. Export a CSV backup periodically. • App version 3</div>
+<div class="footer">Your entries and assignments are stored locally on this device. Export a CSV backup periodically. • App version 4</div>
 </main>
 
 <script>
@@ -340,9 +351,9 @@ td{font-size:.89rem}
 
     $('#logSummary').textContent=list.length?`${list.length} ${list.length===1?'entry':'entries'} • ${fmt(monthMins)} total`:'No entries yet.';
     $('#logBody').innerHTML=list.length?list.map(e=>`<tr>
+      <td class="actions-col"><button class="btn small edit-entry" data-id="${e.id}" type="button">Edit</button> <button class="btn small danger delete-entry" data-id="${e.id}" type="button">Delete</button></td>
       <td>${esc(e.date)}</td><td>${fmt(e.minutes)}</td><td>${esc(e.type)}</td><td>${esc(e.detail||'')}</td>
       <td>${esc([e.experience,e.notes].filter(Boolean).join(' • '))}</td>
-      <td><button class="btn small edit-entry" data-id="${e.id}" type="button">Edit</button> <button class="btn small danger delete-entry" data-id="${e.id}" type="button">Delete</button></td>
     </tr>`).join(''):'<tr><td colspan="6" class="notice">Add your first entry above.</td></tr>';
 
     renderCalendar(list,alist); renderHistory(); renderUpcoming(); persist();
