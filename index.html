@@ -244,13 +244,13 @@ td{font-size:.89rem}
   </div>
 </section>
 
-<div class="footer">Your entries and assignments are stored locally on this device. Export a CSV backup periodically.</div>
+<div class="footer">Your entries and assignments are stored locally on this device. Export a CSV backup periodically. • App version 3</div>
 </main>
 
 <script>
 (() => {
   const ENTRY_KEY='pioneer.entries.v2', ASSIGN_KEY='pioneer.assignments.v2', SETTINGS_KEY='pioneer.settings.v2';
-  const TODAY='2026-09-02';
+  const now=new Date(); const TODAY=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   const $=s=>document.querySelector(s);
   const monthPick=$('#monthPick'), monthlyGoal=$('#monthlyGoal'), weeklyGoal=$('#weeklyGoal');
   let entries=read(ENTRY_KEY,[]), assignments=read(ASSIGN_KEY,[]), settings=read(SETTINGS_KEY,{monthlyGoal:50,weeklyGoal:12.5});
@@ -364,9 +364,34 @@ td{font-size:.89rem}
   $('#entryCancelEdit').addEventListener('click',resetEntry);
 
   $('#logBody').addEventListener('click',e=>{
-    const edit=e.target.closest('.edit-entry'), del=e.target.closest('.delete-entry');
-    if(del){if(confirm('Delete this ministry entry?')){entries=entries.filter(x=>String(x.id)!==del.dataset.id);render()}return}
-    if(edit){const x=entries.find(x=>String(x.id)===edit.dataset.id);if(!x)return;editingEntryId=x.id;$('#entryDate').value=x.date;$('#entryHours').value=Math.floor(x.minutes/60);$('#entryMinutes').value=x.minutes%60;$('#entryType').value=x.type;$('#entryDetail').value=x.detail||'';$('#entryExperience').value=x.experience||'';$('#entryNotes').value=x.notes||'';$('#entrySaveBtn').textContent='Save changes';$('#entryCancelEdit').style.display='inline-block';$('#entryEditBanner').style.display='block';window.scrollTo({top:0,behavior:'smooth'})}
+    const btn=e.target.closest('button');
+    if(!btn)return;
+    const id=btn.dataset.id;
+    if(btn.classList.contains('delete-entry')){
+      if(confirm('Delete this ministry entry?')){
+        entries=entries.filter(x=>String(x.id)!==String(id));
+        render();
+        $('#entryNotice').textContent='Entry deleted.';
+      }
+      return;
+    }
+    if(btn.classList.contains('edit-entry')){
+      const x=entries.find(x=>String(x.id)===String(id));
+      if(!x)return;
+      editingEntryId=x.id;
+      $('#entryDate').value=x.date;
+      $('#entryHours').value=Math.floor(x.minutes/60);
+      $('#entryMinutes').value=x.minutes%60;
+      $('#entryType').value=x.type;
+      $('#entryDetail').value=x.detail||'';
+      $('#entryExperience').value=x.experience||'';
+      $('#entryNotes').value=x.notes||'';
+      $('#entrySaveBtn').textContent='Save changes';
+      $('#entryCancelEdit').style.display='inline-block';
+      $('#entryEditBanner').style.display='block';
+      $('#entryNotice').textContent='Editing entry — make your changes, then tap Save changes.';
+      document.querySelector('#entryForm').scrollIntoView({behavior:'smooth',block:'start'});
+    }
   });
 
   function resetAssignment(){
