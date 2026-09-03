@@ -125,6 +125,12 @@ textarea{min-height:78px;resize:vertical}
 .activity-icon svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .activity-icon.other{font-size:.72rem;font-weight:900}
 
+
+.inline-scheduler{display:none;margin-bottom:12px}
+.inline-scheduler.show{display:block}
+.inline-scheduler .scheduler-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:10px}
+.inline-scheduler .scheduler-head h3{margin:0;font-size:1rem}
+
 @media(min-width:620px){
   .stats{grid-template-columns:repeat(4,1fr)}
   .history{grid-template-columns:repeat(3,1fr)}
@@ -246,6 +252,39 @@ textarea{min-height:78px;resize:vertical}
   <!-- ASSIGNMENTS -->
   <section id="assignmentsScreen" class="screen">
     <div class="section-title"><h2 data-i18n="assignments">Assignments</h2><button id="assignmentAddBtn" class="btn gold small" type="button" data-i18n="schedule">Schedule</button></div>
+
+    <div id="inlineScheduler" class="card inline-scheduler">
+      <div class="scheduler-head">
+        <h3 id="inlineSchedulerTitle" data-i18n="scheduleAssignment">Schedule assignment</h3>
+        <button id="inlineSchedulerClose" class="btn small" type="button" data-i18n="close">Close</button>
+      </div>
+      <form id="inlineAssignmentForm">
+        <div class="form-grid">
+          <label data-i18n="date">Date<input id="inlineAssignmentDate" type="date" required></label>
+          <label data-i18n="assignment">Assignment
+            <select id="inlineAssignmentType">
+              <option>Public witnessing</option>
+              <option>Literature cart</option>
+              <option>Territory</option>
+              <option>Bible study</option>
+              <option>Return visits</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <label data-i18n="start">Start<input id="inlineAssignmentStart" type="time" value="09:00"></label>
+          <label data-i18n="end">End<input id="inlineAssignmentEnd" type="time" value="11:00"></label>
+          <label class="full" data-i18n="location">Location / arrangement<input id="inlineAssignmentLocation" type="text"></label>
+          <label class="full" data-i18n="partner">Partner / group<input id="inlineAssignmentPartner" type="text"></label>
+          <label class="full" data-i18n="notes">Notes<textarea id="inlineAssignmentNotes"></textarea></label>
+        </div>
+        <div class="card-actions">
+          <button id="inlineAssignmentSave" class="btn gold" type="submit" data-i18n="save">Save</button>
+          <button id="inlineAssignmentCancel" class="btn" type="button" data-i18n="cancel">Cancel</button>
+        </div>
+        <div id="inlineAssignmentNotice" class="notice"></div>
+      </form>
+    </div>
+
     <div id="assignmentCards"></div>
   </section>
 
@@ -287,7 +326,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.3 • Local-first privacy</div>
+      <div class="notice">Commercial Beta 2.5 • Local-first privacy</div>
     </div>
   </section>
 </div>
@@ -415,7 +454,7 @@ if(entries===null){entries=read(LEGACY.entries,[]);localStorage.setItem(KE.entri
 if(assignments===null){assignments=read(LEGACY.assign,[]);localStorage.setItem(KE.assign,JSON.stringify(assignments))}
 if(settings===null){const old=read(LEGACY.settings,{});settings={monthlyGoal:old.monthlyGoal||50,weeklyGoal:old.weeklyGoal||12.5,serviceYearGoal:600,language:'en',assignmentReminderHours:24};localStorage.setItem(KE.settings,JSON.stringify(settings))}
 if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
-let editEntryId=null, editAssignmentId=null, selectedAgendaDate=TODAY, detailAssignmentId=null, deferredPrompt=null;
+let editEntryId=null, editAssignmentId=null, selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, deferredPrompt=null;
 
 const T={
 en:{
@@ -448,7 +487,7 @@ partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeT
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
 ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal'
 }};
-function applyLanguage(){const lang=settings.language||'en';document.documentElement.lang=lang;$$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(T[lang][key]){if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];else if(el.tagName==='LABEL'&&el.querySelector('input,select')){const ctl=el.querySelector('input,select');el.childNodes[0].nodeValue=T[lang][key];}else el.textContent=T[lang][key]}})}
+function applyLanguage(){const lang=settings.language||'en';document.documentElement.lang=lang;$$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(T[lang][key]){if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];else if(el.tagName==='LABEL'&&el.querySelector('input,select,textarea')){const ctl=el.querySelector('input,select,textarea');el.childNodes[0].nodeValue=T[lang][key];}else el.textContent=T[lang][key]}})}
 function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings))}
 const fmt=m=>`${Math.floor(Math.max(0,Math.round(m))/60)}:${String(Math.max(0,Math.round(m))%60).padStart(2,'0')}`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -600,12 +639,49 @@ function renderAssignmentReminder(upcoming){
 function renderAll(){applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderMore();persist()}
 
 function openEntry(id=null,quick=0,presetDate=null){
- editEntryId=id;const e=id?entries.find(x=>String(x.id)===String(id)):null;$('#entryDate').value=e?.date||presetDate||TODAY;let mins=e?.minutes||quick;$('#entryHours').value=Math.floor(mins/60);$('#entryMinutes').value=mins%60;$('#entryType').value=e?.type||'Field ministry';$('#entryDetail').value=e?.detail||'';$('#entryExperience').value=e?.experience||'';$('#entryNotes').value=e?.notes||'';$('#entryModal').classList.add('show')
+ editEntryId=id;
+ const e=id?entries.find(x=>String(x.id)===String(id)):null;
+ const mins=e?.minutes||quick;
+ if($('#entryDate')) $('#entryDate').value=e?.date||presetDate||TODAY;
+ if($('#entryHours')) $('#entryHours').value=Math.floor(mins/60);
+ if($('#entryMinutes')) $('#entryMinutes').value=mins%60;
+ if($('#entryType')) $('#entryType').value=e?.type||'Field ministry';
+ if($('#entryDetail')) $('#entryDetail').value=e?.detail||'';
+ if($('#entryExperience')) $('#entryExperience').value=e?.experience||'';
+ if($('#entryNotes')) $('#entryNotes').value=e?.notes||'';
+ $('#entryModal').classList.add('show');
 }
 function closeEntry(){$('#entryModal').classList.remove('show');editEntryId=null;$('#entryNotice').textContent=''}
 $('#openAddBtn').onclick=()=>openEntry();$('#logAddBtn').onclick=()=>openEntry();$$('.quick-home').forEach(b=>b.onclick=()=>openEntry(null,+b.dataset.min));$('#entryCancel').onclick=closeEntry;
-$('#entryForm').onsubmit=e=>{e.preventDefault();const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);if(mins<1){$('#entryNotice').textContent='Enter at least 1 minute.';return}const data={date:$('#entryDate').value,minutes:mins,type:$('#entryType').value,detail:$('#entryDetail').value.trim(),experience:$('#entryExperience').value.trim(),notes:$('#entryNotes').value.trim()};if(editEntryId){const i=entries.findIndex(x=>String(x.id)===String(editEntryId));if(i>=0)entries[i]={...entries[i],...data}}else entries.push({id:Date.now()+Math.random(),created:Date.now(),...data});closeEntry();renderAll()};
+$('#entryForm').onsubmit=e=>{e.preventDefault();const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);if(mins<1){$('#entryNotice').textContent='Enter at least 1 minute.';return}const data={date:$('#entryDate').value,minutes:mins,type:$('#entryType').value,detail:$('#entryDetail')?.value.trim()||'',experience:$('#entryExperience')?.value.trim()||'',notes:$('#entryNotes')?.value.trim()||''};if(editEntryId){const i=entries.findIndex(x=>String(x.id)===String(editEntryId));if(i>=0)entries[i]={...entries[i],...data}}else entries.push({id:Date.now()+Math.random(),created:Date.now(),...data});closeEntry();renderAll()};
 document.addEventListener('click',e=>{const ed=e.target.closest('.edit-entry'),del=e.target.closest('.delete-entry');if(ed){openEntry(ed.dataset.id);return}if(del&&confirm('Delete this ministry entry?')){entries=entries.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
+
+
+function showInlineAssignmentForm(id=null,presetDate=null,returnDate=null){
+ editAssignmentId=id;
+ assignmentReturnDate=returnDate;
+ const a=id?assignments.find(x=>String(x.id)===String(id)):null;
+ $('#inlineAssignmentDate').value=a?.date||presetDate||TODAY;
+ $('#inlineAssignmentType').value=a?.type||'Public witnessing';
+ $('#inlineAssignmentStart').value=a?.start||'09:00';
+ $('#inlineAssignmentEnd').value=a?.end||'11:00';
+ $('#inlineAssignmentLocation').value=a?.location||'';
+ $('#inlineAssignmentPartner').value=a?.partner||'';
+ $('#inlineAssignmentNotes').value=a?.notes||'';
+ $('#inlineSchedulerTitle').textContent=id
+   ? (settings.language==='es'?'Editar asignación':'Edit assignment')
+   : T[settings.language].scheduleAssignment;
+ $('#inlineAssignmentNotice').textContent='';
+ go('assignmentsScreen');
+ $('#inlineScheduler').classList.add('show');
+ setTimeout(()=>$('#inlineAssignmentDate').scrollIntoView({behavior:'smooth',block:'center'}),60);
+}
+function hideInlineAssignmentForm(){
+ $('#inlineScheduler').classList.remove('show');
+ editAssignmentId=null;
+ assignmentReturnDate=null;
+ $('#inlineAssignmentNotice').textContent='';
+}
 
 function openAssignment(id=null,presetDate=null){
  editAssignmentId=id;
@@ -628,7 +704,7 @@ function closeAssignment(){
  modal.style.display='';
  editAssignmentId=null;
 }
-$('#assignmentAddBtn').onclick=e=>{e.preventDefault();e.stopPropagation();openAssignment()};
+$('#assignmentAddBtn').onclick=e=>{e.preventDefault();e.stopPropagation();showInlineAssignmentForm()};
 $('#assignmentCancel').onclick=e=>{e.preventDefault();closeAssignment()};
 $('#assignmentForm').onsubmit=e=>{
  e.preventDefault();
@@ -659,7 +735,11 @@ $('#assignmentForm').onsubmit=e=>{
  renderCalendar();
  setTimeout(()=>openAgenda(data.date),60);
 };
-document.addEventListener('click',e=>{const ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');if(ed){openAssignment(ed.dataset.id);return}if(del&&confirm('Delete this assignment?')){assignments=assignments.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
+document.addEventListener('click',e=>{
+ const ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');
+ if(ed){showInlineAssignmentForm(ed.dataset.id);return}
+ if(del&&confirm('Delete this assignment?')){assignments=assignments.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}
+});
 
 $('#homeEditGoals').onclick=()=>{
  $('#homeGoalEditForm').classList.add('show');
@@ -691,6 +771,46 @@ $('#exportBtn').onclick=()=>{const rows=[['record_type','date','minutes','type',
 $('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}const pe=[],pa=[];for(const l of lines.slice(1)){const v=parse(l);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'})}if(confirm(`Import ${pe.length} hour entries and ${pa.length} assignments?`)){entries=pe;assignments=pa;renderAll();$('#backupNotice').textContent='Backup imported.'}e.target.value=''};
 
 
+
+$('#inlineSchedulerClose').onclick=hideInlineAssignmentForm;
+$('#inlineAssignmentCancel').onclick=hideInlineAssignmentForm;
+$('#inlineAssignmentForm').onsubmit=e=>{
+ e.preventDefault();
+ const date=$('#inlineAssignmentDate').value;
+ if(!date){
+   $('#inlineAssignmentNotice').textContent=settings.language==='es'?'Selecciona una fecha.':'Choose a date.';
+   return;
+ }
+ const data={
+   date,
+   type:$('#inlineAssignmentType').value,
+   start:$('#inlineAssignmentStart').value||'09:00',
+   end:$('#inlineAssignmentEnd').value||'11:00',
+   location:$('#inlineAssignmentLocation').value.trim(),
+   partner:$('#inlineAssignmentPartner').value.trim(),
+   notes:$('#inlineAssignmentNotes')?.value.trim()||''
+ };
+ if(editAssignmentId){
+   const i=assignments.findIndex(x=>String(x.id)===String(editAssignmentId));
+   if(i>=0)assignments[i]={...assignments[i],...data};
+ }else{
+   assignments.push({id:Date.now()+Math.random(),created:Date.now(),...data});
+ }
+ const returnDate=assignmentReturnDate;
+ persist();
+ hideInlineAssignmentForm();
+ renderAll();
+
+ if(returnDate){
+   $('#calendarMonth').value=returnDate.slice(0,7);
+   go('calendarScreen');
+   renderCalendar();
+   setTimeout(()=>openAgenda(returnDate),80);
+ }else{
+   go('assignmentsScreen');
+ }
+};
+
 $('#calendar').addEventListener('click',e=>{const day=e.target.closest('[data-agenda-date]');if(day)openAgenda(day.dataset.agendaDate)});
 $('#agendaClose').onclick=closeAgenda;
 $('#agendaAddHours').onclick=()=>{closeAgenda();openEntry(null,0,selectedAgendaDate)};
@@ -699,12 +819,12 @@ $('#agendaAddAssignment').onclick=e=>{
  e.stopPropagation();
  const dateToSchedule=selectedAgendaDate;
  closeAgenda();
- setTimeout(()=>openAssignment(null,dateToSchedule),40);
+ setTimeout(()=>showInlineAssignmentForm(null,dateToSchedule,dateToSchedule),40);
 };
 $('#nextAssignmentCard').onclick=()=>{const id=$('#nextAssignmentCard').dataset.assignmentId;if(id)openAssignmentDetail(id)};
 $('#assignmentReminderCard').onclick=()=>{const id=$('#assignmentReminderCard').dataset.assignmentId;if(id)openAssignmentDetail(id)};
 $('#assignmentDetailClose').onclick=closeAssignmentDetail;
-$('#assignmentDetailEdit').onclick=()=>{const id=detailAssignmentId;closeAssignmentDetail();if(id)openAssignment(id)};
+$('#assignmentDetailEdit').onclick=()=>{const id=detailAssignmentId;closeAssignmentDetail();if(id)showInlineAssignmentForm(id)};
 
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'};
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./service-worker.js').catch(()=>{});
