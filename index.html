@@ -287,7 +287,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.2 • Local-first privacy</div>
+      <div class="notice">Commercial Beta 2.3 • Local-first privacy</div>
     </div>
   </section>
 </div>
@@ -539,7 +539,7 @@ function renderCalendar(){
  $('#calendar').innerHTML=h;
 }
 function assignmentCard(a){
- return `<div class="assign-card"><div class="assign-head"><div><b>${esc(a.type)}</b><div class="meta">${esc(a.date)} • ${esc(a.start||'')}–${esc(a.end||'')}</div>${a.location?`<div class="meta">${esc(a.location)}</div>`:''}${a.partner?`<div class="meta">${esc(a.partner)}</div>`:''}</div></div>${a.notes?`<div class="meta" style="margin-top:6px">${esc(a.notes)}</div>`:''}<div class="card-actions"><button class="btn small edit-assignment" data-id="${a.id}" type="button">Edit</button><button class="btn small danger delete-assignment" data-id="${a.id}" type="button">Delete</button></div></div>`;
+ return `<div class="assign-card"><div class="assign-head"><div style="display:flex;gap:9px;align-items:flex-start">${activityIcon(a.type)}<div><b>${esc(a.type)}</b><div class="meta">${esc(a.date)} • ${esc(a.start||'')}–${esc(a.end||'')}</div>${a.location?`<div class="meta">${esc(a.location)}</div>`:''}${a.partner?`<div class="meta">${esc(a.partner)}</div>`:''}</div></div></div>${a.notes?`<div class="meta" style="margin-top:6px">${esc(a.notes)}</div>`:''}<div class="card-actions"><button class="btn small edit-assignment" data-id="${a.id}" type="button">Edit</button><button class="btn small danger delete-assignment" data-id="${a.id}" type="button">Delete</button></div></div>`;
 }
 function renderAssignments(){const list=[...assignments].sort((a,b)=>a.date.localeCompare(b.date)||String(a.start).localeCompare(String(b.start)));$('#assignmentCards').innerHTML=list.length?list.map(assignmentCard).join(''):`<div class="card"><div class="notice">${T[settings.language].noUpcoming}</div></div>`}
 function renderMore(){
@@ -608,11 +608,57 @@ $('#entryForm').onsubmit=e=>{e.preventDefault();const mins=(+$('#entryHours').va
 document.addEventListener('click',e=>{const ed=e.target.closest('.edit-entry'),del=e.target.closest('.delete-entry');if(ed){openEntry(ed.dataset.id);return}if(del&&confirm('Delete this ministry entry?')){entries=entries.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
 
 function openAssignment(id=null,presetDate=null){
- editAssignmentId=id;const a=id?assignments.find(x=>String(x.id)===String(id)):null;$('#assignmentDate').value=a?.date||presetDate||TODAY;$('#assignmentType').value=a?.type||'Public witnessing';$('#assignmentStart').value=a?.start||'09:00';$('#assignmentEnd').value=a?.end||'11:00';$('#assignmentLocation').value=a?.location||'';$('#assignmentPartner').value=a?.partner||'';$('#assignmentNotes').value=a?.notes||'';$('#assignmentModal').classList.add('show')
+ editAssignmentId=id;
+ const a=id?assignments.find(x=>String(x.id)===String(id)):null;
+ $('#assignmentDate').value=a?.date||presetDate||TODAY;
+ $('#assignmentType').value=a?.type||'Public witnessing';
+ $('#assignmentStart').value=a?.start||'09:00';
+ $('#assignmentEnd').value=a?.end||'11:00';
+ $('#assignmentLocation').value=a?.location||'';
+ $('#assignmentPartner').value=a?.partner||'';
+ $('#assignmentNotes').value=a?.notes||'';
+ const modal=$('#assignmentModal');
+ modal.style.display='flex';
+ modal.classList.add('show');
+ setTimeout(()=>$('#assignmentDate').focus(),50);
 }
-function closeAssignment(){$('#assignmentModal').classList.remove('show');editAssignmentId=null}
-$('#assignmentAddBtn').onclick=()=>openAssignment();$('#assignmentCancel').onclick=closeAssignment;
-$('#assignmentForm').onsubmit=e=>{e.preventDefault();const data={date:$('#assignmentDate').value,type:$('#assignmentType').value,start:$('#assignmentStart').value,end:$('#assignmentEnd').value,location:$('#assignmentLocation').value.trim(),partner:$('#assignmentPartner').value.trim(),notes:$('#assignmentNotes').value.trim()};if(editAssignmentId){const i=assignments.findIndex(x=>String(x.id)===String(editAssignmentId));if(i>=0)assignments[i]={...assignments[i],...data}}else assignments.push({id:Date.now()+Math.random(),created:Date.now(),...data});closeAssignment();renderAll()};
+function closeAssignment(){
+ const modal=$('#assignmentModal');
+ modal.classList.remove('show');
+ modal.style.display='';
+ editAssignmentId=null;
+}
+$('#assignmentAddBtn').onclick=e=>{e.preventDefault();e.stopPropagation();openAssignment()};
+$('#assignmentCancel').onclick=e=>{e.preventDefault();closeAssignment()};
+$('#assignmentForm').onsubmit=e=>{
+ e.preventDefault();
+ if(!$('#assignmentDate').value){
+   $('#assignmentNotice').textContent=settings.language==='es'?'Selecciona una fecha.':'Choose a date.';
+   return;
+ }
+ const data={
+   date:$('#assignmentDate').value,
+   type:$('#assignmentType').value,
+   start:$('#assignmentStart').value,
+   end:$('#assignmentEnd').value,
+   location:$('#assignmentLocation').value.trim(),
+   partner:$('#assignmentPartner').value.trim(),
+   notes:$('#assignmentNotes').value.trim()
+ };
+ if(editAssignmentId){
+   const i=assignments.findIndex(x=>String(x.id)===String(editAssignmentId));
+   if(i>=0)assignments[i]={...assignments[i],...data};
+ }else{
+   assignments.push({id:Date.now()+Math.random(),created:Date.now(),...data});
+ }
+ persist();
+ closeAssignment();
+ renderAll();
+ selectedAgendaDate=data.date;
+ $('#calendarMonth').value=data.date.slice(0,7);
+ renderCalendar();
+ setTimeout(()=>openAgenda(data.date),60);
+};
 document.addEventListener('click',e=>{const ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');if(ed){openAssignment(ed.dataset.id);return}if(del&&confirm('Delete this assignment?')){assignments=assignments.filter(x=>String(x.id)!==String(del.dataset.id));renderAll()}});
 
 $('#homeEditGoals').onclick=()=>{
@@ -648,7 +694,13 @@ $('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;con
 $('#calendar').addEventListener('click',e=>{const day=e.target.closest('[data-agenda-date]');if(day)openAgenda(day.dataset.agendaDate)});
 $('#agendaClose').onclick=closeAgenda;
 $('#agendaAddHours').onclick=()=>{closeAgenda();openEntry(null,0,selectedAgendaDate)};
-$('#agendaAddAssignment').onclick=()=>{closeAgenda();openAssignment(null,selectedAgendaDate)};
+$('#agendaAddAssignment').onclick=e=>{
+ e.preventDefault();
+ e.stopPropagation();
+ const dateToSchedule=selectedAgendaDate;
+ closeAgenda();
+ setTimeout(()=>openAssignment(null,dateToSchedule),40);
+};
 $('#nextAssignmentCard').onclick=()=>{const id=$('#nextAssignmentCard').dataset.assignmentId;if(id)openAssignmentDetail(id)};
 $('#assignmentReminderCard').onclick=()=>{const id=$('#assignmentReminderCard').dataset.assignmentId;if(id)openAssignmentDetail(id)};
 $('#assignmentDetailClose').onclick=closeAssignmentDetail;
