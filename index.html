@@ -271,12 +271,15 @@ textarea{min-height:78px;resize:vertical}
           <label data-i18n="date">Date<input id="inlineAssignmentDate" type="date" required></label>
           <label data-i18n="assignment">Assignment
             <select id="inlineAssignmentType">
-              <option>Public witnessing</option>
-              <option>Literature cart</option>
-              <option>Territory</option>
-              <option>Bible study</option>
-              <option>Return visits</option>
-              <option>Other</option>
+              <option value="Public witnessing" data-en="Public witnessing" data-es="Predicación pública">Public witnessing</option>
+              <option value="METRO-SMPW" data-en="METRO-SMPW" data-es="METRO-SMPW">METRO-SMPW</option>
+              <option value="LDC" data-en="LDC" data-es="LDC">LDC</option>
+              <option value="Letter writing" data-en="Letter writing" data-es="Predicación por carta">Letter writing</option>
+              <option value="Informal witnessing" data-en="Informal witnessing" data-es="Predicación informal">Informal witnessing</option>
+              <option value="Territory" data-en="Territory" data-es="Territorio">Territory</option>
+              <option value="Bible study" data-en="Bible study" data-es="Estudio bíblico">Bible study</option>
+              <option value="Return visits" data-en="Return visits" data-es="Revisitas">Return visits</option>
+              <option value="Other" data-en="Other" data-es="Otro">Other</option>
             </select>
           </label>
           <label data-i18n="start">Start<input id="inlineAssignmentStart" type="time" value="09:00"></label>
@@ -354,7 +357,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.9 • Install guidance</div>
+      <div class="notice">Commercial Beta 2.12 • Ministry activity icons</div>
     </div>
   </section>
 </div>
@@ -401,7 +404,7 @@ textarea{min-height:78px;resize:vertical}
     <form id="assignmentForm">
       <div class="form-grid">
         <label data-i18n="date">Date<input id="assignmentDate" type="date" required></label>
-        <label data-i18n="assignment">Assignment<select id="assignmentType"><option>Public witnessing</option><option>Literature cart</option><option>Territory</option><option>Bible study</option><option>Return visits</option><option>Other</option></select></label>
+        <label data-i18n="assignment">Assignment<select id="assignmentType"><option value="Public witnessing" data-en="Public witnessing" data-es="Predicación pública">Public witnessing</option><option value="METRO-SMPW" data-en="METRO-SMPW" data-es="METRO-SMPW">METRO-SMPW</option><option value="LDC" data-en="LDC" data-es="LDC">LDC</option><option value="Letter writing" data-en="Letter writing" data-es="Predicación por carta">Letter writing</option><option value="Informal witnessing" data-en="Informal witnessing" data-es="Predicación informal">Informal witnessing</option><option value="Territory" data-en="Territory" data-es="Territorio">Territory</option><option value="Bible study" data-en="Bible study" data-es="Estudio bíblico">Bible study</option><option value="Return visits" data-en="Return visits" data-es="Revisitas">Return visits</option><option value="Other" data-en="Other" data-es="Otro">Other</option></select></label>
         <label data-i18n="start">Start<input id="assignmentStart" type="time" value="09:00"></label>
         <label data-i18n="end">End<input id="assignmentEnd" type="time" value="11:00"></label>
         <label class="full" data-i18n="location">Location / arrangement<input id="assignmentLocation" type="text"></label>
@@ -515,7 +518,22 @@ partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeT
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
 ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',openSpreadsheet:'Abrir / compartir hoja de cálculo',spreadsheetHelp:'Abre el menú de compartir del teléfono para elegir Google Sheets, Excel, Numbers, Drive, Archivos u otra app compatible.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app',installingTitle:'Instalar Pioneer at a Glance',samsungInstallMessage:'Para una mejor instalación en Android, abre esta página en Google Chrome y elige Instalar app o Añadir a pantalla de inicio. Samsung Internet puede mostrar una advertencia de Play Protect al instalar aplicaciones web.',installHelpTitle:'Cómo instalar esta app',installAndroidHelp:'Android: Abre Pioneer at a Glance en Google Chrome, toca el menú de tres puntos y elige Instalar app o Añadir a pantalla de inicio.',installIphoneHelp:'iPhone/iPad: Abre Pioneer at a Glance en Safari, toca Compartir y luego elige Añadir a pantalla de inicio.'
 }};
-function applyLanguage(){const lang=settings.language||'en';document.documentElement.lang=lang;$$('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(T[lang][key]){if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];else if(el.tagName==='LABEL'&&el.querySelector('input,select,textarea')){const ctl=el.querySelector('input,select,textarea');el.childNodes[0].nodeValue=T[lang][key];}else el.textContent=T[lang][key]}})}
+function applyLanguage(){
+ const lang=settings.language||'en';
+ document.documentElement.lang=lang;
+ $$('[data-i18n]').forEach(el=>{
+   const key=el.dataset.i18n;
+   if(T[lang][key]){
+     if(el.tagName==='INPUT'&&el.type==='button')el.value=T[lang][key];
+     else if(el.tagName==='LABEL'&&el.querySelector('input,select,textarea')){
+       el.childNodes[0].nodeValue=T[lang][key];
+     }else el.textContent=T[lang][key];
+   }
+ });
+ $$('option[data-en][data-es]').forEach(opt=>{
+   opt.textContent=lang==='es'?opt.dataset.es:opt.dataset.en;
+ });
+}
 function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings))}
 const fmt=m=>`${Math.floor(Math.max(0,Math.round(m))/60)}:${String(Math.max(0,Math.round(m))%60).padStart(2,'0')}`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -571,11 +589,43 @@ function renderLog(){
 function activityIcon(type){
  const t=String(type||'').toLowerCase();
  const wrap=(svg,cls='')=>`<span class="activity-icon ${cls}" title="${esc(type)}">${svg}</span>`;
- if(t.includes('public witnessing')||t.includes('literature cart')||t.includes('testificación pública')||t.includes('carrito')){
+ if(t.includes('public witnessing')||t.includes('literature cart')||t.includes('predicación pública')||t.includes('predicacion publica')||t.includes('testificación pública')||t.includes('carrito')){
    return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6h11v10H5z"/><path d="M8 3h8v3"/><path d="M16 10h3v6h-3"/><circle cx="8" cy="19" r="1.5"/><circle cx="17" cy="19" r="1.5"/><path d="M5 16h14"/></svg>`);
  }
+ if(t.includes('metro-smpw')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true">
+     <path d="M3 13V7h4v6M8 13V4h5v9M14 13V6h3v7M18 13V8h3v5"/>
+     <path d="M2.5 13.5h19"/>
+     <path d="M4 16.5c1.5-.8 3.2-.8 5 0v4c-1.8-.8-3.5-.8-5 0z"/>
+     <path d="M20 16.5c-1.5-.8-3.2-.8-5 0v4c1.8-.8 3.5-.8 5 0z"/>
+     <path d="M12 16v5"/>
+   </svg>`);
+ }
+ if(t==='ldc'||t.includes('local design/construction')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true">
+     <path d="M5 15a7 7 0 0 1 14 0" style="fill:#f2c230;stroke:#755b00;stroke-width:1.7"/>
+     <path d="M9 15V9.5M15 15V9.5" style="stroke:#755b00;stroke-width:1.7"/>
+     <path d="M3 15h18v3H3z" style="fill:#f2c230;stroke:#755b00;stroke-width:1.7"/>
+   </svg>`);
+ }
  if(t.includes('letter')||t.includes('carta')){
-   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg>`);
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true">
+     <path d="M7 2.5h8l3 3v9H7z"/>
+     <path d="M15 2.5v3h3"/>
+     <path d="M9.5 8h5M9.5 10.5h4"/>
+     <rect x="3" y="12" width="14" height="9" rx="1.5"/>
+     <path d="m4 13.5 6 4.2 6-4.2"/>
+   </svg>`);
+ }
+ if(t.includes('informal witnessing')||t.includes('predicación informal')||t.includes('predicacion informal')){
+   return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true">
+     <circle cx="7" cy="8" r="2.2"/>
+     <circle cx="17" cy="8" r="2.2"/>
+     <path d="M3.5 18c.3-3 1.7-4.8 3.5-4.8s3.2 1.8 3.5 4.8"/>
+     <path d="M13.5 18c.3-3 1.7-4.8 3.5-4.8s3.2 1.8 3.5 4.8"/>
+     <path d="M3 3.5h6v3H5.5L4 7.8V6.5H3z"/>
+     <path d="M15 3.5h6v3h-1v1.3l-1.5-1.3H15z"/>
+   </svg>`);
  }
  if(t.includes('territory')||t.includes('door')||t.includes('puerta')||t.includes('casa')){
    return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>`);
@@ -748,7 +798,16 @@ function showInlineAssignmentForm(id=null,presetDate=null,returnDate=null){
  assignmentReturnDate=returnDate;
  const a=id?assignments.find(x=>String(x.id)===String(id)):null;
  $('#inlineAssignmentDate').value=a?.date||presetDate||TODAY;
- $('#inlineAssignmentType').value=a?.type||'Public witnessing';
+ const inlineType=$('#inlineAssignmentType');
+ inlineType.querySelectorAll('option[data-legacy="1"]').forEach(o=>o.remove());
+ if(a?.type && ![...inlineType.options].some(o=>o.value===a.type)){
+   const legacy=document.createElement('option');
+   legacy.value=a.type;
+   legacy.textContent=a.type;
+   legacy.dataset.legacy='1';
+   inlineType.appendChild(legacy);
+ }
+ inlineType.value=a?.type||'Public witnessing';
  $('#inlineAssignmentStart').value=a?.start||'09:00';
  $('#inlineAssignmentEnd').value=a?.end||'11:00';
  $('#inlineAssignmentLocation').value=a?.location||'';
@@ -773,7 +832,16 @@ function openAssignment(id=null,presetDate=null){
  editAssignmentId=id;
  const a=id?assignments.find(x=>String(x.id)===String(id)):null;
  $('#assignmentDate').value=a?.date||presetDate||TODAY;
- $('#assignmentType').value=a?.type||'Public witnessing';
+ const modalType=$('#assignmentType');
+ modalType.querySelectorAll('option[data-legacy="1"]').forEach(o=>o.remove());
+ if(a?.type && ![...modalType.options].some(o=>o.value===a.type)){
+   const legacy=document.createElement('option');
+   legacy.value=a.type;
+   legacy.textContent=a.type;
+   legacy.dataset.legacy='1';
+   modalType.appendChild(legacy);
+ }
+ modalType.value=a?.type||'Public witnessing';
  $('#assignmentStart').value=a?.start||'09:00';
  $('#assignmentEnd').value=a?.end||'11:00';
  $('#assignmentLocation').value=a?.location||'';
