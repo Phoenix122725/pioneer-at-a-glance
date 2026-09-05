@@ -162,7 +162,73 @@ textarea{min-height:78px;resize:vertical}
 .history-text{font-size:.78rem;color:var(--ink);line-height:1.4}
 .history-actions{display:flex;gap:6px;margin-top:6px}
 .history-editor{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
+
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#101713;
+  --panel:#17201b;
+  --card:#1d2822;
+  --ink:#edf4ef;
+  --muted:#a7b5ad;
+  --line:#34443a;
+  --green:#47775f;
+  --green2:#6d9c83;
+  --sage:#243d31;
+  --sage2:#1a2d24;
+  --gold:#d2ad62;
+  --gold2:#3b3020;
+  --rose:#342724;
+  --danger:#ea9494;
+  --shadow:0 8px 26px rgba(0,0,0,.28)
+}
+html[data-theme="dark"] body{background:var(--bg);color:var(--ink)}
+html[data-theme="dark"] .hero{background:linear-gradient(145deg,#1c2821,#17251d);border-color:var(--line)}
+html[data-theme="dark"] .progress{background:#29382f}
+html[data-theme="dark"] .mini-progress{background:#29382f}
+html[data-theme="dark"] input,
+html[data-theme="dark"] select,
+html[data-theme="dark"] textarea{background:#151f19;color:var(--ink);border-color:var(--line)}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder{color:#7f9187}
+html[data-theme="dark"] .entry-card,
+html[data-theme="dark"] .assign-card,
+html[data-theme="dark"] .day,
+html[data-theme="dark"] .month-card{background:var(--card)}
+html[data-theme="dark"] .day.empty{background:transparent}
+html[data-theme="dark"] .bottomnav{background:rgba(16,23,19,.96)}
+html[data-theme="dark"] .btn.gold{background:var(--gold2);border-color:#715d34;color:#f2d99f}
+html[data-theme="dark"] .daybadge{background:var(--gold2);color:#f0d69a}
+html[data-theme="dark"] .dayassign{background:#332b1d}
+html[data-theme="dark"] .reminder-card{background:#30291b;border-color:#695a35}
+html[data-theme="dark"] .reminder-card .r-title{color:#f0d99d}
+html[data-theme="dark"] .activity-icon{background:#342c1e;border-color:#655635;color:#efd28e}
+html[data-theme="dark"] .install-tip{background:#332b1c;border-color:#7b6635;color:#f4e6bd}
+html[data-theme="dark"] .return-due{background:var(--gold2);color:#f0d69a}
+html[data-theme="dark"] .return-due.overdue{background:#3b2526;color:#f0a5a5}
+html[data-theme="dark"] .modal{background:rgba(0,0,0,.62)}
+html[data-theme="dark"] .disclaimer{background:var(--sage2)}
+html[data-theme="dark"] option{background:#151f19;color:var(--ink)}
+
+.home-section-heading{display:flex;align-items:center;gap:8px}
+.home-jump-icon{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--sage2);color:var(--green);display:inline-flex;align-items:center;justify-content:center;padding:0;cursor:pointer;flex:0 0 auto}
+.home-jump-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.home-jump-icon:active{transform:scale(.96)}
+html[data-theme="dark"] .home-jump-icon{background:#22362b;color:#9cc8b0;border-color:#3d5849}
 </style>
+
+<script>
+(function(){
+  try{
+    const s=JSON.parse(localStorage.getItem('pag.settings.v1')||'{}');
+    const pref=s.appearance||'light';
+    const dark=pref==='dark'||(pref==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.dataset.theme=dark?'dark':'light';
+  }catch(_){
+    document.documentElement.dataset.theme='light';
+  }
+})();
+</script>
+
 </head>
 <body>
 <div class="app">
@@ -250,7 +316,18 @@ textarea{min-height:78px;resize:vertical}
 
     <div class="section">
       <div class="section-title">
-        <h2 data-i18n="returnVisitsTitle">Return Visits</h2>
+        <div class="home-section-heading">
+          <button class="home-jump-icon" type="button" data-go="returnVisitsScreen" data-i18n-aria="openReturnVisits" aria-label="Open Return Visits" title="Return Visits">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="9" cy="7" r="2.5"/>
+              <path d="M4.5 17c.5-3.2 2.1-5 4.5-5s4 1.8 4.5 5"/>
+              <path d="M20 8a5.5 5.5 0 0 0-5.2-3.5"/>
+              <path d="M17.5 2.8 14.8 4.5l1.7 2.7"/>
+              <path d="M15 13.5a5.5 5.5 0 0 0 5-3"/>
+            </svg>
+          </button>
+          <h2 data-i18n="returnVisitsTitle">Return Visits</h2>
+        </div>
         <button class="linkbtn" data-go="returnVisitsScreen" data-i18n="viewAll">View all</button>
       </div>
       <div id="homeReturnVisits"></div>
@@ -373,6 +450,13 @@ textarea{min-height:78px;resize:vertical}
       <div class="setting-row"><label data-i18n="weeklyGoal">Weekly goal</label><input id="weeklyGoal" type="number" min="1" max="60" step=".5" value="12.5"></div>
       <div class="setting-row"><label data-i18n="serviceYearGoal">Service-year goal</label><input id="serviceYearGoal" type="number" min="1" max="2000" step="1" value="600"></div>
       <div class="setting-row"><label data-i18n="language">Language</label><select id="language"><option value="en">English</option><option value="es">Español</option></select></div>
+      <div class="setting-row"><label data-i18n="appearance">Appearance</label>
+        <select id="appearance">
+          <option value="light" data-en="Light" data-es="Claro">Light</option>
+          <option value="dark" data-en="Dark" data-es="Oscuro">Dark</option>
+          <option value="system" data-en="Use phone setting" data-es="Usar ajuste del teléfono">Use phone setting</option>
+        </select>
+      </div>
       <div class="setting-row"><label data-i18n="assignmentReminders">Assignment reminders</label>
         <select id="assignmentReminderHours">
           <option value="0">Off</option>
@@ -418,7 +502,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.14 • Return Visit History</div>
+      <div class="notice">Commercial Beta 2.16 • Home Return Visits shortcut</div>
     </div>
   </section>
 </div>
@@ -595,8 +679,9 @@ const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify
 let entries=read(KE.entries,null), assignments=read(KE.assign,null), settings=read(KE.settings,null), returnVisits=read(KE.visits,[]);
 if(entries===null){entries=read(LEGACY.entries,[]);localStorage.setItem(KE.entries,JSON.stringify(entries))}
 if(assignments===null){assignments=read(LEGACY.assign,[]);localStorage.setItem(KE.assign,JSON.stringify(assignments))}
-if(settings===null){const old=read(LEGACY.settings,{});settings={monthlyGoal:old.monthlyGoal||50,weeklyGoal:old.weeklyGoal||12.5,serviceYearGoal:600,language:'en',assignmentReminderHours:24};localStorage.setItem(KE.settings,JSON.stringify(settings))}
+if(settings===null){const old=read(LEGACY.settings,{});settings={monthlyGoal:old.monthlyGoal||50,weeklyGoal:old.weeklyGoal||12.5,serviceYearGoal:600,language:'en',appearance:'light',assignmentReminderHours:24};localStorage.setItem(KE.settings,JSON.stringify(settings))}
 if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
+if(!settings.appearance)settings.appearance='light';
 let editEntryId=null, editAssignmentId=null, editReturnVisitId=null, pendingReturnVisitCoords=null, pendingReturnVisitHistory=[], nearbyOrigin=null, returnVisitSort='date', selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, entryReturnDate=null, deferredPrompt=null;
 
 const T={
@@ -605,7 +690,7 @@ tagline:'Ministry planning, all in one place',thisMonth:'This month',remaining:'
 serviceDays:'Service days',avgDay:'Avg / service day',thisMonthLower:'this month',quickAdd:'Quick add',addHours:'Add hours',
 nextAssignment:'Next assignment',viewAll:'View all',noUpcoming:'No upcoming assignments.',recentActivity:'Recent activity',month:'Month',
 today:'Today',hoursLog:'Hours log',add:'Add',assignments:'Assignments',schedule:'Schedule',serviceYearHistory:'Service-year history',
-goalsSettings:'Goals & settings',monthlyGoal:'Monthly goal',weeklyGoal:'Weekly goal',serviceYearGoal:'Service-year goal',language:'Language',
+goalsSettings:'Goals & settings',monthlyGoal:'Monthly goal',weeklyGoal:'Weekly goal',serviceYearGoal:'Service-year goal',language:'Language',appearance:'Appearance',
 saveSettings:'Save settings',backupRestore:'Backup & restore',exportCsv:'Export CSV backup',importCsv:'Import CSV',about:'About',
 disclaimer:'Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.',
 home:'Home',calendar:'Calendar',log:'Log',more:'More',addMinistryTime:'Add ministry time',date:'Date',type:'Type',hours:'Hours',
@@ -620,7 +705,7 @@ tagline:'Planifica tu ministerio en un solo lugar',thisMonth:'Este mes',remainin
 serviceDays:'Días de servicio',avgDay:'Promedio / día',thisMonthLower:'este mes',quickAdd:'Añadir rápido',addHours:'Añadir horas',
 nextAssignment:'Próxima asignación',viewAll:'Ver todo',noUpcoming:'No hay asignaciones próximas.',recentActivity:'Actividad reciente',month:'Mes',
 today:'Hoy',hoursLog:'Registro de horas',add:'Añadir',assignments:'Asignaciones',schedule:'Programar',serviceYearHistory:'Historial del año de servicio',
-goalsSettings:'Metas y ajustes',monthlyGoal:'Meta mensual',weeklyGoal:'Meta semanal',serviceYearGoal:'Meta del año de servicio',language:'Idioma',
+goalsSettings:'Metas y ajustes',monthlyGoal:'Meta mensual',weeklyGoal:'Meta semanal',serviceYearGoal:'Meta del año de servicio',language:'Idioma',appearance:'Apariencia',
 saveSettings:'Guardar ajustes',backupRestore:'Copia de seguridad',exportCsv:'Exportar copia CSV',importCsv:'Importar CSV',about:'Acerca de',
 disclaimer:'Pioneer at a Glance es una herramienta independiente para organizar el ministerio. No está afiliada ni respaldada por los Testigos de Jehová ni por Watch Tower Bible and Tract Society.',
 home:'Inicio',calendar:'Calendario',log:'Registro',more:'Más',addMinistryTime:'Añadir tiempo de ministerio',date:'Fecha',type:'Tipo',hours:'Horas',
@@ -630,6 +715,16 @@ partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeT
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
 ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, revisitas, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',openSpreadsheet:'Abrir / compartir hoja de cálculo',spreadsheetHelp:'Abre el menú de compartir del teléfono para elegir Google Sheets, Excel, Numbers, Drive, Archivos u otra app compatible.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app',installingTitle:'Instalar Pioneer at a Glance',samsungInstallMessage:'Para una mejor instalación en Android, abre esta página en Google Chrome y elige Instalar app o Añadir a pantalla de inicio. Samsung Internet puede mostrar una advertencia de Play Protect al instalar aplicaciones web.',installHelpTitle:'Cómo instalar esta app',installAndroidHelp:'Android: Abre Pioneer at a Glance en Google Chrome, toca el menú de tres puntos y elige Instalar app o Añadir a pantalla de inicio.',installIphoneHelp:'iPhone/iPad: Abre Pioneer at a Glance en Safari, toca Compartir y luego elige Añadir a pantalla de inicio.',returnVisitsTitle:'Revisitas',returnVisitsHelp:'Lleva un registro de las personas interesadas en el mensaje y de cuándo te gustaría volver.',locationPrivacy:'La ubicación es opcional. Si la guardas, las coordenadas permanecen con los datos de la app en este dispositivo y solo se usan para ordenar revisitas cercanas.',addInterestedPerson:'Añadir persona interesada',openReturnVisits:'Abrir Revisitas',addReturnVisit:'Añadir revisita',editReturnVisit:'Editar revisita',dateVisited:'Fecha de visita',returnDate:'Fecha para volver',personName:'Nombre',address:'Dirección',conversationNotes:'Notas de la conversación',publicationScripture:'Publicación y/o texto bíblico',nearbyLocation:'Ubicación cercana',locationNotSaved:'Ubicación no guardada.',saveCurrentLocation:'Guardar ubicación actual',locationSaved:'Ubicación guardada.',showNearby:'Ver cercanas',sortByReturnDate:'Fecha para volver',searchReturnVisits:'Buscar revisitas',noReturnVisits:'Aún no hay revisitas guardadas.',noMatchingReturnVisits:'No hay revisitas que coincidan.',locationPermissionDenied:'No se pudo obtener la ubicación. Revisa el permiso de ubicación del teléfono e inténtalo de nuevo.',findingLocation:'Buscando tu ubicación…',nearbySorted:'Las revisitas con ubicación guardada están ordenadas por distancia.',dueToday:'Para hoy',overdue:'Atrasada',nextReturn:'Próxima revisita',visited:'Visitada',publicationOrScripture:'Publicación / texto bíblico',returnVisitTopic:'Tema',conversationHistory:'Historial de conversaciones',conversationDate:'Fecha de conversación',historyNotes:'Notas de la conversación',historyPublication:'Publicación y/o texto bíblico',addToHistory:'Añadir al historial de conversaciones',noConversationHistory:'Aún no hay historial de conversaciones.',printReturnVisits:'Imprimir / guardar lista de revisitas',printPrivacyNote:'Esta lista puede contener información personal. Guárdala o compártela solo donde tú decidas.',topicLabel:'Tema',historyLabel:'Historial de conversaciones'
 }};
+
+function applyAppearance(){
+ const pref=settings.appearance||'light';
+ const systemDark=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+ const dark=pref==='dark'||(pref==='system'&&systemDark);
+ document.documentElement.dataset.theme=dark?'dark':'light';
+ const meta=document.querySelector('meta[name="theme-color"]');
+ if(meta)meta.setAttribute('content',dark?'#101713':'#315746');
+}
+
 function applyLanguage(){
  const lang=settings.language||'en';
  document.documentElement.lang=lang;
@@ -644,6 +739,13 @@ function applyLanguage(){
  });
  $$('option[data-en][data-es]').forEach(opt=>{
    opt.textContent=lang==='es'?opt.dataset.es:opt.dataset.en;
+ });
+ $$('[data-i18n-aria]').forEach(el=>{
+   const key=el.dataset.i18nAria;
+   if(T[lang][key]){
+     el.setAttribute('aria-label',T[lang][key]);
+     el.setAttribute('title',T[lang][key]);
+   }
  });
 }
 function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings));localStorage.setItem(KE.visits,JSON.stringify(returnVisits))}
@@ -929,7 +1031,7 @@ function assignmentCard(a){
 }
 function renderAssignments(){const list=[...assignments].sort((a,b)=>a.date.localeCompare(b.date)||String(a.start).localeCompare(String(b.start)));$('#assignmentCards').innerHTML=list.length?list.map(assignmentCard).join(''):`<div class="card"><div class="notice">${T[settings.language].noUpcoming}</div></div>`}
 function renderMore(){
- $('#monthlyGoal').value=settings.monthlyGoal;$('#weeklyGoal').value=settings.weeklyGoal;$('#serviceYearGoal').value=settings.serviceYearGoal;$('#language').value=settings.language;$('#assignmentReminderHours').value=String(settings.assignmentReminderHours??24);
+ $('#monthlyGoal').value=settings.monthlyGoal;$('#weeklyGoal').value=settings.weeklyGoal;$('#serviceYearGoal').value=settings.serviceYearGoal;$('#language').value=settings.language;$('#appearance').value=settings.appearance||'light';$('#assignmentReminderHours').value=String(settings.assignmentReminderHours??24);
  const sy=syBounds();let h='';for(let i=0;i<12;i++){const d=new Date(Date.UTC(+sy.start.slice(0,4),8+i,1)),ym=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}`,m=entries.filter(e=>e.date.slice(0,7)===ym).reduce((s,e)=>s+e.minutes,0);h+=`<div class="month-card"><div class="month">${monthLabel(ym)}</div><div class="hours">${fmt(m)}</div></div>`}$('#historyGrid').innerHTML=h;
 }
 
@@ -1105,7 +1207,15 @@ document.addEventListener('click',e=>{
  }
 });
 
-function renderAll(){applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderReturnVisits();renderMore();setSpreadsheetPlatformHelp();updateInstallGuidance();persist()}
+
+if(window.matchMedia){
+ const themeMedia=window.matchMedia('(prefers-color-scheme: dark)');
+ const onThemeChange=()=>{if((settings.appearance||'light')==='system')applyAppearance()};
+ if(themeMedia.addEventListener)themeMedia.addEventListener('change',onThemeChange);
+ else if(themeMedia.addListener)themeMedia.addListener(onThemeChange);
+}
+
+function renderAll(){applyAppearance();applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderReturnVisits();renderMore();setSpreadsheetPlatformHelp();updateInstallGuidance();persist()}
 
 function openEntry(id=null,quick=0,presetDate=null){
  editEntryId=id;
@@ -1321,7 +1431,15 @@ $('#homeSaveGoals').onclick=()=>{
 };
 
 $('#logMonth').value=TODAY.slice(0,7);$('#calendarMonth').value=TODAY.slice(0,7);$('#logMonth').onchange=renderLog;$('#calendarMonth').onchange=renderCalendar;$('#calendarTodayBtn').onclick=()=>{$('#calendarMonth').value=TODAY.slice(0,7);renderCalendar()};
-$('#saveSettings').onclick=()=>{settings={...settings,monthlyGoal:+$('#monthlyGoal').value||50,weeklyGoal:+$('#weeklyGoal').value||12.5,serviceYearGoal:+$('#serviceYearGoal').value||600,language:$('#language').value,assignmentReminderHours:+$('#assignmentReminderHours').value||0};persist();renderAll();$('#settingsNotice').textContent=settings.language==='es'?'Ajustes guardados.':'Settings saved.'};
+
+$('#appearance').addEventListener('change',()=>{
+ const original=settings.appearance;
+ settings.appearance=$('#appearance').value||'light';
+ applyAppearance();
+ settings.appearance=original;
+});
+
+$('#saveSettings').onclick=()=>{settings={...settings,monthlyGoal:+$('#monthlyGoal').value||50,weeklyGoal:+$('#weeklyGoal').value||12.5,serviceYearGoal:+$('#serviceYearGoal').value||600,language:$('#language').value,appearance:$('#appearance').value||'light',assignmentReminderHours:+$('#assignmentReminderHours').value||0};persist();renderAll();$('#settingsNotice').textContent=settings.language==='es'?'Ajustes guardados.':'Settings saved.'};
 
 function csvEsc(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
 
@@ -1563,6 +1681,7 @@ $('#restoreJsonFile').onchange=async e=>{
      returnVisits=Array.isArray(data.returnVisits)?data.returnVisits:[];
      settings=data.settings;
      if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
+     if(!settings.appearance)settings.appearance='light';
      persist();
      renderAll();
      $('#backupNotice').textContent=settings.language==='es'?'Copia restaurada.':'Backup restored.';
