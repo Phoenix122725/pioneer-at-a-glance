@@ -214,6 +214,8 @@ html[data-theme="dark"] option{background:#151f19;color:var(--ink)}
 .home-jump-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .home-jump-icon:active{transform:scale(.96)}
 html[data-theme="dark"] .home-jump-icon{background:#22362b;color:#9cc8b0;border-color:#3d5849}
+.logged-hours-badge{display:inline-flex;align-items:center;gap:4px;margin-top:6px;border-radius:999px;padding:4px 8px;background:var(--sage);color:var(--green);font-size:.69rem;font-weight:900}
+html[data-theme="dark"] .logged-hours-badge{background:#22382c;color:#a9d3bb}
 </style>
 
 <script>
@@ -354,6 +356,12 @@ html[data-theme="dark"] .home-jump-icon{background:#22362b;color:#9cc8b0;border-
   <!-- LOG -->
   <section id="logScreen" class="screen">
     <div class="section-title"><h2 data-i18n="hoursLog">Hours log</h2><button id="logAddBtn" class="btn primary small" type="button" data-i18n="add">Add</button></div>
+
+    <div class="return-toolbar" style="margin:8px 0 12px">
+      <button id="logHoursShortcut" class="btn primary" type="button" data-i18n="addHours">Add hours</button>
+      <button id="logReturnVisitShortcut" class="btn" type="button" data-i18n="logReturnVisit">Log Return Visit</button>
+    </div>
+
     <div id="logMonthControls" class="card" style="margin-bottom:10px">
       <label data-i18n="month">Month<input id="logMonth" type="month"></label>
       <div id="logSummary" class="notice"></div>
@@ -502,7 +510,7 @@ html[data-theme="dark"] .home-jump-icon{background:#22362b;color:#9cc8b0;border-
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.16 • Home Return Visits shortcut</div>
+      <div class="notice">Commercial Beta 2.18 • Log Hours from Schedule</div>
     </div>
   </section>
 </div>
@@ -647,6 +655,7 @@ html[data-theme="dark"] .home-jump-icon{background:#22362b;color:#9cc8b0;border-
     <h2 id="assignmentDetailTitle">Assignment details</h2>
     <div id="assignmentDetailBody" class="detail-list"></div>
     <div class="card-actions">
+      <button id="assignmentDetailLogHours" class="btn primary" type="button" data-i18n="logHours">Log Hours</button>
       <button id="assignmentDetailEdit" class="btn gold" type="button" data-i18n="edit">Edit</button>
       <button id="assignmentDetailClose" class="btn" type="button" data-i18n="close">Close</button>
     </div>
@@ -682,7 +691,7 @@ if(assignments===null){assignments=read(LEGACY.assign,[]);localStorage.setItem(K
 if(settings===null){const old=read(LEGACY.settings,{});settings={monthlyGoal:old.monthlyGoal||50,weeklyGoal:old.weeklyGoal||12.5,serviceYearGoal:600,language:'en',appearance:'light',assignmentReminderHours:24};localStorage.setItem(KE.settings,JSON.stringify(settings))}
 if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
 if(!settings.appearance)settings.appearance='light';
-let editEntryId=null, editAssignmentId=null, editReturnVisitId=null, pendingReturnVisitCoords=null, pendingReturnVisitHistory=[], nearbyOrigin=null, returnVisitSort='date', selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, entryReturnDate=null, deferredPrompt=null;
+let editEntryId=null, editAssignmentId=null, editReturnVisitId=null, pendingAssignmentLogId=null, pendingReturnVisitCoords=null, pendingReturnVisitHistory=[], nearbyOrigin=null, returnVisitSort='date', selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, entryReturnDate=null, deferredPrompt=null;
 
 const T={
 en:{
@@ -698,7 +707,7 @@ minutes:'Minutes',detail:'With / study / territory',experience:'Ministry experie
 scheduleAssignment:'Schedule assignment',assignment:'Assignment',start:'Start',end:'End',location:'Location / arrangement',
 partner:'Partner / group',welcome:'Welcome to Pioneer at a Glance',welcomeText:'A simple place to plan your ministry and see your progress without digging through notes or spreadsheets.',
 ob1:'Track daily hours and your 50-hour monthly goal.',ob2:'See weekly and September–August service-year progress.',ob3:'Schedule public witnessing and other assignments.',
-ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly',backupApp:'Back Up My App',backupAppHelp:'Best for protecting everything: hours, assignments, return visits, notes, goals, and settings.',exportSpreadsheet:'Export Spreadsheet',openSpreadsheet:'Open / Share Spreadsheet',spreadsheetHelp:'Opens your phone’s share menu so you can choose Google Sheets, Excel, Numbers, Drive, Files, or another compatible app.',createPdf:'Create PDF Report',pdfHelp:'Creates a printable report for the month currently selected in your Hours Log.',restoreBackup:'Restore App Backup',installingTitle:'Installing Pioneer at a Glance',samsungInstallMessage:'For the best installation experience on Android, open this page in Google Chrome and choose Install app or Add to Home screen. Samsung Internet may display a Play Protect warning when installing web apps.',installHelpTitle:'How to install this app',installAndroidHelp:'Android: Open Pioneer at a Glance in Google Chrome, tap the three-dot menu, then choose Install app or Add to Home screen.',installIphoneHelp:'iPhone/iPad: Open Pioneer at a Glance in Safari, tap Share, then choose Add to Home Screen.',returnVisitsTitle:'Return Visits',returnVisitsHelp:'Keep track of people interested in the message and when you would like to return.',locationPrivacy:'Location is optional. If you save it, the coordinates stay with your app data on this device and are used only to sort nearby return visits.',addInterestedPerson:'Add interested person',openReturnVisits:'Open Return Visits',addReturnVisit:'Add return visit',editReturnVisit:'Edit return visit',dateVisited:'Date visited',returnDate:'Return date',personName:'Name',address:'Address',conversationNotes:'Conversation notes',publicationScripture:'Publication and/or Bible scripture',nearbyLocation:'Nearby location',locationNotSaved:'Location not saved.',saveCurrentLocation:'Save current location',locationSaved:'Location saved.',showNearby:'Show nearby',sortByReturnDate:'Return date',searchReturnVisits:'Search return visits',noReturnVisits:'No return visits saved yet.',noMatchingReturnVisits:'No matching return visits.',locationPermissionDenied:'Location was not available. Check your phone location permission and try again.',findingLocation:'Finding your location…',nearbySorted:'Return visits with saved locations are sorted by distance.',dueToday:'Due today',overdue:'Overdue',nextReturn:'Next return',visited:'Visited',publicationOrScripture:'Publication / scripture',returnVisitTopic:'Topic',conversationHistory:'Conversation History',conversationDate:'Conversation date',historyNotes:'Conversation notes',historyPublication:'Publication and/or Bible scripture',addToHistory:'Add to conversation history',noConversationHistory:'No conversation history yet.',printReturnVisits:'Print / Save Return Visit List',printPrivacyNote:'This list may contain personal information. Save or share it only where you intend.',topicLabel:'Topic',historyLabel:'Conversation history'
+ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',logHours:'Log Hours',editLoggedHours:'View / Edit Logged Hours',hoursLoggedCheck:'Hours logged ✓',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly',backupApp:'Back Up My App',backupAppHelp:'Best for protecting everything: hours, assignments, return visits, notes, goals, and settings.',exportSpreadsheet:'Export Spreadsheet',openSpreadsheet:'Open / Share Spreadsheet',spreadsheetHelp:'Opens your phone’s share menu so you can choose Google Sheets, Excel, Numbers, Drive, Files, or another compatible app.',createPdf:'Create PDF Report',pdfHelp:'Creates a printable report for the month currently selected in your Hours Log.',restoreBackup:'Restore App Backup',installingTitle:'Installing Pioneer at a Glance',samsungInstallMessage:'For the best installation experience on Android, open this page in Google Chrome and choose Install app or Add to Home screen. Samsung Internet may display a Play Protect warning when installing web apps.',installHelpTitle:'How to install this app',installAndroidHelp:'Android: Open Pioneer at a Glance in Google Chrome, tap the three-dot menu, then choose Install app or Add to Home screen.',installIphoneHelp:'iPhone/iPad: Open Pioneer at a Glance in Safari, tap Share, then choose Add to Home Screen.',returnVisitsTitle:'Return Visits',returnVisitsHelp:'Keep track of people interested in the message and when you would like to return.',locationPrivacy:'Location is optional. If you save it, the coordinates stay with your app data on this device and are used only to sort nearby return visits.',addInterestedPerson:'Add interested person',logReturnVisit:'Log Return Visit',openReturnVisits:'Open Return Visits',addReturnVisit:'Add return visit',editReturnVisit:'Edit return visit',dateVisited:'Date visited',returnDate:'Return date',personName:'Name',address:'Address',conversationNotes:'Conversation notes',publicationScripture:'Publication and/or Bible scripture',nearbyLocation:'Nearby location',locationNotSaved:'Location not saved.',saveCurrentLocation:'Save current location',locationSaved:'Location saved.',showNearby:'Show nearby',sortByReturnDate:'Return date',searchReturnVisits:'Search return visits',noReturnVisits:'No return visits saved yet.',noMatchingReturnVisits:'No matching return visits.',locationPermissionDenied:'Location was not available. Check your phone location permission and try again.',findingLocation:'Finding your location…',nearbySorted:'Return visits with saved locations are sorted by distance.',dueToday:'Due today',overdue:'Overdue',nextReturn:'Next return',visited:'Visited',publicationOrScripture:'Publication / scripture',returnVisitTopic:'Topic',conversationHistory:'Conversation History',conversationDate:'Conversation date',historyNotes:'Conversation notes',historyPublication:'Publication and/or Bible scripture',addToHistory:'Add to conversation history',noConversationHistory:'No conversation history yet.',printReturnVisits:'Print / Save Return Visit List',printPrivacyNote:'This list may contain personal information. Save or share it only where you intend.',topicLabel:'Topic',historyLabel:'Conversation history'
 },
 es:{
 tagline:'Planifica tu ministerio en un solo lugar',thisMonth:'Este mes',remaining:'Restante',thisWeek:'Esta semana',serviceYear:'Año de servicio',
@@ -713,7 +722,7 @@ minutes:'Minutos',detail:'Con / estudio / territorio',experience:'Experiencia en
 scheduleAssignment:'Programar asignación',assignment:'Asignación',start:'Inicio',end:'Fin',location:'Lugar / arreglo',
 partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeText:'Un lugar sencillo para organizar tu ministerio y ver tu progreso sin buscar entre notas u hojas de cálculo.',
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
-ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, revisitas, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',openSpreadsheet:'Abrir / compartir hoja de cálculo',spreadsheetHelp:'Abre el menú de compartir del teléfono para elegir Google Sheets, Excel, Numbers, Drive, Archivos u otra app compatible.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app',installingTitle:'Instalar Pioneer at a Glance',samsungInstallMessage:'Para una mejor instalación en Android, abre esta página en Google Chrome y elige Instalar app o Añadir a pantalla de inicio. Samsung Internet puede mostrar una advertencia de Play Protect al instalar aplicaciones web.',installHelpTitle:'Cómo instalar esta app',installAndroidHelp:'Android: Abre Pioneer at a Glance en Google Chrome, toca el menú de tres puntos y elige Instalar app o Añadir a pantalla de inicio.',installIphoneHelp:'iPhone/iPad: Abre Pioneer at a Glance en Safari, toca Compartir y luego elige Añadir a pantalla de inicio.',returnVisitsTitle:'Revisitas',returnVisitsHelp:'Lleva un registro de las personas interesadas en el mensaje y de cuándo te gustaría volver.',locationPrivacy:'La ubicación es opcional. Si la guardas, las coordenadas permanecen con los datos de la app en este dispositivo y solo se usan para ordenar revisitas cercanas.',addInterestedPerson:'Añadir persona interesada',openReturnVisits:'Abrir Revisitas',addReturnVisit:'Añadir revisita',editReturnVisit:'Editar revisita',dateVisited:'Fecha de visita',returnDate:'Fecha para volver',personName:'Nombre',address:'Dirección',conversationNotes:'Notas de la conversación',publicationScripture:'Publicación y/o texto bíblico',nearbyLocation:'Ubicación cercana',locationNotSaved:'Ubicación no guardada.',saveCurrentLocation:'Guardar ubicación actual',locationSaved:'Ubicación guardada.',showNearby:'Ver cercanas',sortByReturnDate:'Fecha para volver',searchReturnVisits:'Buscar revisitas',noReturnVisits:'Aún no hay revisitas guardadas.',noMatchingReturnVisits:'No hay revisitas que coincidan.',locationPermissionDenied:'No se pudo obtener la ubicación. Revisa el permiso de ubicación del teléfono e inténtalo de nuevo.',findingLocation:'Buscando tu ubicación…',nearbySorted:'Las revisitas con ubicación guardada están ordenadas por distancia.',dueToday:'Para hoy',overdue:'Atrasada',nextReturn:'Próxima revisita',visited:'Visitada',publicationOrScripture:'Publicación / texto bíblico',returnVisitTopic:'Tema',conversationHistory:'Historial de conversaciones',conversationDate:'Fecha de conversación',historyNotes:'Notas de la conversación',historyPublication:'Publicación y/o texto bíblico',addToHistory:'Añadir al historial de conversaciones',noConversationHistory:'Aún no hay historial de conversaciones.',printReturnVisits:'Imprimir / guardar lista de revisitas',printPrivacyNote:'Esta lista puede contener información personal. Guárdala o compártela solo donde tú decidas.',topicLabel:'Tema',historyLabel:'Historial de conversaciones'
+ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',logHours:'Registrar horas',editLoggedHours:'Ver / editar horas registradas',hoursLoggedCheck:'Horas registradas ✓',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, revisitas, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',openSpreadsheet:'Abrir / compartir hoja de cálculo',spreadsheetHelp:'Abre el menú de compartir del teléfono para elegir Google Sheets, Excel, Numbers, Drive, Archivos u otra app compatible.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app',installingTitle:'Instalar Pioneer at a Glance',samsungInstallMessage:'Para una mejor instalación en Android, abre esta página en Google Chrome y elige Instalar app o Añadir a pantalla de inicio. Samsung Internet puede mostrar una advertencia de Play Protect al instalar aplicaciones web.',installHelpTitle:'Cómo instalar esta app',installAndroidHelp:'Android: Abre Pioneer at a Glance en Google Chrome, toca el menú de tres puntos y elige Instalar app o Añadir a pantalla de inicio.',installIphoneHelp:'iPhone/iPad: Abre Pioneer at a Glance en Safari, toca Compartir y luego elige Añadir a pantalla de inicio.',returnVisitsTitle:'Revisitas',returnVisitsHelp:'Lleva un registro de las personas interesadas en el mensaje y de cuándo te gustaría volver.',locationPrivacy:'La ubicación es opcional. Si la guardas, las coordenadas permanecen con los datos de la app en este dispositivo y solo se usan para ordenar revisitas cercanas.',addInterestedPerson:'Añadir persona interesada',logReturnVisit:'Registrar revisita',openReturnVisits:'Abrir Revisitas',addReturnVisit:'Añadir revisita',editReturnVisit:'Editar revisita',dateVisited:'Fecha de visita',returnDate:'Fecha para volver',personName:'Nombre',address:'Dirección',conversationNotes:'Notas de la conversación',publicationScripture:'Publicación y/o texto bíblico',nearbyLocation:'Ubicación cercana',locationNotSaved:'Ubicación no guardada.',saveCurrentLocation:'Guardar ubicación actual',locationSaved:'Ubicación guardada.',showNearby:'Ver cercanas',sortByReturnDate:'Fecha para volver',searchReturnVisits:'Buscar revisitas',noReturnVisits:'Aún no hay revisitas guardadas.',noMatchingReturnVisits:'No hay revisitas que coincidan.',locationPermissionDenied:'No se pudo obtener la ubicación. Revisa el permiso de ubicación del teléfono e inténtalo de nuevo.',findingLocation:'Buscando tu ubicación…',nearbySorted:'Las revisitas con ubicación guardada están ordenadas por distancia.',dueToday:'Para hoy',overdue:'Atrasada',nextReturn:'Próxima revisita',visited:'Visitada',publicationOrScripture:'Publicación / texto bíblico',returnVisitTopic:'Tema',conversationHistory:'Historial de conversaciones',conversationDate:'Fecha de conversación',historyNotes:'Notas de la conversación',historyPublication:'Publicación y/o texto bíblico',addToHistory:'Añadir al historial de conversaciones',noConversationHistory:'Aún no hay historial de conversaciones.',printReturnVisits:'Imprimir / guardar lista de revisitas',printPrivacyNote:'Esta lista puede contener información personal. Guárdala o compártela solo donde tú decidas.',topicLabel:'Tema',historyLabel:'Historial de conversaciones'
 }};
 
 function applyAppearance(){
@@ -1026,8 +1035,49 @@ function renderCalendar(){
  }
  $('#calendar').innerHTML=h;
 }
+
+function assignmentDurationMinutes(a){
+ if(!a?.start||!a?.end)return 0;
+ const [sh,sm]=String(a.start).split(':').map(Number);
+ const [eh,em]=String(a.end).split(':').map(Number);
+ if(!Number.isFinite(sh)||!Number.isFinite(sm)||!Number.isFinite(eh)||!Number.isFinite(em))return 0;
+ let mins=(eh*60+em)-(sh*60+sm);
+ if(mins<0)mins+=1440;
+ return Math.max(0,mins);
+}
+function linkedEntryForAssignment(id){
+ return entries.find(e=>e.assignmentId!==undefined&&e.assignmentId!==null&&String(e.assignmentId)===String(id))||null;
+}
+function openAssignmentHours(id,fromAgenda=false){
+ const a=assignments.find(x=>String(x.id)===String(id));if(!a)return;
+ const linked=linkedEntryForAssignment(a.id);
+ if(fromAgenda){
+   entryReturnDate=selectedAgendaDate;
+   closeAgenda();
+ }else{
+   entryReturnDate=null;
+ }
+ if(linked){
+   openEntry(linked.id,0,linked.date||a.date,a.id);
+   return;
+ }
+ const mins=assignmentDurationMinutes(a);
+ openEntry(null,mins,a.date,a.id);
+ ensureEntryTypeOption(a.type||'Field ministry');
+ $('#entryType').value=a.type||'Field ministry';
+ $('#entryDetail').value=a.location||'';
+ $('#entryExperience').value=a.partner||'';
+ $('#entryNotes').value=a.notes||'';
+}
+
 function assignmentCard(a){
- return `<div class="assign-card"><div class="assign-head"><div style="display:flex;gap:9px;align-items:flex-start">${activityIcon(a.type)}<div><b>${esc(a.type)}</b><div class="meta">${esc(a.date)} • ${esc(a.start||'')}–${esc(a.end||'')}</div>${a.location?`<div class="meta">${esc(a.location)}</div>`:''}${a.partner?`<div class="meta">${esc(a.partner)}</div>`:''}</div></div></div>${a.notes?`<div class="meta" style="margin-top:6px">${esc(a.notes)}</div>`:''}<div class="card-actions"><button class="btn small edit-assignment" data-id="${a.id}" type="button">Edit</button><button class="btn small danger delete-assignment" data-id="${a.id}" type="button">Delete</button></div></div>`;
+ const lang=settings.language||'en';
+ const linked=linkedEntryForAssignment(a.id);
+ const loggedBadge=linked?`<div class="logged-hours-badge">${T[lang].hoursLoggedCheck} • ${fmt(linked.minutes)}</div>`:'';
+ const hourButton=linked
+   ? `<button class="btn small edit-assignment-hours" data-id="${a.id}" type="button">${T[lang].editLoggedHours}</button>`
+   : `<button class="btn small primary log-assignment-hours" data-id="${a.id}" type="button">${T[lang].logHours}</button>`;
+ return `<div class="assign-card"><div class="assign-head"><div style="display:flex;gap:9px;align-items:flex-start">${activityIcon(a.type)}<div><b>${esc(a.type)}</b><div class="meta">${esc(a.date)} • ${esc(a.start||'')}–${esc(a.end||'')}</div>${a.location?`<div class="meta">${esc(a.location)}</div>`:''}${a.partner?`<div class="meta">${esc(a.partner)}</div>`:''}${loggedBadge}</div></div></div>${a.notes?`<div class="meta" style="margin-top:6px">${esc(a.notes)}</div>`:''}<div class="card-actions">${hourButton}<button class="btn small edit-assignment" data-id="${a.id}" type="button">${lang==='es'?'Editar':'Edit'}</button><button class="btn small danger delete-assignment" data-id="${a.id}" type="button">${lang==='es'?'Eliminar':'Delete'}</button></div></div>`;
 }
 function renderAssignments(){const list=[...assignments].sort((a,b)=>a.date.localeCompare(b.date)||String(a.start).localeCompare(String(b.start)));$('#assignmentCards').innerHTML=list.length?list.map(assignmentCard).join(''):`<div class="card"><div class="notice">${T[settings.language].noUpcoming}</div></div>`}
 function renderMore(){
@@ -1063,7 +1113,10 @@ function openAssignmentDetail(id){
    [T[settings.language].partner,a.partner||'—'],
    [T[settings.language].notes,a.notes||'—']
  ];
+ const linked=linkedEntryForAssignment(a.id);
+ if(linked)rows.push([T[settings.language].hoursLogged,fmt(linked.minutes)]);
  $('#assignmentDetailBody').innerHTML=rows.map(r=>`<div class="detail-row"><div class="k">${esc(r[0])}</div><div>${esc(r[1])}</div></div>`).join('');
+ $('#assignmentDetailLogHours').textContent=linked?T[settings.language].editLoggedHours:T[settings.language].logHours;
  $('#assignmentDetailModal').classList.add('show');
 }
 function closeAssignmentDetail(){$('#assignmentDetailModal').classList.remove('show');detailAssignmentId=null}
@@ -1086,6 +1139,8 @@ function renderAssignmentReminder(upcoming){
 }
 
 
+$('#logHoursShortcut').onclick=()=>openEntry();
+$('#logReturnVisitShortcut').onclick=()=>openReturnVisit();
 $('#homeAddReturnVisit').onclick=()=>openReturnVisit();
 $('#returnVisitAddBtn').onclick=()=>openReturnVisit();
 $('#returnVisitCancel').onclick=closeReturnVisit;
@@ -1217,14 +1272,27 @@ if(window.matchMedia){
 
 function renderAll(){applyAppearance();applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderReturnVisits();renderMore();setSpreadsheetPlatformHelp();updateInstallGuidance();persist()}
 
-function openEntry(id=null,quick=0,presetDate=null){
+function ensureEntryTypeOption(type){
+ const select=$('#entryType');if(!select||!type)return;
+ if(![...select.options].some(o=>o.value===type)){
+   const opt=document.createElement('option');
+   opt.value=type;
+   opt.textContent=type;
+   opt.dataset.assignmentType='1';
+   select.appendChild(opt);
+ }
+}
+function openEntry(id=null,quick=0,presetDate=null,assignmentId=null){
  editEntryId=id;
+ pendingAssignmentLogId=assignmentId;
  const e=id?entries.find(x=>String(x.id)===String(id)):null;
  const mins=e?.minutes||quick;
+ const entryType=e?.type||'Field ministry';
+ ensureEntryTypeOption(entryType);
  if($('#entryDate')) $('#entryDate').value=e?.date||presetDate||TODAY;
  if($('#entryHours')) $('#entryHours').value=Math.floor(mins/60);
  if($('#entryMinutes')) $('#entryMinutes').value=mins%60;
- if($('#entryType')) $('#entryType').value=e?.type||'Field ministry';
+ if($('#entryType')) $('#entryType').value=entryType;
  if($('#entryDetail')) $('#entryDetail').value=e?.detail||'';
  if($('#entryExperience')) $('#entryExperience').value=e?.experience||'';
  if($('#entryNotes')) $('#entryNotes').value=e?.notes||'';
@@ -1233,6 +1301,7 @@ function openEntry(id=null,quick=0,presetDate=null){
 function closeEntry(){
  $('#entryModal').classList.remove('show');
  editEntryId=null;
+ pendingAssignmentLogId=null;
  $('#entryNotice').textContent='';
 }
 function returnToAgenda(dateStr){
@@ -1255,13 +1324,16 @@ $('#entryForm').onsubmit=e=>{
  e.preventDefault();
  const mins=(+$('#entryHours').value||0)*60+(+$('#entryMinutes').value||0);
  if(mins<1){$('#entryNotice').textContent=settings.language==='es'?'Ingresa al menos 1 minuto.':'Enter at least 1 minute.';return}
+ const existingEntry=editEntryId?entries.find(x=>String(x.id)===String(editEntryId)):null;
+ const linkedAssignmentId=pendingAssignmentLogId||existingEntry?.assignmentId||null;
  const data={
    date:$('#entryDate').value,
    minutes:mins,
    type:$('#entryType').value,
    detail:$('#entryDetail')?.value.trim()||'',
    experience:$('#entryExperience')?.value.trim()||'',
-   notes:$('#entryNotes')?.value.trim()||''
+   notes:$('#entryNotes')?.value.trim()||'',
+   ...(linkedAssignmentId?{assignmentId:linkedAssignmentId}:{})
  };
  if(editEntryId){
    const i=entries.findIndex(x=>String(x.id)===String(editEntryId));
@@ -1391,7 +1463,13 @@ $('#assignmentForm').onsubmit=e=>{
  setTimeout(()=>openAgenda(data.date),60);
 };
 document.addEventListener('click',e=>{
- const ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');
+ const logHours=e.target.closest('.log-assignment-hours'),editHours=e.target.closest('.edit-assignment-hours'),ed=e.target.closest('.edit-assignment'),del=e.target.closest('.delete-assignment');
+ if(logHours||editHours){
+   const btn=logHours||editHours;
+   const fromAgenda=!!btn.closest('#agendaModal');
+   openAssignmentHours(btn.dataset.id,fromAgenda);
+   return;
+ }
  if(ed){
    const fromAgenda=!!ed.closest('#agendaModal');
    const returnDate=fromAgenda?selectedAgendaDate:null;
@@ -1522,10 +1600,10 @@ $('#backupJsonBtn').onclick=async()=>{
 };
 
 $('#exportCsvBtn').onclick=async()=>{
- const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end','name','address','conversation_notes','publication_or_scripture','return_date','latitude','longitude','topic','conversation_history_json']];
- entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','','','','','','','']));
- assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'','','','','','','','']));
- returnVisits.forEach(v=>rows.push(['RETURN_VISIT',v.dateVisited||'','','Return visit','','','','','',v.name||'',v.address||'',v.conversationNotes||'',v.publicationScripture||'',v.returnDate||'',v.lat??'',v.lon??'',v.topic||'',JSON.stringify(Array.isArray(v.history)?v.history:[])]));
+ const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end','name','address','conversation_notes','publication_or_scripture','return_date','latitude','longitude','topic','conversation_history_json','record_id','assignment_id']];
+ entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','','','','','','','','',e.id??'',e.assignmentId??'']));
+ assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'','','','','','','','','',a.id??'','']));
+ returnVisits.forEach(v=>rows.push(['RETURN_VISIT',v.dateVisited||'','','Return visit','','','','','',v.name||'',v.address||'',v.conversationNotes||'',v.publicationScripture||'',v.returnDate||'',v.lat??'',v.lon??'',v.topic||'',JSON.stringify(Array.isArray(v.history)?v.history:[]),v.id??'','']));
  const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\n');
  await shareOrDownload(`pioneer-at-a-glance-spreadsheet-${TODAY}.csv`,'text/csv',csv);
 };
@@ -1692,7 +1770,7 @@ $('#restoreJsonFile').onchange=async e=>{
  e.target.value='';
 };
 
-$('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}const pe=[],pa=[],pv=[];for(const l of lines.slice(1)){const v=parse(l);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'});if(v[0]==='RETURN_VISIT'&&v[1])pv.push({id:Date.now()+Math.random(),created:Date.now(),dateVisited:v[1],returnDate:v[13]||'',name:v[9]||'',address:v[10]||'',conversationNotes:v[11]||'',publicationScripture:v[12]||'',lat:v[14]!==''&&v[14]!==undefined?+v[14]:null,lon:v[15]!==''&&v[15]!==undefined?+v[15]:null,topic:v[16]||'',history:(()=>{try{return v[17]?JSON.parse(v[17]):[]}catch(_){return []}})()})}const msg=settings.language==='es'?`¿Importar ${pe.length} registros de horas, ${pa.length} asignaciones y ${pv.length} revisitas?`:`Import ${pe.length} hour entries, ${pa.length} assignments, and ${pv.length} return visits?`;if(confirm(msg)){entries=pe;assignments=pa;returnVisits=pv;renderAll();$('#backupNotice').textContent=settings.language==='es'?'Copia importada.':'Backup imported.'}e.target.value=''};
+$('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}const pe=[],pa=[],pv=[];for(const l of lines.slice(1)){const v=parse(l);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:v[18]||Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||'',...(v[19]?{assignmentId:v[19]}:{})});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:v[18]||Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'});if(v[0]==='RETURN_VISIT'&&v[1])pv.push({id:v[18]||Date.now()+Math.random(),created:Date.now(),dateVisited:v[1],returnDate:v[13]||'',name:v[9]||'',address:v[10]||'',conversationNotes:v[11]||'',publicationScripture:v[12]||'',lat:v[14]!==''&&v[14]!==undefined?+v[14]:null,lon:v[15]!==''&&v[15]!==undefined?+v[15]:null,topic:v[16]||'',history:(()=>{try{return v[17]?JSON.parse(v[17]):[]}catch(_){return []}})()})}const msg=settings.language==='es'?`¿Importar ${pe.length} registros de horas, ${pa.length} asignaciones y ${pv.length} revisitas?`:`Import ${pe.length} hour entries, ${pa.length} assignments, and ${pv.length} return visits?`;if(confirm(msg)){entries=pe;assignments=pa;returnVisits=pv;renderAll();$('#backupNotice').textContent=settings.language==='es'?'Copia importada.':'Backup imported.'}e.target.value=''};
 
 
 
@@ -1753,6 +1831,7 @@ $('#agendaAddAssignment').onclick=e=>{
 $('#nextAssignmentCard').onclick=()=>{const id=$('#nextAssignmentCard').dataset.assignmentId;if(id)openAssignmentDetail(id)};
 $('#assignmentReminderCard').onclick=()=>{const id=$('#assignmentReminderCard').dataset.assignmentId;if(id)openAssignmentDetail(id)};
 $('#assignmentDetailClose').onclick=closeAssignmentDetail;
+$('#assignmentDetailLogHours').onclick=()=>{const id=detailAssignmentId;closeAssignmentDetail();if(id)openAssignmentHours(id,false)};
 $('#assignmentDetailEdit').onclick=()=>{const id=detailAssignmentId;closeAssignmentDetail();if(id)showInlineAssignmentForm(id)};
 
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'};
