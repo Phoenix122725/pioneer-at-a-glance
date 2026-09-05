@@ -510,7 +510,7 @@ html[data-theme="dark"] .logged-hours-badge{background:#22382c;color:#a9d3bb}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.18 • Log Hours from Schedule</div>
+      <div class="notice">Commercial Beta 2.19 • Smart Calendar Icons</div>
     </div>
   </section>
 </div>
@@ -780,9 +780,10 @@ function stats(){
   const ds=new Set(monthList.map(e=>e.date)).size;$('#homeDays').textContent=ds;$('#homeAvg').textContent=ds?fmt(Math.round(monthM/ds)):'0:00';
 }
 function entryCard(e){
- return `<div class="entry-card"><div class="entry-head"><div><div class="entry-time">${fmt(e.minutes)}</div><div class="entry-date">${esc(e.date)}</div><span class="tag">${esc(e.type||'Field ministry')}</span></div></div>
+ const lang=settings.language||'en';
+ return `<div class="entry-card"><div class="entry-head"><div style="display:flex;gap:9px;align-items:flex-start">${activityIcon(e.type)}<div><div class="entry-time">${fmt(e.minutes)}</div><div class="entry-date">${esc(e.date)}</div><span class="tag">${esc(e.type||'Field ministry')}</span></div></div></div>
  ${e.detail?`<div class="meta" style="margin-top:7px">${esc(e.detail)}</div>`:''}${e.experience?`<div class="meta" style="margin-top:4px">${esc(e.experience)}</div>`:''}${e.notes?`<div class="meta" style="margin-top:4px">${esc(e.notes)}</div>`:''}
- <div class="card-actions"><button class="btn small edit-entry" data-id="${e.id}" type="button">Edit</button><button class="btn small danger delete-entry" data-id="${e.id}" type="button">Delete</button></div></div>`;
+ <div class="card-actions"><button class="btn small edit-entry" data-id="${e.id}" type="button">${lang==='es'?'Editar':'Edit'}</button><button class="btn small danger delete-entry" data-id="${e.id}" type="button">${lang==='es'?'Eliminar':'Delete'}</button></div></div>`;
 }
 
 
@@ -1019,18 +1020,37 @@ function activityIcon(type){
  return `<span class="activity-icon other" title="${esc(type)}">•</span>`;
 }
 
+function calendarActivitiesForDay(dateStr){
+ const dayAssignments=assignments.filter(a=>a.date===dateStr);
+ const assignmentIds=new Set(dayAssignments.map(a=>String(a.id)));
+ const dayEntries=entries.filter(e=>e.date===dateStr);
+
+ // A linked hour entry represents the SAME activity as its scheduled assignment,
+ // so it must not add a second calendar icon.
+ const unlinkedEntries=dayEntries.filter(e=>{
+   if(e.assignmentId===undefined||e.assignmentId===null||e.assignmentId==='')return true;
+   return !assignmentIds.has(String(e.assignmentId));
+ });
+
+ return [
+   ...dayAssignments.map(a=>({kind:'assignment',type:a.type,id:a.id})),
+   ...unlinkedEntries.map(e=>({kind:'entry',type:e.type,id:e.id}))
+ ];
+}
+
 function renderCalendar(){
- const ym=$('#calendarMonth').value||TODAY.slice(0,7);$('#calendarMonth').value=ym;const [y,m]=ym.split('-').map(Number),first=new Date(Date.UTC(y,m-1,1)).getUTCDay(),dim=new Date(Date.UTC(y,m,0)).getUTCDate(),by={},ab={};
+ const ym=$('#calendarMonth').value||TODAY.slice(0,7);$('#calendarMonth').value=ym;const [y,m]=ym.split('-').map(Number),first=new Date(Date.UTC(y,m-1,1)).getUTCDay(),dim=new Date(Date.UTC(y,m,0)).getUTCDate(),by={};
  entries.filter(e=>e.date.slice(0,7)===ym).forEach(e=>{const d=+e.date.slice(8);by[d]=(by[d]||0)+e.minutes});
- assignments.filter(a=>a.date.slice(0,7)===ym).forEach(a=>{const d=+a.date.slice(8);(ab[d]||(ab[d]=[])).push(a)});
  const names=settings.language==='es'?['Dom','Lun','Mar','Mié','Jue','Vie','Sáb']:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];let h=names.map(n=>`<div class="dow">${n}</div>`).join('');
  for(let i=0;i<first;i++)h+='<div class="day empty"></div>';
  for(let d=1;d<=dim;d++){
-   const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`, ac=(ab[d]||[]).length;
+   const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+   const activities=calendarActivitiesForDay(ds);
+   const ac=activities.length;
    h+=`<button class="day ${ds===TODAY?'today':''}" data-agenda-date="${ds}" type="button" aria-label="${ds}">
      <div class="daynum">${d}</div>
      ${by[d]?`<span class="dayhours">${fmt(by[d])}</span>`:''}
-     ${ac?`<div class="activity-icons">${(ab[d]||[]).slice(0,3).map(a=>activityIcon(a.type)).join('')}${ac>3?`<span class="activity-icon other">+${ac-3}</span>`:''}</div>`:''}
+     ${ac?`<div class="activity-icons">${activities.slice(0,3).map(x=>activityIcon(x.type)).join('')}${ac>3?`<span class="activity-icon other">+${ac-3}</span>`:''}</div>`:''}
    </button>`;
  }
  $('#calendar').innerHTML=h;
