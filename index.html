@@ -144,6 +144,24 @@ textarea{min-height:78px;resize:vertical}
 .install-tip{display:none;margin:10px 0 12px;padding:12px 14px;border:1px solid #d9b24c;border-radius:14px;background:#fff8df;color:#3d3214;font-size:14px;line-height:1.4}
 .install-tip.show{display:block}
 .install-tip-title{font-weight:900;margin-bottom:4px}
+.return-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.return-card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px;margin-bottom:9px;box-shadow:var(--shadow)}
+.return-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.return-name{font-weight:900;font-size:1rem}
+.return-date{font-size:.72rem;color:var(--muted);margin-top:2px}
+.return-due{display:inline-block;border-radius:999px;padding:4px 8px;font-size:.68rem;font-weight:900;background:var(--gold2);color:#6a5325}
+.return-due.overdue{background:#f7e5e5;color:var(--danger)}
+.return-due.today{background:var(--sage);color:var(--green)}
+.return-distance{font-size:.73rem;font-weight:850;color:var(--green);margin-top:5px}
+.return-field{font-size:.78rem;color:var(--muted);line-height:1.4;margin-top:6px}
+.return-field b{color:var(--ink)}
+.return-location-note{font-size:.72rem;color:var(--muted);line-height:1.4;margin-top:6px}
+.history-entry{border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+.history-entry:first-child{border-top:0;padding-top:0;margin-top:0}
+.history-date{font-size:.7rem;font-weight:900;color:var(--green);margin-bottom:3px}
+.history-text{font-size:.78rem;color:var(--ink);line-height:1.4}
+.history-actions{display:flex;gap:6px;margin-top:6px}
+.history-editor{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
 </style>
 </head>
 <body>
@@ -231,6 +249,15 @@ textarea{min-height:78px;resize:vertical}
     </div>
 
     <div class="section">
+      <div class="section-title">
+        <h2 data-i18n="returnVisitsTitle">Return Visits</h2>
+        <button class="linkbtn" data-go="returnVisitsScreen" data-i18n="viewAll">View all</button>
+      </div>
+      <div id="homeReturnVisits"></div>
+      <button id="homeAddReturnVisit" class="btn block" type="button" style="margin-top:8px" data-i18n="addInterestedPerson">Add interested person</button>
+    </div>
+
+    <div class="section">
       <div class="section-title"><h2 data-i18n="recentActivity">Recent activity</h2><button class="linkbtn" data-go="logScreen" data-i18n="viewAll">View all</button></div>
       <div id="recentEntries"></div>
     </div>
@@ -299,9 +326,43 @@ textarea{min-height:78px;resize:vertical}
     <div id="assignmentCards"></div>
   </section>
 
+  <!-- RETURN VISITS -->
+  <section id="returnVisitsScreen" class="screen">
+    <div class="section-title">
+      <h2 data-i18n="returnVisitsTitle">Return Visits</h2>
+      <button id="returnVisitAddBtn" class="btn gold small" type="button" data-i18n="add">Add</button>
+    </div>
+
+    <div class="card">
+      <div class="notice" data-i18n="returnVisitsHelp">Keep track of people interested in the message and when you would like to return.</div>
+      <div class="return-location-note" data-i18n="locationPrivacy">Location is optional. If you save it, the coordinates stay with your app data on this device and are used only to sort nearby return visits.</div>
+    </div>
+
+    <div class="card section">
+      <label data-i18n="searchReturnVisits">Search return visits
+        <input id="returnVisitSearch" type="search" placeholder="Name or address">
+      </label>
+      <div class="return-toolbar" style="margin-top:10px">
+        <button id="sortReturnDateBtn" class="btn primary" type="button" data-i18n="sortByReturnDate">Return date</button>
+        <button id="nearbyReturnVisitsBtn" class="btn" type="button" data-i18n="showNearby">Show nearby</button>
+      </div>
+      <button id="printReturnVisitsBtn" class="btn block" type="button" style="margin-top:8px" data-i18n="printReturnVisits">Print / Save Return Visit List</button>
+      <div class="notice" data-i18n="printPrivacyNote">This list may contain personal information. Save or share it only where you intend.</div>
+      <div id="nearbyNotice" class="notice" aria-live="polite"></div>
+    </div>
+
+    <div id="returnVisitCards" class="section"></div>
+  </section>
+
   <!-- MORE -->
   <section id="moreScreen" class="screen">
     <div class="card">
+      <div class="section-title"><h2 data-i18n="returnVisitsTitle">Return Visits</h2></div>
+      <div class="notice" data-i18n="returnVisitsHelp">Keep track of people interested in the message and when you would like to return.</div>
+      <button class="btn block" type="button" data-go="returnVisitsScreen" style="margin-top:8px" data-i18n="openReturnVisits">Open Return Visits</button>
+    </div>
+
+    <div class="card section">
       <div class="section-title"><h2 data-i18n="serviceYearHistory">Service-year history</h2></div>
       <div id="historyGrid" class="history"></div>
     </div>
@@ -329,7 +390,7 @@ textarea{min-height:78px;resize:vertical}
       <div class="section-title"><h2 data-i18n="backupRestore">Backup & restore</h2></div>
 
       <button id="backupJsonBtn" class="btn primary block" type="button" data-i18n="backupApp">Back Up My App</button>
-      <div class="notice" data-i18n="backupAppHelp">Best for protecting everything: hours, assignments, notes, goals, and settings.</div>
+      <div class="notice" data-i18n="backupAppHelp">Best for protecting everything: hours, assignments, return visits, notes, goals, and settings.</div>
 
       <button id="exportCsvBtn" class="btn block" type="button" style="margin-top:8px" data-i18n="openSpreadsheet">Open / Share Spreadsheet</button>
       <div class="notice" id="spreadsheetPlatformHelp" data-i18n="spreadsheetHelp">Opens your phone’s share menu so you can choose Google Sheets, Excel, Numbers, Drive, Files, or another compatible app.</div>
@@ -357,7 +418,7 @@ textarea{min-height:78px;resize:vertical}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.12 • Ministry activity icons</div>
+      <div class="notice">Commercial Beta 2.14 • Return Visit History</div>
     </div>
   </section>
 </div>
@@ -371,6 +432,57 @@ textarea{min-height:78px;resize:vertical}
     <button class="navbtn" data-screen="moreScreen" type="button"><span>•••</span><b data-i18n="more">More</b></button>
   </div>
 </nav>
+
+<!-- ADD/EDIT RETURN VISIT MODAL -->
+<div id="returnVisitModal" class="modal" role="dialog" aria-modal="true">
+  <div class="modalbox">
+    <h2 id="returnVisitModalTitle" data-i18n="addReturnVisit">Add return visit</h2>
+    <form id="returnVisitForm">
+      <div class="form-grid">
+        <label data-i18n="dateVisited">Date visited<input id="returnVisitDateVisited" type="date" required></label>
+        <label data-i18n="returnDate">Return date<input id="returnVisitReturnDate" type="date"></label>
+        <label class="full" data-i18n="personName">Name<input id="returnVisitName" type="text" required></label>
+        <label class="full" data-i18n="address">Address<input id="returnVisitAddress" type="text"></label>
+        <label class="full" data-i18n="returnVisitTopic">Topic<input id="returnVisitTopic" type="text" placeholder="e.g. Why does God allow suffering?"></label>
+        <label class="full" data-i18n="conversationNotes">Initial conversation notes<textarea id="returnVisitConversation"></textarea></label>
+        <label class="full" data-i18n="publicationScripture">Publication and/or Bible scripture<textarea id="returnVisitPublication"></textarea></label>
+      </div>
+
+      <div class="card soft" style="margin-top:10px">
+        <div style="font-weight:900" data-i18n="conversationHistory">Conversation History</div>
+        <div id="returnVisitHistoryList" class="notice" style="margin-top:8px"></div>
+
+        <div class="history-editor">
+          <div class="form-grid">
+            <label data-i18n="conversationDate">Conversation date
+              <input id="returnVisitHistoryDate" type="date">
+            </label>
+            <label class="full" data-i18n="historyNotes">Conversation notes
+              <textarea id="returnVisitHistoryNotes"></textarea>
+            </label>
+            <label class="full" data-i18n="historyPublication">Publication and/or Bible scripture
+              <textarea id="returnVisitHistoryPublication"></textarea>
+            </label>
+          </div>
+          <button id="addReturnVisitHistory" class="btn block" type="button" style="margin-top:8px" data-i18n="addToHistory">Add to conversation history</button>
+          <div id="returnVisitHistoryNotice" class="notice" aria-live="polite"></div>
+        </div>
+      </div>
+
+      <div class="card soft" style="margin-top:10px">
+        <div style="font-weight:900" data-i18n="nearbyLocation">Nearby location</div>
+        <div id="returnVisitLocationStatus" class="notice" data-i18n="locationNotSaved">Location not saved.</div>
+        <button id="saveReturnVisitLocation" class="btn block" type="button" style="margin-top:8px" data-i18n="saveCurrentLocation">Save current location</button>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn primary" type="submit" data-i18n="save">Save</button>
+        <button id="returnVisitCancel" class="btn" type="button" data-i18n="cancel">Cancel</button>
+      </div>
+      <div id="returnVisitNotice" class="notice" aria-live="polite"></div>
+    </form>
+  </div>
+</div>
 
 <!-- ADD/EDIT HOURS MODAL -->
 <div id="entryModal" class="modal" role="dialog" aria-modal="true">
@@ -476,16 +588,16 @@ textarea{min-height:78px;resize:vertical}
 <script>
 (()=>{
 const TODAY=(()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`})();
-const KE={entries:'pag.entries.v1',assign:'pag.assign.v1',settings:'pag.settings.v1',onboard:'pag.onboard.v1'};
+const KE={entries:'pag.entries.v1',assign:'pag.assign.v1',settings:'pag.settings.v1',visits:'pag.returnVisits.v1',onboard:'pag.onboard.v1'};
 const LEGACY={entries:'pioneer.entries.v2',assign:'pioneer.assignments.v2',settings:'pioneer.settings.v2'};
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const read=(k,f)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(f))}catch{return f}};
-let entries=read(KE.entries,null), assignments=read(KE.assign,null), settings=read(KE.settings,null);
+let entries=read(KE.entries,null), assignments=read(KE.assign,null), settings=read(KE.settings,null), returnVisits=read(KE.visits,[]);
 if(entries===null){entries=read(LEGACY.entries,[]);localStorage.setItem(KE.entries,JSON.stringify(entries))}
 if(assignments===null){assignments=read(LEGACY.assign,[]);localStorage.setItem(KE.assign,JSON.stringify(assignments))}
 if(settings===null){const old=read(LEGACY.settings,{});settings={monthlyGoal:old.monthlyGoal||50,weeklyGoal:old.weeklyGoal||12.5,serviceYearGoal:600,language:'en',assignmentReminderHours:24};localStorage.setItem(KE.settings,JSON.stringify(settings))}
 if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
-let editEntryId=null, editAssignmentId=null, selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, entryReturnDate=null, deferredPrompt=null;
+let editEntryId=null, editAssignmentId=null, editReturnVisitId=null, pendingReturnVisitCoords=null, pendingReturnVisitHistory=[], nearbyOrigin=null, returnVisitSort='date', selectedAgendaDate=TODAY, detailAssignmentId=null, assignmentReturnDate=null, entryReturnDate=null, deferredPrompt=null;
 
 const T={
 en:{
@@ -501,7 +613,7 @@ minutes:'Minutes',detail:'With / study / territory',experience:'Ministry experie
 scheduleAssignment:'Schedule assignment',assignment:'Assignment',start:'Start',end:'End',location:'Location / arrangement',
 partner:'Partner / group',welcome:'Welcome to Pioneer at a Glance',welcomeText:'A simple place to plan your ministry and see your progress without digging through notes or spreadsheets.',
 ob1:'Track daily hours and your 50-hour monthly goal.',ob2:'See weekly and September–August service-year progress.',ob3:'Schedule public witnessing and other assignments.',
-ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly',backupApp:'Back Up My App',backupAppHelp:'Best for protecting everything: hours, assignments, notes, goals, and settings.',exportSpreadsheet:'Export Spreadsheet',openSpreadsheet:'Open / Share Spreadsheet',spreadsheetHelp:'Opens your phone’s share menu so you can choose Google Sheets, Excel, Numbers, Drive, Files, or another compatible app.',createPdf:'Create PDF Report',pdfHelp:'Creates a printable report for the month currently selected in your Hours Log.',restoreBackup:'Restore App Backup',installingTitle:'Installing Pioneer at a Glance',samsungInstallMessage:'For the best installation experience on Android, open this page in Google Chrome and choose Install app or Add to Home screen. Samsung Internet may display a Play Protect warning when installing web apps.',installHelpTitle:'How to install this app',installAndroidHelp:'Android: Open Pioneer at a Glance in Google Chrome, tap the three-dot menu, then choose Install app or Add to Home screen.',installIphoneHelp:'iPhone/iPad: Open Pioneer at a Glance in Safari, tap Share, then choose Add to Home Screen.'
+ob4:'Keep notes for studies, return visits, and experiences.',ob5:'Your data stays on your device unless you export a backup.',getStarted:'Get started',assignmentReminders:'Assignment reminders',reminderHelp:'Shows a reminder inside the app when you open it. No notification permission needed.',hoursLogged:'Hours logged',close:'Close',edit:'Edit',assignmentDetails:'Assignment details',reminder:'Reminder',quickGoals:'Quick goals',saveGoals:'Save goals',monthlyGoalShort:'Monthly',weeklyGoalShort:'Weekly',backupApp:'Back Up My App',backupAppHelp:'Best for protecting everything: hours, assignments, return visits, notes, goals, and settings.',exportSpreadsheet:'Export Spreadsheet',openSpreadsheet:'Open / Share Spreadsheet',spreadsheetHelp:'Opens your phone’s share menu so you can choose Google Sheets, Excel, Numbers, Drive, Files, or another compatible app.',createPdf:'Create PDF Report',pdfHelp:'Creates a printable report for the month currently selected in your Hours Log.',restoreBackup:'Restore App Backup',installingTitle:'Installing Pioneer at a Glance',samsungInstallMessage:'For the best installation experience on Android, open this page in Google Chrome and choose Install app or Add to Home screen. Samsung Internet may display a Play Protect warning when installing web apps.',installHelpTitle:'How to install this app',installAndroidHelp:'Android: Open Pioneer at a Glance in Google Chrome, tap the three-dot menu, then choose Install app or Add to Home screen.',installIphoneHelp:'iPhone/iPad: Open Pioneer at a Glance in Safari, tap Share, then choose Add to Home Screen.',returnVisitsTitle:'Return Visits',returnVisitsHelp:'Keep track of people interested in the message and when you would like to return.',locationPrivacy:'Location is optional. If you save it, the coordinates stay with your app data on this device and are used only to sort nearby return visits.',addInterestedPerson:'Add interested person',openReturnVisits:'Open Return Visits',addReturnVisit:'Add return visit',editReturnVisit:'Edit return visit',dateVisited:'Date visited',returnDate:'Return date',personName:'Name',address:'Address',conversationNotes:'Conversation notes',publicationScripture:'Publication and/or Bible scripture',nearbyLocation:'Nearby location',locationNotSaved:'Location not saved.',saveCurrentLocation:'Save current location',locationSaved:'Location saved.',showNearby:'Show nearby',sortByReturnDate:'Return date',searchReturnVisits:'Search return visits',noReturnVisits:'No return visits saved yet.',noMatchingReturnVisits:'No matching return visits.',locationPermissionDenied:'Location was not available. Check your phone location permission and try again.',findingLocation:'Finding your location…',nearbySorted:'Return visits with saved locations are sorted by distance.',dueToday:'Due today',overdue:'Overdue',nextReturn:'Next return',visited:'Visited',publicationOrScripture:'Publication / scripture',returnVisitTopic:'Topic',conversationHistory:'Conversation History',conversationDate:'Conversation date',historyNotes:'Conversation notes',historyPublication:'Publication and/or Bible scripture',addToHistory:'Add to conversation history',noConversationHistory:'No conversation history yet.',printReturnVisits:'Print / Save Return Visit List',printPrivacyNote:'This list may contain personal information. Save or share it only where you intend.',topicLabel:'Topic',historyLabel:'Conversation history'
 },
 es:{
 tagline:'Planifica tu ministerio en un solo lugar',thisMonth:'Este mes',remaining:'Restante',thisWeek:'Esta semana',serviceYear:'Año de servicio',
@@ -516,7 +628,7 @@ minutes:'Minutos',detail:'Con / estudio / territorio',experience:'Experiencia en
 scheduleAssignment:'Programar asignación',assignment:'Asignación',start:'Inicio',end:'Fin',location:'Lugar / arreglo',
 partner:'Compañero / grupo',welcome:'Bienvenida a Pioneer at a Glance',welcomeText:'Un lugar sencillo para organizar tu ministerio y ver tu progreso sin buscar entre notas u hojas de cálculo.',
 ob1:'Registra tus horas diarias y tu meta mensual de 50 horas.',ob2:'Mira tu progreso semanal y del año de servicio de septiembre a agosto.',ob3:'Programa testificación pública y otras asignaciones.',
-ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',openSpreadsheet:'Abrir / compartir hoja de cálculo',spreadsheetHelp:'Abre el menú de compartir del teléfono para elegir Google Sheets, Excel, Numbers, Drive, Archivos u otra app compatible.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app',installingTitle:'Instalar Pioneer at a Glance',samsungInstallMessage:'Para una mejor instalación en Android, abre esta página en Google Chrome y elige Instalar app o Añadir a pantalla de inicio. Samsung Internet puede mostrar una advertencia de Play Protect al instalar aplicaciones web.',installHelpTitle:'Cómo instalar esta app',installAndroidHelp:'Android: Abre Pioneer at a Glance en Google Chrome, toca el menú de tres puntos y elige Instalar app o Añadir a pantalla de inicio.',installIphoneHelp:'iPhone/iPad: Abre Pioneer at a Glance en Safari, toca Compartir y luego elige Añadir a pantalla de inicio.'
+ob4:'Guarda notas de estudios, revisitas y experiencias.',ob5:'Tus datos permanecen en tu dispositivo a menos que exportes una copia.',getStarted:'Comenzar',assignmentReminders:'Recordatorios de asignaciones',reminderHelp:'Muestra un recordatorio dentro de la app al abrirla. No necesita permiso de notificaciones.',hoursLogged:'Horas registradas',close:'Cerrar',edit:'Editar',assignmentDetails:'Detalles de la asignación',reminder:'Recordatorio',quickGoals:'Metas rápidas',saveGoals:'Guardar metas',monthlyGoalShort:'Mensual',weeklyGoalShort:'Semanal',backupApp:'Hacer copia de la app',backupAppHelp:'La mejor opción para proteger horas, asignaciones, revisitas, notas, metas y ajustes.',exportSpreadsheet:'Exportar hoja de cálculo',openSpreadsheet:'Abrir / compartir hoja de cálculo',spreadsheetHelp:'Abre el menú de compartir del teléfono para elegir Google Sheets, Excel, Numbers, Drive, Archivos u otra app compatible.',createPdf:'Crear informe PDF',pdfHelp:'Crea un informe imprimible del mes seleccionado en tu registro de horas.',restoreBackup:'Restaurar copia de la app',installingTitle:'Instalar Pioneer at a Glance',samsungInstallMessage:'Para una mejor instalación en Android, abre esta página en Google Chrome y elige Instalar app o Añadir a pantalla de inicio. Samsung Internet puede mostrar una advertencia de Play Protect al instalar aplicaciones web.',installHelpTitle:'Cómo instalar esta app',installAndroidHelp:'Android: Abre Pioneer at a Glance en Google Chrome, toca el menú de tres puntos y elige Instalar app o Añadir a pantalla de inicio.',installIphoneHelp:'iPhone/iPad: Abre Pioneer at a Glance en Safari, toca Compartir y luego elige Añadir a pantalla de inicio.',returnVisitsTitle:'Revisitas',returnVisitsHelp:'Lleva un registro de las personas interesadas en el mensaje y de cuándo te gustaría volver.',locationPrivacy:'La ubicación es opcional. Si la guardas, las coordenadas permanecen con los datos de la app en este dispositivo y solo se usan para ordenar revisitas cercanas.',addInterestedPerson:'Añadir persona interesada',openReturnVisits:'Abrir Revisitas',addReturnVisit:'Añadir revisita',editReturnVisit:'Editar revisita',dateVisited:'Fecha de visita',returnDate:'Fecha para volver',personName:'Nombre',address:'Dirección',conversationNotes:'Notas de la conversación',publicationScripture:'Publicación y/o texto bíblico',nearbyLocation:'Ubicación cercana',locationNotSaved:'Ubicación no guardada.',saveCurrentLocation:'Guardar ubicación actual',locationSaved:'Ubicación guardada.',showNearby:'Ver cercanas',sortByReturnDate:'Fecha para volver',searchReturnVisits:'Buscar revisitas',noReturnVisits:'Aún no hay revisitas guardadas.',noMatchingReturnVisits:'No hay revisitas que coincidan.',locationPermissionDenied:'No se pudo obtener la ubicación. Revisa el permiso de ubicación del teléfono e inténtalo de nuevo.',findingLocation:'Buscando tu ubicación…',nearbySorted:'Las revisitas con ubicación guardada están ordenadas por distancia.',dueToday:'Para hoy',overdue:'Atrasada',nextReturn:'Próxima revisita',visited:'Visitada',publicationOrScripture:'Publicación / texto bíblico',returnVisitTopic:'Tema',conversationHistory:'Historial de conversaciones',conversationDate:'Fecha de conversación',historyNotes:'Notas de la conversación',historyPublication:'Publicación y/o texto bíblico',addToHistory:'Añadir al historial de conversaciones',noConversationHistory:'Aún no hay historial de conversaciones.',printReturnVisits:'Imprimir / guardar lista de revisitas',printPrivacyNote:'Esta lista puede contener información personal. Guárdala o compártela solo donde tú decidas.',topicLabel:'Tema',historyLabel:'Historial de conversaciones'
 }};
 function applyLanguage(){
  const lang=settings.language||'en';
@@ -534,7 +646,7 @@ function applyLanguage(){
    opt.textContent=lang==='es'?opt.dataset.es:opt.dataset.en;
  });
 }
-function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings))}
+function persist(){localStorage.setItem(KE.entries,JSON.stringify(entries));localStorage.setItem(KE.assign,JSON.stringify(assignments));localStorage.setItem(KE.settings,JSON.stringify(settings));localStorage.setItem(KE.visits,JSON.stringify(returnVisits))}
 const fmt=m=>`${Math.floor(Math.max(0,Math.round(m))/60)}:${String(Math.max(0,Math.round(m))%60).padStart(2,'0')}`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function utc(s){const [y,m,d]=s.split('-').map(Number);return new Date(Date.UTC(y,m-1,d))}
@@ -542,7 +654,7 @@ function iso(d){return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padSta
 function weekBounds(s){const d=utc(s),delta=(d.getUTCDay()+6)%7,start=new Date(d);start.setUTCDate(d.getUTCDate()-delta);const end=new Date(start);end.setUTCDate(start.getUTCDate()+6);return {start:iso(start),end:iso(end)}}
 function syBounds(ref=TODAY){const [y,m]=ref.split('-').map(Number),sy=m>=9?y:y-1;return {start:`${sy}-09-01`,end:`${sy+1}-08-31`,label:`${sy}–${sy+1}`}}
 function monthLabel(ym){const [y,m]=ym.split('-').map(Number);return new Intl.DateTimeFormat(settings.language==='es'?'es-US':'en-US',{month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,1)))}
-function go(screen){$$('.screen').forEach(x=>x.classList.toggle('active',x.id===screen));$$('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.screen===screen));window.scrollTo({top:0,behavior:'smooth'});if(screen==='calendarScreen')renderCalendar();if(screen==='logScreen')renderLog();if(screen==='assignmentsScreen')renderAssignments();if(screen==='moreScreen')renderMore()}
+function go(screen){$$('.screen').forEach(x=>x.classList.toggle('active',x.id===screen));$$('.navbtn').forEach(x=>x.classList.toggle('active',x.dataset.screen===screen));window.scrollTo({top:0,behavior:'smooth'});if(screen==='calendarScreen')renderCalendar();if(screen==='logScreen')renderLog();if(screen==='assignmentsScreen')renderAssignments();if(screen==='returnVisitsScreen')renderReturnVisits();if(screen==='moreScreen')renderMore()}
 $$('.navbtn').forEach(b=>b.addEventListener('click',()=>go(b.dataset.screen)));$$('[data-go]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.go)));
 
 function stats(){
@@ -561,7 +673,164 @@ function entryCard(e){
  ${e.detail?`<div class="meta" style="margin-top:7px">${esc(e.detail)}</div>`:''}${e.experience?`<div class="meta" style="margin-top:4px">${esc(e.experience)}</div>`:''}${e.notes?`<div class="meta" style="margin-top:4px">${esc(e.notes)}</div>`:''}
  <div class="card-actions"><button class="btn small edit-entry" data-id="${e.id}" type="button">Edit</button><button class="btn small danger delete-entry" data-id="${e.id}" type="button">Delete</button></div></div>`;
 }
+
+
+function normalizeReturnVisit(v){
+ if(!v || typeof v!=='object')return v;
+ if(!Array.isArray(v.history))v.history=[];
+ if(v.topic===undefined)v.topic='';
+ return v;
+}
+returnVisits=(Array.isArray(returnVisits)?returnVisits:[]).map(normalizeReturnVisit);
+
+function hasVisitCoords(v){
+ return v && v.lat!==null && v.lat!=='' && v.lat!==undefined && v.lon!==null && v.lon!=='' && v.lon!==undefined && Number.isFinite(Number(v.lat)) && Number.isFinite(Number(v.lon));
+}
+function dateDiffDays(a,b){
+ if(!a||!b)return 0;
+ return Math.round((utc(b)-utc(a))/86400000);
+}
+function haversineKm(lat1,lon1,lat2,lon2){
+ const R=6371,toRad=x=>x*Math.PI/180;
+ const dLat=toRad(lat2-lat1),dLon=toRad(lon2-lon1);
+ const q=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
+ return 2*R*Math.asin(Math.sqrt(q));
+}
+function distanceLabel(km){
+ if(!Number.isFinite(km))return '';
+ const useMiles=(navigator.language||'').toLowerCase().startsWith('en-us');
+ if(useMiles){
+   const mi=km*0.621371;
+   return `${mi<10?mi.toFixed(1):Math.round(mi)} mi`;
+ }
+ return `${km<10?km.toFixed(1):Math.round(km)} km`;
+}
+function returnDueInfo(v){
+ const lang=settings.language||'en';
+ if(!v.returnDate)return {text:'',cls:''};
+ const diff=dateDiffDays(TODAY,v.returnDate);
+ if(diff<0)return {text:T[lang].overdue,cls:'overdue'};
+ if(diff===0)return {text:T[lang].dueToday,cls:'today'};
+ return {text:`${T[lang].nextReturn}: ${v.returnDate}`,cls:''};
+}
+function returnVisitCard(v,compact=false){
+ const lang=settings.language||'en';
+ const due=returnDueInfo(v);
+ let distance='';
+ if(nearbyOrigin && hasVisitCoords(v)){
+   distance=distanceLabel(haversineKm(nearbyOrigin.lat,nearbyOrigin.lon,Number(v.lat),Number(v.lon)));
+ }
+ const editLabel=lang==='es'?'Editar':'Edit';
+ const deleteLabel=lang==='es'?'Eliminar':'Delete';
+ return `<div class="return-card">
+   <div class="return-head">
+     <div>
+       <div class="return-name">${esc(v.name||'')}</div>
+       <div class="return-date">${T[lang].visited}: ${esc(v.dateVisited||'')}</div>
+     </div>
+     ${due.text?`<span class="return-due ${due.cls}">${esc(due.text)}</span>`:''}
+   </div>
+   ${v.address?`<div class="return-field"><b>${T[lang].address}:</b> ${esc(v.address)}</div>`:''}
+   ${v.topic?`<div class="return-field"><b>${T[lang].topicLabel}:</b> ${esc(v.topic)}</div>`:''}
+   ${distance?`<div class="return-distance">📍 ${esc(distance)}</div>`:''}
+   ${!compact&&v.conversationNotes?`<div class="return-field"><b>${T[lang].conversationNotes}:</b> ${esc(v.conversationNotes)}</div>`:''}
+   ${!compact&&v.publicationScripture?`<div class="return-field"><b>${T[lang].publicationOrScripture}:</b> ${esc(v.publicationScripture)}</div>`:''}
+   ${!compact&&Array.isArray(v.history)&&v.history.length?`<div class="return-field"><b>${T[lang].historyLabel}:</b> ${v.history.length}</div>`:''}
+   ${!compact?`<div class="card-actions"><button class="btn small edit-return-visit" data-id="${v.id}" type="button">${editLabel}</button><button class="btn small danger delete-return-visit" data-id="${v.id}" type="button">${deleteLabel}</button></div>`:''}
+ </div>`;
+}
+function sortedReturnVisits(){
+ const q=($('#returnVisitSearch')?.value||'').trim().toLowerCase();
+ let list=returnVisits.filter(v=>{
+   const historyText=Array.isArray(v.history)?v.history.map(h=>`${h.notes||''} ${h.publicationScripture||''}`).join(' '):'';
+   return !q||`${v.name||''} ${v.address||''} ${v.topic||''} ${v.conversationNotes||''} ${v.publicationScripture||''} ${historyText}`.toLowerCase().includes(q);
+ });
+ if(returnVisitSort==='nearby'&&nearbyOrigin){
+   list.sort((a,b)=>{
+     const ad=hasVisitCoords(a)?haversineKm(nearbyOrigin.lat,nearbyOrigin.lon,Number(a.lat),Number(a.lon)):Infinity;
+     const bd=hasVisitCoords(b)?haversineKm(nearbyOrigin.lat,nearbyOrigin.lon,Number(b.lat),Number(b.lon)):Infinity;
+     return ad-bd||String(a.returnDate||'9999-12-31').localeCompare(String(b.returnDate||'9999-12-31'));
+   });
+ }else{
+   list.sort((a,b)=>(a.returnDate||'9999-12-31').localeCompare(b.returnDate||'9999-12-31')||String(b.dateVisited||'').localeCompare(String(a.dateVisited||'')));
+ }
+ return list;
+}
+function renderReturnVisits(){
+ const lang=settings.language||'en';
+ const cards=$('#returnVisitCards');
+ if(!cards)return;
+ const list=sortedReturnVisits();
+ $('#sortReturnDateBtn')?.classList.toggle('primary',returnVisitSort==='date');
+ $('#nearbyReturnVisitsBtn')?.classList.toggle('primary',returnVisitSort==='nearby');
+ cards.innerHTML=list.length?list.map(v=>returnVisitCard(v)).join(''):`<div class="card"><div class="notice">${returnVisits.length?T[lang].noMatchingReturnVisits:T[lang].noReturnVisits}</div></div>`;
+}
+function renderHomeReturnVisits(){
+ const box=$('#homeReturnVisits');if(!box)return;
+ const lang=settings.language||'en';
+ const list=[...returnVisits].sort((a,b)=>(a.returnDate||'9999-12-31').localeCompare(b.returnDate||'9999-12-31')).slice(0,2);
+ box.innerHTML=list.length?list.map(v=>`<button class="next-card open-return-visit" data-id="${v.id}" type="button" style="border:0;padding:0;background:transparent;text-align:left;width:100%">${returnVisitCard(v,true)}</button>`).join(''):`<div class="card"><div class="notice">${T[lang].noReturnVisits}</div></div>`;
+}
+
+function renderReturnVisitHistoryEditor(){
+ const box=$('#returnVisitHistoryList'); if(!box)return;
+ const lang=settings.language||'en';
+ const history=(pendingReturnVisitHistory||[]).slice().sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+ if(!history.length){
+   box.innerHTML=T[lang].noConversationHistory;
+   return;
+ }
+ box.innerHTML=history.map((h,idx)=>`<div class="history-entry">
+   <div class="history-date">${esc(h.date||'')}</div>
+   ${h.notes?`<div class="history-text">${esc(h.notes)}</div>`:''}
+   ${h.publicationScripture?`<div class="history-text"><b>${T[lang].publicationOrScripture}:</b> ${esc(h.publicationScripture)}</div>`:''}
+   <div class="history-actions"><button class="btn small danger delete-history-entry" data-history-id="${esc(h.id)}" type="button">${lang==='es'?'Eliminar':'Delete'}</button></div>
+ </div>`).join('');
+}
+
+function openReturnVisit(id=null){
+ editReturnVisitId=id;
+ const v=id?returnVisits.find(x=>String(x.id)===String(id)):null;
+ pendingReturnVisitCoords=hasVisitCoords(v)?{lat:Number(v.lat),lon:Number(v.lon)}:null;
+ pendingReturnVisitHistory=Array.isArray(v?.history)?JSON.parse(JSON.stringify(v.history)):[];
+ $('#returnVisitModalTitle').textContent=v?T[settings.language].editReturnVisit:T[settings.language].addReturnVisit;
+ $('#returnVisitDateVisited').value=v?.dateVisited||TODAY;
+ $('#returnVisitReturnDate').value=v?.returnDate||'';
+ $('#returnVisitName').value=v?.name||'';
+ $('#returnVisitAddress').value=v?.address||'';
+ $('#returnVisitTopic').value=v?.topic||'';
+ $('#returnVisitConversation').value=v?.conversationNotes||'';
+ $('#returnVisitPublication').value=v?.publicationScripture||'';
+ $('#returnVisitHistoryDate').value=TODAY;
+ $('#returnVisitHistoryNotes').value='';
+ $('#returnVisitHistoryPublication').value='';
+ $('#returnVisitLocationStatus').textContent=pendingReturnVisitCoords?T[settings.language].locationSaved:T[settings.language].locationNotSaved;
+ $('#returnVisitNotice').textContent='';
+ $('#returnVisitHistoryNotice').textContent='';
+ renderReturnVisitHistoryEditor();
+ $('#returnVisitModal').classList.add('show');
+}
+function closeReturnVisit(){
+ $('#returnVisitModal').classList.remove('show');
+ editReturnVisitId=null;
+ pendingReturnVisitCoords=null;
+ pendingReturnVisitHistory=[];
+ $('#returnVisitNotice').textContent='';
+ $('#returnVisitHistoryNotice').textContent='';
+}
+function requestGeo(success,target){
+ const lang=settings.language||'en';
+ if(!navigator.geolocation){if(target)target.textContent=T[lang].locationPermissionDenied;return}
+ if(target)target.textContent=T[lang].findingLocation;
+ navigator.geolocation.getCurrentPosition(
+   p=>success({lat:p.coords.latitude,lon:p.coords.longitude}),
+   ()=>{if(target)target.textContent=T[lang].locationPermissionDenied},
+   {enableHighAccuracy:true,timeout:12000,maximumAge:60000}
+ );
+}
+
 function renderHome(){
+ renderHomeReturnVisits();
  $('#homeMonthlyGoal').value=settings.monthlyGoal;
  $('#homeWeeklyGoal').value=settings.weeklyGoal;
  $('#homeMonthlyGoalSummary').textContent=`${settings.monthlyGoal}h`;
@@ -714,7 +983,129 @@ function renderAssignmentReminder(upcoming){
  box.dataset.assignmentId=next.id;
 }
 
-function renderAll(){applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderMore();setSpreadsheetPlatformHelp();updateInstallGuidance();persist()}
+
+$('#homeAddReturnVisit').onclick=()=>openReturnVisit();
+$('#returnVisitAddBtn').onclick=()=>openReturnVisit();
+$('#returnVisitCancel').onclick=closeReturnVisit;
+$('#returnVisitSearch').addEventListener('input',renderReturnVisits);
+$('#sortReturnDateBtn').onclick=()=>{
+ returnVisitSort='date';nearbyOrigin=null;$('#nearbyNotice').textContent='';renderReturnVisits();
+};
+
+$('#printReturnVisitsBtn').onclick=async()=>{
+ const lang=settings.language||'en';
+ const list=[...returnVisits].map(normalizeReturnVisit).sort((a,b)=>(a.returnDate||'9999-12-31').localeCompare(b.returnDate||'9999-12-31')||String(a.name||'').localeCompare(String(b.name||'')));
+ const lines=[];
+ lines.push(lang==='es'?'LISTA DE REVISITAS':'RETURN VISIT LIST');
+ lines.push(`${lang==='es'?'Creado':'Created'}: ${new Date().toLocaleDateString()}`);
+ lines.push('');
+ if(!list.length){
+   lines.push(lang==='es'?'No hay revisitas guardadas.':'No return visits saved.');
+ }else{
+   list.forEach((v,i)=>{
+     lines.push(`${i+1}. ${v.name||''}`);
+     if(v.topic)lines.push(`  ${lang==='es'?'Tema':'Topic'}: ${v.topic}`);
+     if(v.address)lines.push(`  ${lang==='es'?'Dirección':'Address'}: ${v.address}`);
+     if(v.dateVisited)lines.push(`  ${lang==='es'?'Visitada':'Visited'}: ${v.dateVisited}`);
+     if(v.returnDate)lines.push(`  ${lang==='es'?'Fecha para volver':'Return date'}: ${v.returnDate}`);
+     if(v.conversationNotes)lines.push(`  ${lang==='es'?'Notas iniciales':'Initial notes'}: ${v.conversationNotes}`);
+     if(v.publicationScripture)lines.push(`  ${lang==='es'?'Publicación / texto bíblico':'Publication / scripture'}: ${v.publicationScripture}`);
+     if(Array.isArray(v.history)&&v.history.length){
+       lines.push(`  ${lang==='es'?'Historial de conversaciones':'Conversation history'}:`);
+       [...v.history].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))).forEach(h=>{
+         lines.push(`    ${h.date||''}${h.notes?` - ${h.notes}`:''}`);
+         if(h.publicationScripture)lines.push(`      ${lang==='es'?'Publicación / texto bíblico':'Publication / scripture'}: ${h.publicationScripture}`);
+       });
+     }
+     lines.push('');
+   });
+ }
+ const blob=makeSimplePdf(lines,lang==='es'?'Pioneer at a Glance - Lista de Revisitas':'Pioneer at a Glance - Return Visit List');
+ await shareOrDownload(`pioneer-at-a-glance-return-visits-${TODAY}.pdf`,'application/pdf',blob);
+};
+
+$('#nearbyReturnVisitsBtn').onclick=()=>{
+ const notice=$('#nearbyNotice');
+ requestGeo(coords=>{
+   nearbyOrigin=coords;returnVisitSort='nearby';
+   notice.textContent=T[settings.language].nearbySorted;
+   renderReturnVisits();
+ },notice);
+};
+$('#saveReturnVisitLocation').onclick=()=>{
+ const status=$('#returnVisitLocationStatus');
+ requestGeo(coords=>{
+   pendingReturnVisitCoords=coords;
+   status.textContent=T[settings.language].locationSaved;
+ },status);
+};
+
+$('#addReturnVisitHistory').onclick=()=>{
+ const date=$('#returnVisitHistoryDate').value||TODAY;
+ const notes=$('#returnVisitHistoryNotes').value.trim();
+ const publicationScripture=$('#returnVisitHistoryPublication').value.trim();
+ if(!notes&&!publicationScripture){
+   $('#returnVisitHistoryNotice').textContent=settings.language==='es'?'Añade notas o una publicación/texto bíblico.':'Add conversation notes or a publication/scripture.';
+   return;
+ }
+ pendingReturnVisitHistory.push({
+   id:String(Date.now()+Math.random()),
+   date,
+   notes,
+   publicationScripture,
+   created:Date.now()
+ });
+ $('#returnVisitHistoryNotes').value='';
+ $('#returnVisitHistoryPublication').value='';
+ $('#returnVisitHistoryNotice').textContent=settings.language==='es'?'Añadido al historial.':'Added to history.';
+ renderReturnVisitHistoryEditor();
+};
+document.addEventListener('click',e=>{
+ const del=e.target.closest('.delete-history-entry');
+ if(!del)return;
+ pendingReturnVisitHistory=pendingReturnVisitHistory.filter(h=>String(h.id)!==String(del.dataset.historyId));
+ renderReturnVisitHistoryEditor();
+});
+
+$('#returnVisitForm').onsubmit=e=>{
+ e.preventDefault();
+ const name=$('#returnVisitName').value.trim(),dateVisited=$('#returnVisitDateVisited').value;
+ if(!name||!dateVisited){
+   $('#returnVisitNotice').textContent=settings.language==='es'?'Añade el nombre y la fecha de visita.':'Add the name and date visited.';
+   return;
+ }
+ const data={
+   dateVisited,
+   returnDate:$('#returnVisitReturnDate').value||'',
+   name,
+   address:$('#returnVisitAddress').value.trim(),
+   topic:$('#returnVisitTopic').value.trim(),
+   conversationNotes:$('#returnVisitConversation').value.trim(),
+   publicationScripture:$('#returnVisitPublication').value.trim(),
+   history:pendingReturnVisitHistory.map(h=>({...h})),
+   lat:pendingReturnVisitCoords?.lat??null,
+   lon:pendingReturnVisitCoords?.lon??null,
+   updated:Date.now()
+ };
+ if(editReturnVisitId){
+   const i=returnVisits.findIndex(x=>String(x.id)===String(editReturnVisitId));
+   if(i>=0)returnVisits[i]={...returnVisits[i],...data};
+ }else returnVisits.push({id:Date.now()+Math.random(),created:Date.now(),...data});
+ persist();closeReturnVisit();renderAll();go('returnVisitsScreen');
+};
+document.addEventListener('click',e=>{
+ const open=e.target.closest('.open-return-visit'),edit=e.target.closest('.edit-return-visit'),del=e.target.closest('.delete-return-visit');
+ if(open){openReturnVisit(open.dataset.id);return}
+ if(edit){openReturnVisit(edit.dataset.id);return}
+ if(del){
+   if(confirm(settings.language==='es'?'¿Eliminar esta revisita?':'Delete this return visit?')){
+     returnVisits=returnVisits.filter(v=>String(v.id)!==String(del.dataset.id));
+     persist();renderAll();renderReturnVisits();
+   }
+ }
+});
+
+function renderAll(){applyLanguage();renderHome();renderLog();renderCalendar();renderAssignments();renderReturnVisits();renderMore();setSpreadsheetPlatformHelp();updateInstallGuidance();persist()}
 
 function openEntry(id=null,quick=0,presetDate=null){
  editEntryId=id;
@@ -997,11 +1388,12 @@ function setSpreadsheetPlatformHelp(){
 function appBackupObject(){
  return {
    app:'Pioneer at a Glance',
-   backupVersion:1,
+   backupVersion:3,
    exportedAt:new Date().toISOString(),
    settings,
    entries,
-   assignments
+   assignments,
+   returnVisits
  };
 }
 
@@ -1012,9 +1404,10 @@ $('#backupJsonBtn').onclick=async()=>{
 };
 
 $('#exportCsvBtn').onclick=async()=>{
- const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end']];
- entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','']));
- assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'']));
+ const rows=[['record_type','date','minutes','type','detail_or_location','experience_or_partner','notes','start','end','name','address','conversation_notes','publication_or_scripture','return_date','latitude','longitude','topic','conversation_history_json']];
+ entries.forEach(e=>rows.push(['HOUR',e.date,e.minutes,e.type,e.detail||'',e.experience||'',e.notes||'','','','','','','','','']));
+ assignments.forEach(a=>rows.push(['ASSIGNMENT',a.date,'',a.type,a.location||'',a.partner||'',a.notes||'',a.start||'',a.end||'','','','','','','','']));
+ returnVisits.forEach(v=>rows.push(['RETURN_VISIT',v.dateVisited||'','','Return visit','','','','','',v.name||'',v.address||'',v.conversationNotes||'',v.publicationScripture||'',v.returnDate||'',v.lat??'',v.lon??'',v.topic||'',JSON.stringify(Array.isArray(v.history)?v.history:[])]));
  const csv=rows.map(r=>r.map(csvEsc).join(',')).join('\n');
  await shareOrDownload(`pioneer-at-a-glance-spreadsheet-${TODAY}.csv`,'text/csv',csv);
 };
@@ -1129,6 +1522,26 @@ function currentPdfReport(){
      if(a.notes)lines.push(`  Notes: ${a.notes}`);
    });
  }else lines.push('No assignments for this month.');
+
+ const rvlist=returnVisits.filter(v=>(v.dateVisited||'').slice(0,7)===ym||(v.returnDate||'').slice(0,7)===ym)
+   .sort((a,b)=>(a.returnDate||'9999-12-31').localeCompare(b.returnDate||'9999-12-31'));
+ lines.push('','RETURN VISITS');
+ if(rvlist.length){
+   rvlist.forEach(v=>{
+     lines.push(`${v.name||''}  Visited: ${v.dateVisited||''}  Return: ${v.returnDate||''}`);
+     if(v.topic)lines.push(`  Topic: ${v.topic}`);
+     if(v.address)lines.push(`  Address: ${v.address}`);
+     if(v.conversationNotes)lines.push(`  Conversation: ${v.conversationNotes}`);
+     if(v.publicationScripture)lines.push(`  Publication / scripture: ${v.publicationScripture}`);
+     if(Array.isArray(v.history)&&v.history.length){
+       lines.push(`  Conversation history:`);
+       [...v.history].sort((a,b)=>String(a.date||'').localeCompare(String(b.date||''))).forEach(h=>{
+         lines.push(`    ${h.date||''}${h.notes?` - ${h.notes}`:''}`);
+         if(h.publicationScripture)lines.push(`      Publication / scripture: ${h.publicationScripture}`);
+       });
+     }
+   });
+ }else lines.push('No return visits for this month.');
  return {ym,blob:makeSimplePdf(lines,'Pioneer at a Glance - Monthly Report')};
 }
 
@@ -1147,6 +1560,7 @@ $('#restoreJsonFile').onchange=async e=>{
    if(confirm(settings.language==='es'?'¿Restaurar esta copia y reemplazar los datos actuales?':'Restore this backup and replace current app data?')){
      entries=data.entries;
      assignments=data.assignments;
+     returnVisits=Array.isArray(data.returnVisits)?data.returnVisits:[];
      settings=data.settings;
      if(settings.assignmentReminderHours===undefined)settings.assignmentReminderHours=24;
      persist();
@@ -1159,7 +1573,7 @@ $('#restoreJsonFile').onchange=async e=>{
  e.target.value='';
 };
 
-$('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}const pe=[],pa=[];for(const l of lines.slice(1)){const v=parse(l);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'})}if(confirm(`Import ${pe.length} hour entries and ${pa.length} assignments?`)){entries=pe;assignments=pa;renderAll();$('#backupNotice').textContent='Backup imported.'}e.target.value=''};
+$('#importFile').onchange=async e=>{const f=e.target.files?.[0];if(!f)return;const lines=(await f.text()).trim().split(/\r?\n/);function parse(line){const v=[];let s='',q=false;for(let i=0;i<line.length;i++){const c=line[i];if(c==='"'){if(q&&line[i+1]==='"'){s+='"';i++}else q=!q}else if(c===','&&!q){v.push(s);s=''}else s+=c}v.push(s);return v}const pe=[],pa=[],pv=[];for(const l of lines.slice(1)){const v=parse(l);if(v[0]==='HOUR'&&v[1]&&+v[2]>0)pe.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],minutes:+v[2],type:v[3]||'Field ministry',detail:v[4]||'',experience:v[5]||'',notes:v[6]||''});if(v[0]==='ASSIGNMENT'&&v[1])pa.push({id:Date.now()+Math.random(),created:Date.now(),date:v[1],type:v[3]||'Public witnessing',location:v[4]||'',partner:v[5]||'',notes:v[6]||'',start:v[7]||'09:00',end:v[8]||'11:00'});if(v[0]==='RETURN_VISIT'&&v[1])pv.push({id:Date.now()+Math.random(),created:Date.now(),dateVisited:v[1],returnDate:v[13]||'',name:v[9]||'',address:v[10]||'',conversationNotes:v[11]||'',publicationScripture:v[12]||'',lat:v[14]!==''&&v[14]!==undefined?+v[14]:null,lon:v[15]!==''&&v[15]!==undefined?+v[15]:null,topic:v[16]||'',history:(()=>{try{return v[17]?JSON.parse(v[17]):[]}catch(_){return []}})()})}const msg=settings.language==='es'?`¿Importar ${pe.length} registros de horas, ${pa.length} asignaciones y ${pv.length} revisitas?`:`Import ${pe.length} hour entries, ${pa.length} assignments, and ${pv.length} return visits?`;if(confirm(msg)){entries=pe;assignments=pa;returnVisits=pv;renderAll();$('#backupNotice').textContent=settings.language==='es'?'Copia importada.':'Backup imported.'}e.target.value=''};
 
 
 
