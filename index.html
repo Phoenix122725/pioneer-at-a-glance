@@ -510,7 +510,7 @@ html[data-theme="dark"] .logged-hours-badge{background:#22382c;color:#a9d3bb}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.19 • Smart Calendar Icons</div>
+      <div class="notice">Commercial Beta 2.20 • Calendar Icon Fix</div>
     </div>
   </section>
 </div>
@@ -584,7 +584,17 @@ html[data-theme="dark"] .logged-hours-badge{background:#22382c;color:#a9d3bb}
       <div class="form-grid">
         <label data-i18n="date">Date<input id="entryDate" type="date" required></label>
         <label data-i18n="type">Type<select id="entryType">
-          <option>Field ministry</option><option>Public witnessing</option><option>Bible study</option><option>Return visit</option><option>Letter writing</option><option>Phone witnessing</option><option>Other</option>
+          <option value="Field ministry" data-en="Field ministry" data-es="Ministerio del campo">Field ministry</option>
+          <option value="Public witnessing" data-en="Public witnessing" data-es="Predicación pública">Public witnessing</option>
+          <option value="METRO-SMPW" data-en="METRO-SMPW" data-es="METRO-SMPW">METRO-SMPW</option>
+          <option value="LDC" data-en="LDC" data-es="LDC">LDC</option>
+          <option value="Letter writing" data-en="Letter writing" data-es="Predicación por carta">Letter writing</option>
+          <option value="Informal witnessing" data-en="Informal witnessing" data-es="Predicación informal">Informal witnessing</option>
+          <option value="Territory" data-en="Territory" data-es="Territorio">Territory</option>
+          <option value="Bible study" data-en="Bible study" data-es="Estudio bíblico">Bible study</option>
+          <option value="Return visit" data-en="Return visit" data-es="Revisita">Return visit</option>
+          <option value="Phone witnessing" data-en="Phone witnessing" data-es="Predicación por teléfono">Phone witnessing</option>
+          <option value="Other" data-en="Other" data-es="Otro">Other</option>
         </select></label>
         <label data-i18n="hours">Hours<input id="entryHours" type="number" min="0" max="24" value="0"></label>
         <label data-i18n="minutes">Minutes<input id="entryMinutes" type="number" min="0" max="59" value="0"></label>
@@ -1008,7 +1018,7 @@ function activityIcon(type){
      <path d="M15 3.5h6v3h-1v1.3l-1.5-1.3H15z"/>
    </svg>`);
  }
- if(t.includes('territory')||t.includes('door')||t.includes('puerta')||t.includes('casa')){
+ if(t.includes('territory')||t.includes('territorio')||t.includes('door')||t.includes('puerta')||t.includes('casa')){
    return wrap(`<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg>`);
  }
  if(t.includes('bible study')||t.includes('estudio bíblico')||t.includes('estudio biblico')){
@@ -1020,16 +1030,42 @@ function activityIcon(type){
  return `<span class="activity-icon other" title="${esc(type)}">•</span>`;
 }
 
+function canonicalActivityType(type){
+ const t=String(type||'').trim().toLowerCase();
+ if(t.includes('public witnessing')||t.includes('predicación pública')||t.includes('predicacion publica')||t.includes('testificación pública')||t.includes('carrito')||t.includes('literature cart'))return 'public';
+ if(t.includes('metro-smpw'))return 'metro';
+ if(t==='ldc'||t.includes('local design/construction'))return 'ldc';
+ if(t.includes('letter')||t.includes('carta'))return 'letter';
+ if(t.includes('informal witnessing')||t.includes('predicación informal')||t.includes('predicacion informal'))return 'informal';
+ if(t.includes('territory')||t.includes('territorio')||t.includes('door')||t.includes('puerta')||t.includes('casa'))return 'territory';
+ if(t.includes('bible study')||t.includes('estudio bíblico')||t.includes('estudio biblico'))return 'study';
+ if(t.includes('return visit')||t.includes('revisita'))return 'return';
+ return t||'other';
+}
+function normText(v){return String(v||'').trim().toLowerCase()}
+function likelySameLegacyActivity(entry,assignment,sameTypeAssignments){
+ if(canonicalActivityType(entry.type)!==canonicalActivityType(assignment.type))return false;
+ const detailMatch=entry.detail&&assignment.location&&normText(entry.detail)===normText(assignment.location);
+ const partnerMatch=entry.experience&&assignment.partner&&normText(entry.experience)===normText(assignment.partner);
+ const durationMatch=Number(entry.minutes)===Number(assignmentDurationMinutes(assignment));
+ return detailMatch||partnerMatch||(durationMatch&&sameTypeAssignments===1);
+}
 function calendarActivitiesForDay(dateStr){
  const dayAssignments=assignments.filter(a=>a.date===dateStr);
  const assignmentIds=new Set(dayAssignments.map(a=>String(a.id)));
  const dayEntries=entries.filter(e=>e.date===dateStr);
 
- // A linked hour entry represents the SAME activity as its scheduled assignment,
- // so it must not add a second calendar icon.
  const unlinkedEntries=dayEntries.filter(e=>{
-   if(e.assignmentId===undefined||e.assignmentId===null||e.assignmentId==='')return true;
-   return !assignmentIds.has(String(e.assignmentId));
+   if(e.assignmentId!==undefined&&e.assignmentId!==null&&e.assignmentId!==''&&assignmentIds.has(String(e.assignmentId))){
+     return false;
+   }
+
+   // Backward-compatibility for entries logged before assignment linking existed.
+   // If an older entry clearly matches a scheduled activity, show one icon only.
+   const matches=dayAssignments.filter(a=>canonicalActivityType(a.type)===canonicalActivityType(e.type));
+   if(matches.some(a=>likelySameLegacyActivity(e,a,matches.length)))return false;
+
+   return true;
  });
 
  return [
@@ -1079,6 +1115,8 @@ function openAssignmentHours(id,fromAgenda=false){
  }
  if(linked){
    openEntry(linked.id,0,linked.date||a.date,a.id);
+   ensureEntryTypeOption(a.type||linked.type||'Field ministry');
+   $('#entryType').value=a.type||linked.type||'Field ministry';
    return;
  }
  const mins=assignmentDurationMinutes(a);
@@ -1346,10 +1384,11 @@ $('#entryForm').onsubmit=e=>{
  if(mins<1){$('#entryNotice').textContent=settings.language==='es'?'Ingresa al menos 1 minuto.':'Enter at least 1 minute.';return}
  const existingEntry=editEntryId?entries.find(x=>String(x.id)===String(editEntryId)):null;
  const linkedAssignmentId=pendingAssignmentLogId||existingEntry?.assignmentId||null;
+ const linkedAssignment=linkedAssignmentId?assignments.find(a=>String(a.id)===String(linkedAssignmentId)):null;
  const data={
    date:$('#entryDate').value,
    minutes:mins,
-   type:$('#entryType').value,
+   type:linkedAssignment?.type||$('#entryType').value,
    detail:$('#entryDetail')?.value.trim()||'',
    experience:$('#entryExperience')?.value.trim()||'',
    notes:$('#entryNotes')?.value.trim()||'',
