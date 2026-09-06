@@ -510,7 +510,7 @@ html[data-theme="dark"] .logged-hours-badge{background:#22382c;color:#a9d3bb}
     <div class="card section">
       <div class="section-title"><h2 data-i18n="about">About</h2></div>
       <div class="disclaimer" data-i18n="disclaimer">Pioneer at a Glance is an independent ministry-planning tool. It is not affiliated with or endorsed by Jehovah’s Witnesses or Watch Tower Bible and Tract Society.</div>
-      <div class="notice">Commercial Beta 2.20 • Calendar Icon Fix</div>
+      <div class="notice">Commercial Beta 2.21 • One Icon Per Ministry Type</div>
     </div>
   </section>
 </div>
@@ -1052,26 +1052,25 @@ function likelySameLegacyActivity(entry,assignment,sameTypeAssignments){
 }
 function calendarActivitiesForDay(dateStr){
  const dayAssignments=assignments.filter(a=>a.date===dateStr);
- const assignmentIds=new Set(dayAssignments.map(a=>String(a.id)));
  const dayEntries=entries.filter(e=>e.date===dateStr);
 
- const unlinkedEntries=dayEntries.filter(e=>{
-   if(e.assignmentId!==undefined&&e.assignmentId!==null&&e.assignmentId!==''&&assignmentIds.has(String(e.assignmentId))){
-     return false;
-   }
-
-   // Backward-compatibility for entries logged before assignment linking existed.
-   // If an older entry clearly matches a scheduled activity, show one icon only.
-   const matches=dayAssignments.filter(a=>canonicalActivityType(a.type)===canonicalActivityType(e.type));
-   if(matches.some(a=>likelySameLegacyActivity(e,a,matches.length)))return false;
-
-   return true;
- });
-
- return [
+ // Calendar icons represent ministry TYPES, not individual records.
+ // So a scheduled Public Witnessing assignment and its logged Public Witnessing
+ // hours on the same date still produce only one cart icon.
+ const combined=[
    ...dayAssignments.map(a=>({kind:'assignment',type:a.type,id:a.id})),
-   ...unlinkedEntries.map(e=>({kind:'entry',type:e.type,id:e.id}))
+   ...dayEntries.map(e=>({kind:'entry',type:e.type,id:e.id}))
  ];
+
+ const seen=new Set();
+ const unique=[];
+ for(const item of combined){
+   const key=canonicalActivityType(item.type);
+   if(seen.has(key))continue;
+   seen.add(key);
+   unique.push(item);
+ }
+ return unique;
 }
 
 function renderCalendar(){
